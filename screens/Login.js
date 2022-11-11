@@ -2,7 +2,7 @@
 // import { View, SafeAreaView, FlatList } from "react-native";
 import React from 'react'
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, Text, View, TextInput, KeyboardAvoidingViewBase } from "react-native";
+import { SafeAreaView, Text, View, TextInput, KeyboardAvoidingView } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, assets, FONTS } from "../constants";
 
@@ -18,6 +18,10 @@ const Login = () => {
             // style={styles.container}
         > */}
             <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
+            <KeyboardAvoidingView 
+            behavior="padding" 
+            style={styles.container}
+            >
                 <Blackboard/>
                 <Brand/>
                 <SubBrand/>
@@ -94,8 +98,9 @@ const Login = () => {
                     />
                     <Copyright/>
                 </View>
+            </KeyboardAvoidingView>
             </View>
-        {/* </KeyboardAvoidingViewBase> */}
+
     </SafeAreaView>
   )
 }
