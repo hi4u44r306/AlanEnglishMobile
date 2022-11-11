@@ -7,16 +7,11 @@ const Blackboard = () => {
         backgroundColor:"#2e9421",
         borderColor: "#ffbf3f",
         borderWidth: 10,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 10,
-        borderBottomLeftRadius: 10,
+        borderRadius:10,
         width: "90%",
-        paddingTop: "20px",
-        paddingBottom: "20px",
-        paddingLeft: "20px",
-        paddingRight: "20px",
-        gap:"15px",
+        padding: 20,
+        margin: 20,
+        gap:15,
     }}>
       <Text style={{color:"#ffffff", fontSize:"12px", fontFamily: "Varela Round", fontWeight:"600"}}>步驟一：能聽清楚句子中每個單字,並瞭解中文句意。</Text>
       <Text style={{color:"#ffffff", fontSize:"12px", fontFamily: "Varela Round", fontWeight:"600"}}>步驟二：聽問句與提示後,能馬上完整地回答！回答速度可以比MP3更快！</Text>

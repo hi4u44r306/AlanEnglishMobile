@@ -5,10 +5,8 @@ export const Brand = () => {
   return (
     <View style={{
         flexDirection:"row",
-        paddingBottom:"20px",
-        paddingTop:"20px",
-        borderRadius:"20px",
-        gap:"3px"               
+        padding:10,
+        gap:"3px",               
       }}>
         <Text 
           style={{

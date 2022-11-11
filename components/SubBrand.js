@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { COLORS } from '../constants'
+import { COLORS, FONTS } from '../constants'
 
 const SubBrand = () => {
   return (
@@ -8,10 +8,10 @@ const SubBrand = () => {
       <Text style=
       {{
         fontSize: '18px',
-        fontFamily: "Varela Round , sans-serif",
+        fontFamily: FONTS.VarelaRound,
         fontWeight:900,
         color: COLORS.inputfieldgreen,
-        paddingBottom: "20px",
+        padding:10,
       }}>
       系統化 | 口語化 | 聽力導向 
       </Text>

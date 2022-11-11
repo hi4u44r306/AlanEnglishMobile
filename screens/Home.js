@@ -42,7 +42,7 @@ const Home = () => {
           />
         </View>
 
-        <View
+        {/* <View
           style={{
             position: "absolute",
             top: 0,
@@ -55,7 +55,7 @@ const Home = () => {
           <View
             style={{ height: 300, backgroundColor: COLORS.primary }} />
           <View style={{ flex: 1, backgroundColor: COLORS.white }} />
-        </View>
+        </View> */}
       </View>
     </SafeAreaView>
   );
