@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, TextInput } from "react-native";
 
 import { COLORS, FONTS, SIZES, assets } from "../constants";
+import { Brand } from "./Brand";
 
 const HomeHeader = ({ onSearch }) => {
   return (
@@ -18,71 +19,7 @@ const HomeHeader = ({ onSearch }) => {
           alignItems: "center",
         }}
       >
-        <View style={{
-          flexDirection:"row",
-          // backgroundColor: COLORS.white,
-          padding:"10px",
-          borderRadius:"20px"          
-        }}>
-          <Text 
-            style={{
-            color:"red",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>A</Text>
-          <Text style={{
-            color:"#f45d01",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>L</Text>
-          <Text style={{
-            color:"#eeb902",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>A</Text>
-          <Text style={{
-            color:"#04cc0b",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>N</Text>
-          <Text></Text>
-          <Text style={{
-            color:"#2d7dd2",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>E</Text>
-          <Text style={{
-            color:"#4062bb",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>N</Text>
-          <Text style={{
-            color:"#52489c",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>G</Text>
-          <Text style={{
-            color:"red",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>L</Text>
-          <Text style={{
-            color:"#f45d01",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>I</Text>
-          <Text style={{
-            color:"#eeb902",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>S</Text>
-          <Text style={{
-            color:"#4062bb",
-            fontSize: "30px",
-            fontWeight:"900",
-            fontFamily: "Varela Round",}}>H</Text>
-        </View>
-
+        <Brand/>
         <View style={{ width: 45, height: 45 }}>
           <Image
             source={assets.person01}

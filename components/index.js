@@ -1,15 +1,17 @@
 import HomeHeader from './HomeHeader'
 import FocusedStatusBar from './FocusedStatusBar'
 import NFTCard from './NFTCard'
-import { CircleButton, RectButton } from './Button'
-import DetailsDesc
- from './DetailsDesc'
-import DetailsBid
- from './DetailsBid'
+import { CircleButton, RectButton, LoginButton, LogoutButton } from './Button'
+import DetailsDesc from './DetailsDesc'
+import DetailsBid from './DetailsBid'
 import { SubInfo } from './SubInfo'
+import { Brand } from './Brand'
+import SubBrand from './SubBrand'
+import Blackboard from './Blackboard'
+import Copyright from './Copyright'
 
 
 export {
-    HomeHeader,NFTCard,FocusedStatusBar,CircleButton,RectButton,
-    DetailsDesc,DetailsBid,SubInfo,
+    HomeHeader,NFTCard,FocusedStatusBar,CircleButton,RectButton,LoginButton,LogoutButton,
+    DetailsDesc,DetailsBid,SubInfo,Brand,SubBrand,Blackboard,Copyright
 }
