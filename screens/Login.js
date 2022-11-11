@@ -14,9 +14,7 @@ const Login = () => {
   return (
     <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <FocusedStatusBar backgroundColor={COLORS.primary} />
-        <TouchableWithoutFeedback
-        onPress={Keyboard.dismiss}
-        >
+
         <KeyboardAvoidingView 
             behavior="padding" 
             // style={styles.container}
@@ -100,7 +98,6 @@ const Login = () => {
                 </View>
             </View>
         </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
     </SafeAreaView>
   )
 }
