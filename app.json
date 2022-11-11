@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "AwesomeProject",
-    "slug": "AwesomeProject",
+    "name": "alanenglish",
+    "slug": "alanenglish",
+    "description": "This is Alan English APP",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/A-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/A-logo-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
