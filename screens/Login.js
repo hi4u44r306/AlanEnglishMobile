@@ -23,7 +23,6 @@ const Login = () => {
                 borderRadius: SIZES.font,
                 flexDirection: "column",
                 alignItems: "center",
-                gap:30,
                 margin: 20,
                 paddingHorizontal: SIZES.font,
                 paddingVertical: SIZES.small - 2,
@@ -35,17 +34,15 @@ const Login = () => {
                 <View style={{
                     width: "100%",
                     alignItems: "center",
-                    gap:20,
                 }}>
-                    <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,}}>帳號</Text>
+                    <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>帳號</Text>
                     <TextInput
                         placeholder="Email..."
                         style={{ 
                             fontFamily: FONTS.VarelaRound,
-                            padding:0,
                             outline:"none",
                             flex: 1,
-                            fontSize:"20px",
+                            fontSize:20,
                             textAlign: 'center',
                             justifyContent: 'center',
                             color: COLORS.primary, 
@@ -53,6 +50,7 @@ const Login = () => {
                             borderWidth: 3.5,
                             borderRadius:5,
                             padding:5,
+                            margin:10,
                             width: "80%",
                             }}
                     />
@@ -61,18 +59,15 @@ const Login = () => {
                     width: "100%",
                     flexDirection:"column",
                     alignItems: "center",
-                    gap:"20px",
                 }}>
-                    <Text style={{fontSize: SIZES.extraLarge,
-                    fontWeight:900,}}>密碼</Text>
+                    <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>密碼</Text>
                     <TextInput
                         placeholder="Password..."
                         style={{ 
-                            padding:0,
                             fontFamily: FONTS.VarelaRound,
                             outline:"none",
                             flex: 1,
-                            fontSize:"20px",
+                            fontSize:20,
                             textAlign: 'center',
                             justifyContent: 'center',
                             color: COLORS.primary, 
@@ -80,12 +75,14 @@ const Login = () => {
                             borderWidth: 3.5,
                             borderRadius: 5,
                             padding:5,
+                            margin:10,
                             width: "80%",
                         }}
                         // onChangeText={onSearch}
                     />
                 </View>
                 <LoginButton
+                    margin={20}
                     minWidth={120}
                     fontSize={SIZES.extraLarge}
                     handlePress={() => navigation.navigate("Home")}

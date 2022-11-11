@@ -54,7 +54,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   );
 };
 
-export const LoginButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+export const LoginButton = ({ minWidth, fontSize, handlePress, margin, ...props }) => {
   return (
     <TouchableOpacity
       style={{
@@ -64,6 +64,7 @@ export const LoginButton = ({ minWidth, fontSize, handlePress, ...props }) => {
         borderColor: "#2d7dd2",
         borderRadius: 10,
         minWidth: minWidth,
+        margin: margin,
         ...props,
       }}
       onPress={handlePress}
