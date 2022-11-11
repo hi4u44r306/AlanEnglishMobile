@@ -33,10 +33,6 @@ const Login = () => {
                     borderRadius:10,
                 }}
                 >
-                <KeyboardAvoidingView 
-                    behavior="padding" 
-                    // style={styles.container}
-                >
                     <View style={{
                         width: "100%",
                         alignItems: "center",
@@ -87,7 +83,6 @@ const Login = () => {
                             // onChangeText={onSearch}
                         />
                     </View>
-                </KeyboardAvoidingView>
                     <LoginButton
                         margin={20}
                         minWidth={120}
