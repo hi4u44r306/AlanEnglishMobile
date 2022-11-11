@@ -13,10 +13,10 @@ const Login = () => {
     <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <FocusedStatusBar backgroundColor={COLORS.primary} />
 
-        <KeyboardAvoidingViewBase 
+        {/* <KeyboardAvoidingViewBase 
             behavior="padding" 
             // style={styles.container}
-        >
+        > */}
             <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
                 <Blackboard/>
                 <Brand/>
@@ -95,7 +95,7 @@ const Login = () => {
                     <Copyright/>
                 </View>
             </View>
-        </KeyboardAvoidingViewBase>
+        {/* </KeyboardAvoidingViewBase> */}
     </SafeAreaView>
   )
 }
