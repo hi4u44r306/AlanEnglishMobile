@@ -43,9 +43,11 @@ const Login = () => {
                     <TextInput
                         placeholder="Email..."
                         style={{ 
+                            fontFamily: "Varela Round",
+                            padding:0,
                             outline:"none",
                             flex: 1,
-                            fontSize:"15px",
+                            fontSize:"20px",
                             textAlign: 'center',
                             justifyContent: 'center',
                             color: COLORS.primary, 
@@ -55,8 +57,7 @@ const Login = () => {
                             borderTopRightRadius: 5,
                             borderBottomRightRadius: 5,
                             borderBottomLeftRadius: 5,
-                            width: 100,
-                            height:50,
+                            width: "80%",
                             }}
                     />
                 </View>
@@ -71,9 +72,11 @@ const Login = () => {
                     <TextInput
                         placeholder="Password..."
                         style={{ 
+                            padding:0,
+                            fontFamily: "Varela Round",
                             outline:"none",
                             flex: 1,
-                            fontSize:"15px",
+                            fontSize:"20px",
                             textAlign: 'center',
                             justifyContent: 'center',
                             color: COLORS.primary, 
@@ -83,15 +86,14 @@ const Login = () => {
                             borderTopRightRadius: 5,
                             borderBottomRightRadius: 5,
                             borderBottomLeftRadius: 5,
-                            width: 100,
-                            height:50,
+                            width: "80%",
                         }}
                         // onChangeText={onSearch}
                     />
                 </View>
                 <LoginButton
                     minWidth={120}
-                    fontSize={SIZES.font}
+                    fontSize={SIZES.extraLarge}
                     handlePress={() => navigation.navigate("Home")}
                 />
                 <Copyright/>

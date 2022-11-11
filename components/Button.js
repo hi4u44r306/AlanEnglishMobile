@@ -58,9 +58,11 @@ export const LoginButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.white,
         padding: SIZES.small,
-        borderRadius: SIZES.extraLarge,
+        borderWidth: 3.5,
+        borderColor: "#2d7dd2",
+        borderRadius: 10,
         minWidth: minWidth,
         ...props,
       }}
@@ -68,13 +70,14 @@ export const LoginButton = ({ minWidth, fontSize, handlePress, ...props }) => {
     >
       <Text
         style={{
-          fontFamily: FONTS.semiBold,
+          fontFamily: "Varela Round",
           fontSize: fontSize,
-          color: COLORS.white,
+          fontWeight: 900,
+          color: COLORS.primary,
           textAlign: "center",
         }}
       >
-        Login
+        登 入
       </Text>
     </TouchableOpacity>
   );
