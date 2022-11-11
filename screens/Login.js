@@ -2,11 +2,9 @@
 // import { View, SafeAreaView, FlatList } from "react-native";
 import React from 'react'
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, Text, View, TextInput } from "react-native";
+import { SafeAreaView, Text, View, TextInput, KeyboardAvoidingViewBase } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, assets, FONTS } from "../constants";
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { KeyboardAvoidingView } from 'react-native-web';
 
 
 const Login = () => {
@@ -15,7 +13,7 @@ const Login = () => {
     <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <FocusedStatusBar backgroundColor={COLORS.primary} />
 
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingViewBase 
             behavior="padding" 
             // style={styles.container}
         >
@@ -97,7 +95,7 @@ const Login = () => {
                     <Copyright/>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingViewBase>
     </SafeAreaView>
   )
 }
