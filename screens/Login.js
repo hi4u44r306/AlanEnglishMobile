@@ -13,15 +13,8 @@ const Login = () => {
     <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <FocusedStatusBar backgroundColor={COLORS.primary} />
 
-        {/* <KeyboardAvoidingViewBase 
-            behavior="padding" 
-            // style={styles.container}
-        > */}
             <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
-            <KeyboardAvoidingView 
-            behavior="padding" 
-            style={styles.container}
-            >
+            
                 <Blackboard/>
                 <Brand/>
                 <SubBrand/>
@@ -39,6 +32,10 @@ const Login = () => {
                     borderWidth: 10,
                     borderRadius:10,
                 }}
+                >
+                <KeyboardAvoidingView 
+                    behavior="padding" 
+                    // style={styles.container}
                 >
                     <View style={{
                         width: "100%",
@@ -90,6 +87,7 @@ const Login = () => {
                             // onChangeText={onSearch}
                         />
                     </View>
+                </KeyboardAvoidingView>
                     <LoginButton
                         margin={20}
                         minWidth={120}
@@ -98,7 +96,6 @@ const Login = () => {
                     />
                     <Copyright/>
                 </View>
-            </KeyboardAvoidingView>
             </View>
 
     </SafeAreaView>
