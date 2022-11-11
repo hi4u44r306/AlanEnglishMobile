@@ -42,7 +42,6 @@ const Login = () => {
                     fontWeight:900,}}>帳號</Text>
                     <TextInput
                         placeholder="Email..."
-                        height="50px"
                         style={{ 
                             outline:"none",
                             flex: 1,
@@ -56,10 +55,9 @@ const Login = () => {
                             borderTopRightRadius: 5,
                             borderBottomRightRadius: 5,
                             borderBottomLeftRadius: 5,
-                            width: "80%",
+                            width: 100,
                             height:50,
                             }}
-                        // onChangeText={onSearch}
                     />
                 </View>
                 <View style={{
@@ -85,7 +83,7 @@ const Login = () => {
                             borderTopRightRadius: 5,
                             borderBottomRightRadius: 5,
                             borderBottomLeftRadius: 5,
-                            width: "80%",
+                            width: 100,
                             height:50,
                         }}
                         // onChangeText={onSearch}
