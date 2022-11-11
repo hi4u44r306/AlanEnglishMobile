@@ -49,7 +49,7 @@ const Login = () => {
                             borderColor: COLORS.inputfieldgreen,
                             borderWidth: 3.5,
                             borderRadius:5,
-                            padding:5,
+                            padding:SIZES.small,
                             margin:10,
                             width: "80%",
                             }}
@@ -74,7 +74,7 @@ const Login = () => {
                             borderColor: COLORS.inputfieldgreen,
                             borderWidth: 3.5,
                             borderRadius: 5,
-                            padding:5,
+                            padding:SIZES.small,
                             margin:10,
                             width: "80%",
                         }}

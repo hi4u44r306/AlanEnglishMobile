@@ -6,10 +6,10 @@ export const Brand = () => {
     <View style={{
         flexDirection:"row",
         padding:10,
-        gap:"3px",               
       }}>
         <Text 
           style={{
+          margin:2,
           color:"red",
           fontSize: "30px",
           fontWeight:"900",
@@ -18,6 +18,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>A</Text>
         <Text style={{
+          margin:2,
           color:"#f45d01",
           fontSize: "30px",
           fontWeight:"900",
@@ -26,6 +27,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>L</Text>
         <Text style={{
+          margin:2,
           color:"#eeb902",
           fontSize: "30px",
           fontWeight:"900",
@@ -34,6 +36,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>A</Text>
         <Text style={{
+          margin:2,
           color:"#04cc0b",
           fontSize: "30px",
           fontWeight:"900",
@@ -43,6 +46,7 @@ export const Brand = () => {
           fontFamily: "Varela Round",}}>N</Text>
         <Text>  </Text>
         <Text style={{
+          margin:2,
           color:"#2d7dd2",
           fontSize: "30px",
           fontWeight:"900",
@@ -51,6 +55,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>E</Text>
         <Text style={{
+          margin:2,
           color:"#4062bb",
           fontSize: "30px",
           fontWeight:"900",
@@ -59,6 +64,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>N</Text>
         <Text style={{
+          margin:2,
           color:"#52489c",
           fontSize: "30px",
           fontWeight:"900",
@@ -67,6 +73,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>G</Text>
         <Text style={{
+          margin:2,
           color:"red",
           fontSize: "30px",
           fontWeight:"900",
@@ -75,6 +82,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>L</Text>
         <Text style={{
+          margin:2,
           color:"#f45d01",
           fontSize: "30px",
           fontWeight:"900",
@@ -83,6 +91,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>I</Text>
         <Text style={{
+          margin:2,
           color:"#eeb902",
           fontSize: "30px",
           fontWeight:"900",
@@ -91,6 +100,7 @@ export const Brand = () => {
           textShadowRadius: 0,
           fontFamily: "Varela Round",}}>S</Text>
         <Text style={{
+          margin:2,
           color:"#4062bb",
           fontSize: "30px",
           fontWeight:"900",
