@@ -35,9 +35,8 @@ const Login = () => {
             >
                 <View style={{
                     width: "100%",
-                    // flexDirection:"column",
                     alignItems: "center",
-                    gap:"20px",
+                    gap:20,
                 }}>
                     <Text style={{fontSize: SIZES.extraLarge,fontFamily: "Varela Round",
                     fontWeight:900,}}>帳號</Text>
@@ -58,7 +57,7 @@ const Login = () => {
                             borderBottomRightRadius: 5,
                             borderBottomLeftRadius: 5,
                             width: "80%",
-                            height:"50px",
+                            height:50,
                             }}
                         // onChangeText={onSearch}
                     />
@@ -87,6 +86,7 @@ const Login = () => {
                             borderBottomRightRadius: 5,
                             borderBottomLeftRadius: 5,
                             width: "80%",
+                            height:50,
                         }}
                         // onChangeText={onSearch}
                     />
