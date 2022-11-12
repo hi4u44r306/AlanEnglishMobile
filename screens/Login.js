@@ -9,7 +9,8 @@ import { COLORS, SIZES, assets, FONTS } from "../constants";
 
 const Login = () => {
     const navigation = useNavigation();
- 
+    const [email, onChangeEmail] = React.useState("");
+    const [password, onChangePassword] = React.useState("");
   return (
     <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <FocusedStatusBar backgroundColor={COLORS.primary} />
@@ -41,7 +42,8 @@ const Login = () => {
                         <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>帳號</Text>
                         <TextInput
                             placeholder="Email..."
-                            value={text}
+                            value={email}
+                            onChangeText={onChangeEmail}
                             style={{ 
                                 fontFamily: FONTS.semiBold,
                                 outline:"none",
@@ -68,7 +70,8 @@ const Login = () => {
                         <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>密碼</Text>
                         <TextInput
                             placeholder="Password..."
-                            value={text}
+                            value={password}
+                            onChangeText={onChangePassword}
                             style={{ 
                                 fontFamily: FONTS.semiBold,
                                 outline:"none",
