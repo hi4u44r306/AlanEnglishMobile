@@ -18,7 +18,7 @@ const Login = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
-        <FocusedStatusBar backgroundColor={COLORS.primary} />
+        <FocusedStatusBar backgroundColor="black" />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
                 
