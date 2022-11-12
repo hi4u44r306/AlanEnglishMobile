@@ -20,7 +20,7 @@ const Login = () => {
                 <SubBrand/>
                 <View
                 style={{
-                    fontFamily: FONTS.VarelaRound,
+                    fontFamily: "Varela Round",
                     width: "90%",
                     borderRadius: SIZES.font,
                     flexDirection: "column",
@@ -41,13 +41,13 @@ const Login = () => {
                         <TextInput
                             placeholder="Email..."
                             style={{ 
-                                fontFamily: FONTS.VarelaRound,
+                                fontFamily: "Varela Round",
                                 outline:"none",
                                 flex: 1,
                                 fontSize:20,
                                 textAlign: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: COLORS.white,
+                                backgroundColor: "#bbdef0",
                                 color: COLORS.primary, 
                                 borderColor: COLORS.inputfieldgreen,
                                 borderWidth: 3.5,
@@ -67,13 +67,13 @@ const Login = () => {
                         <TextInput
                             placeholder="Password..."
                             style={{ 
-                                fontFamily: FONTS.VarelaRound,
+                                fontFamily: "Varela Round",
                                 outline:"none",
                                 flex: 1,
                                 fontSize:20,
                                 textAlign: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: COLORS.white,
+                                backgroundColor: "#bbdef0",
                                 color: COLORS.primary, 
                                 borderColor: COLORS.inputfieldgreen,
                                 borderWidth: 3.5,
