@@ -41,6 +41,7 @@ const Login = () => {
                         <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>帳號</Text>
                         <TextInput
                             placeholder="Email..."
+                            value={text}
                             style={{ 
                                 fontFamily: FONTS.semiBold,
                                 outline:"none",
@@ -67,6 +68,7 @@ const Login = () => {
                         <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>密碼</Text>
                         <TextInput
                             placeholder="Password..."
+                            value={text}
                             style={{ 
                                 fontFamily: FONTS.semiBold,
                                 outline:"none",
