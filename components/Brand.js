@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import { FONTS } from '../constants'
 
 export const Brand = () => {
   return (
@@ -16,7 +17,7 @@ export const Brand = () => {
           textShadowColor: "red",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>A</Text>
+          fontFamily: FONTS.bold,}}>A</Text>
         <Text style={{
           margin:2,
           color:"#f45d01",
@@ -25,7 +26,7 @@ export const Brand = () => {
           textShadowColor: "#f45d01",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>L</Text>
+          fontFamily: FONTS.bold,}}>L</Text>
         <Text style={{
           margin:2,
           color:"#eeb902",
@@ -34,7 +35,7 @@ export const Brand = () => {
           textShadowColor: "#eeb902",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>A</Text>
+          fontFamily: FONTS.bold,}}>A</Text>
         <Text style={{
           margin:2,
           color:"#04cc0b",
@@ -43,7 +44,7 @@ export const Brand = () => {
           textShadowColor: "#04cc0b",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>N</Text>
+          fontFamily: FONTS.bold,}}>N</Text>
         <Text>  </Text>
         <Text style={{
           margin:2,
@@ -53,7 +54,7 @@ export const Brand = () => {
           textShadowColor: "#2d7dd2",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>E</Text>
+          fontFamily: FONTS.bold,}}>E</Text>
         <Text style={{
           margin:2,
           color:"#4062bb",
@@ -62,7 +63,7 @@ export const Brand = () => {
           textShadowColor: "#4062bb",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>N</Text>
+          fontFamily: FONTS.bold,}}>N</Text>
         <Text style={{
           margin:2,
           color:"#52489c",
@@ -71,7 +72,7 @@ export const Brand = () => {
           textShadowColor: "#52489c",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>G</Text>
+          fontFamily: FONTS.bold,}}>G</Text>
         <Text style={{
           margin:2,
           color:"red",
@@ -80,7 +81,7 @@ export const Brand = () => {
           textShadowColor: "red",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>L</Text>
+          fontFamily: FONTS.bold,}}>L</Text>
         <Text style={{
           margin:2,
           color:"#f45d01",
@@ -89,7 +90,7 @@ export const Brand = () => {
           textShadowColor: "#f45d01",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>I</Text>
+          fontFamily: FONTS.bold,}}>I</Text>
         <Text style={{
           margin:2,
           color:"#eeb902",
@@ -98,7 +99,7 @@ export const Brand = () => {
           textShadowColor: "#eeb902",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>S</Text>
+          fontFamily: FONTS.bold,}}>S</Text>
         <Text style={{
           margin:2,
           color:"#4062bb",
@@ -107,7 +108,7 @@ export const Brand = () => {
           textShadowColor: "#4062bb",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: "Varela Round",}}>H</Text>
+          fontFamily: FONTS.bold,}}>H</Text>
       </View>
 
   )

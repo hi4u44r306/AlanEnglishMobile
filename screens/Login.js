@@ -9,6 +9,7 @@ import { COLORS, SIZES, assets, FONTS } from "../constants";
 
 const Login = () => {
     const navigation = useNavigation();
+ 
   return (
     <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <FocusedStatusBar backgroundColor={COLORS.primary} />
@@ -20,7 +21,7 @@ const Login = () => {
                 <SubBrand/>
                 <View
                 style={{
-                    fontFamily: "Varela Round",
+                    fontFamily: FONTS.bold,
                     width: "90%",
                     borderRadius: SIZES.font,
                     flexDirection: "column",
@@ -41,7 +42,7 @@ const Login = () => {
                         <TextInput
                             placeholder="Email..."
                             style={{ 
-                                fontFamily: "Varela Round",
+                                fontFamily: FONTS.semiBold,
                                 outline:"none",
                                 flex: 1,
                                 fontSize:20,
@@ -67,7 +68,7 @@ const Login = () => {
                         <TextInput
                             placeholder="Password..."
                             style={{ 
-                                fontFamily: "Varela Round",
+                                fontFamily: FONTS.semiBold,
                                 outline:"none",
                                 flex: 1,
                                 fontSize:20,
