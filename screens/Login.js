@@ -2,7 +2,7 @@
 // import { View, SafeAreaView, FlatList } from "react-native";
 import React from 'react'
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, Text, View, TextInput, KeyboardAvoidingView } from "react-native";
+import { SafeAreaView, Text, View, TextInput, StyleSheet } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, assets, FONTS } from "../constants";
 
@@ -11,9 +11,11 @@ const Login = () => {
     const navigation = useNavigation();
     const [email, onChangeEmail] = React.useState("");
     const [password, onChangePassword] = React.useState("");
-  return (
-    <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
+
+    return (
+        <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <FocusedStatusBar backgroundColor={COLORS.primary} />
+        
 
             <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
             
@@ -35,62 +37,22 @@ const Login = () => {
                     borderRadius:10,
                 }}
                 >
-                    <View style={{
-                        width: "100%",
-                        alignItems: "center",
-                    }}>
-                        <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>帳號</Text>
-                        <TextInput
-                            placeholder="Email..."
-                            value={email}
-                            onChangeText={onChangeEmail}
-                            style={{ 
-                                fontFamily: FONTS.semiBold,
-                                outline:"none",
-                                flex: 1,
-                                fontSize:20,
-                                textAlign: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: "#bbdef0",
-                                color: COLORS.primary, 
-                                borderColor: COLORS.inputfieldgreen,
-                                borderWidth: 3.5,
-                                borderRadius:5,
-                                padding:SIZES.font,
-                                margin:10,
-                                width: "80%",
-                                }}
-                        />
-                    </View>
-                    <View style={{
-                        width: "100%",
-                        flexDirection:"column",
-                        alignItems: "center",
-                    }}>
-                        <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>密碼</Text>
-                        <TextInput
-                            placeholder="Password..."
-                            value={password}
-                            onChangeText={onChangePassword}
-                            style={{ 
-                                fontFamily: FONTS.semiBold,
-                                outline:"none",
-                                flex: 1,
-                                fontSize:20,
-                                textAlign: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: "#bbdef0",
-                                color: COLORS.primary, 
-                                borderColor: COLORS.inputfieldgreen,
-                                borderWidth: 3.5,
-                                borderRadius: 5,
-                                padding:SIZES.font,
-                                margin:10,
-                                width: "80%",
-                            }}
-                            // onChangeText={onSearch}
-                        />
-                    </View>
+                    
+                <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>帳號</Text>
+                <TextInput
+                    placeholder="Email..."
+                    value={email}
+                    onChangeText={onChangeEmail}
+                    style={styles.input}
+                />
+            
+                <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>密碼</Text>
+                <TextInput
+                    placeholder="Password..."
+                    value={password}
+                    onChangeText={onChangePassword}
+                    style={styles.input}
+                />
                     <LoginButton
                         margin={20}
                         minWidth={120}
@@ -104,5 +66,27 @@ const Login = () => {
     </SafeAreaView>
   )
 }
+const styles = StyleSheet.create({
+    input: {
+        // fontFamily: FONTS.semiBold,
+        // outline:"none",
+        // flex: 1,
+        // fontSize:20,
+        // textAlign: 'center',
+        // justifyContent: 'center',
+        // backgroundColor: "#bbdef0",
+        // color: COLORS.primary, 
+        // borderColor: COLORS.inputfieldgreen,
+        // borderWidth: 3.5,
+        // borderRadius:5,
+        // padding:SIZES.font,
+        // margin:10,
+        // width: "80%",
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+    },
+});
 
 export default Login
