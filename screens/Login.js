@@ -18,8 +18,8 @@ const Login = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
+        <FocusedStatusBar backgroundColor={COLORS.primary} />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            {/* <FocusedStatusBar backgroundColor={COLORS.primary} /> */}
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
                 
                     <Blackboard/>
@@ -72,7 +72,8 @@ const Login = () => {
 }
 const styles = StyleSheet.create({
     container:{
-        flex:1
+        flex:1,
+        paddingTop: 40,
     },
     input: {
         fontFamily: FONTS.semiBold,
