@@ -1,5 +1,5 @@
-import * as firebase from "firebase/app";
-import { initializeApp } from "firebase/app";
+// import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/storage';
 
@@ -12,7 +12,7 @@ const firebaseConfig = {
   messagingSenderId: "1045346213843",
   appId: "1:1045346213843:web:b2a25425a24e9bc9331926",
   measurementId: "G-7MW8Y5XPH0"
-};
+  };
 
 const fire = firebase.initializeApp(firebaseConfig);
 

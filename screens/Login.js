@@ -5,26 +5,70 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView, Text, View, TextInput, StyleSheet,Keyboard,KeyboardAvoidingView, TouchableWithoutFeedback,Platform} from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, assets, FONTS } from "../constants";
-
+import firebase from "./firebase";
+import ToastManager, { Toast } from 'toastify-react-native'
 
 const Login = () => {
     const navigation = useNavigation();
     const [email, onChangeEmail] = React.useState("");
     const [password, onChangePassword] = React.useState("");
 
+
+    const success = () =>  {
+        Toast.success('😻Welcome😻',{
+            className:"notification",
+            position: "top-center",
+            autoClose: 500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            setTimeout(()=>{navigation.navigate("Home")} ,500); 
+            
+        };
+
+    const error = () =>  {
+        Toast.error('🙀帳號密碼錯誤🙀',{
+            className:"notification",
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        };
+    const expire = () =>  {
+        Toast.error('此帳號已註銷',{
+            className:"notification",
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        };
     const login = (email, password) =>{
         firebase.auth().signInWithEmailAndPassword(email,password)
         .then((userCredential)=>{
             // 檢查次帳號試用期是否已到 //
             firebase.firestore().collection('student').doc(userCredential.user.uid).get().then((doc)=>{
                 if(doc.data().accountcreatetime === calculateaccountexpiretime){
-                    this.expire();
+                    expire();
                 }else{
-                    this.success();
+                    success();
                 }
             })
         }).catch(()=>{
-            this.error();
+            error();
         })
     }
 
@@ -56,12 +100,12 @@ const Login = () => {
                         borderRadius:10,
                     }}
                     >
-                        
+                    <ToastManager />    
                     <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>帳號</Text>
                     <TextInput
                         placeholder="Email..."
                         value={email}
-                        onChangeText={onChangeEmail}
+                        onChangeText={onChangeEmail(email)}
                         style={styles.input}
                     />
                 
@@ -69,7 +113,7 @@ const Login = () => {
                     <TextInput
                         placeholder="Password..."
                         value={password}
-                        onChangeText={onChangePassword}
+                        onChangeText={onChangePassword(password)}
                         style={styles.input}
                         secureTextEntry={true}
                     />
@@ -77,7 +121,7 @@ const Login = () => {
                             margin={20}
                             minWidth={120}
                             fontSize={SIZES.extraLarge}
-                            handlePress={login}
+                            handlePress={login(email,password)}
                         />
                         <Copyright/>
                     </View>

@@ -28,7 +28,7 @@ const App = () => {
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName="Login">
-        <Stack.Screen name="Login" exact component={Login}/>
+        <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="Home" component={Home}/>
         <Stack.Screen name="Details" component={Details}/>
       </Stack.Navigator>
