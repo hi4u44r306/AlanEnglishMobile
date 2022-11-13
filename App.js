@@ -22,12 +22,13 @@ const App = () => {
     InterMedium: require("./assets/fonts/Inter-Medium.ttf"),
     InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
     InterLight: require("./assets/fonts/Inter-Light.ttf"),
+    VarelaRound: require("./assets/fonts/VarelaRound-Regular.ttf"),
   })
   if (!loaded) return null;
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName="Login">
-        <Stack.Screen name="Login" component={Login}/>
+        <Stack.Screen name="Login" exact component={Login}/>
         <Stack.Screen name="Home" component={Home}/>
         <Stack.Screen name="Details" component={Details}/>
       </Stack.Navigator>

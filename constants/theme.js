@@ -23,6 +23,7 @@ export const FONTS = {
   medium: "InterMedium",
   regular: "InterRegular",
   light: "InterLight",
+  VarelaRound: "VarelaRound",
 };
 
 export const SHADOWS = {

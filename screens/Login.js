@@ -12,6 +12,22 @@ const Login = () => {
     const [email, onChangeEmail] = React.useState("");
     const [password, onChangePassword] = React.useState("");
 
+    const login = (email, password) =>{
+        firebase.auth().signInWithEmailAndPassword(email,password)
+        .then((userCredential)=>{
+            // 檢查次帳號試用期是否已到 //
+            firebase.firestore().collection('student').doc(userCredential.user.uid).get().then((doc)=>{
+                if(doc.data().accountcreatetime === calculateaccountexpiretime){
+                    this.expire();
+                }else{
+                    this.success();
+                }
+            })
+        }).catch(()=>{
+            this.error();
+        })
+    }
+
     return (
         // <SafeAreaView style={{backgroundColor:COLORS.ricewhite, width:"100%", height:"100%", }}>
         <KeyboardAvoidingView
@@ -27,7 +43,7 @@ const Login = () => {
                     <SubBrand/>
                     <View
                     style={{
-                        fontFamily: FONTS.bold,
+                        fontFamily: FONTS.VarelaRound,
                         width: "90%",
                         borderRadius: SIZES.font,
                         flexDirection: "column",
@@ -55,12 +71,13 @@ const Login = () => {
                         value={password}
                         onChangeText={onChangePassword}
                         style={styles.input}
+                        secureTextEntry={true}
                     />
                         <LoginButton
                             margin={20}
                             minWidth={120}
                             fontSize={SIZES.extraLarge}
-                            handlePress={() => navigation.navigate("Home")}
+                            handlePress={login}
                         />
                         <Copyright/>
                     </View>
@@ -76,8 +93,8 @@ const styles = StyleSheet.create({
         paddingTop: 40,
     },
     input: {
-        fontFamily: FONTS.semiBold,
-        outline:"none",
+        fontFamily: FONTS.VarelaRound,
+        fontWeight:"900",
         fontSize:18,
         textAlign: 'center',
         justifyContent: 'center',

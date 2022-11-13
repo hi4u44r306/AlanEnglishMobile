@@ -12,103 +12,103 @@ export const Brand = () => {
           style={{
           margin:2,
           color:"red",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "red",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>A</Text>
+          fontFamily: FONTS.VarelaRound,}}>A</Text>
         <Text style={{
           margin:2,
           color:"#f45d01",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#f45d01",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>L</Text>
+          fontFamily: FONTS.VarelaRound,}}>L</Text>
         <Text style={{
           margin:2,
           color:"#eeb902",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#eeb902",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>A</Text>
+          fontFamily: FONTS.VarelaRound,}}>A</Text>
         <Text style={{
           margin:2,
           color:"#04cc0b",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#04cc0b",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>N</Text>
+          fontFamily: FONTS.VarelaRound,}}>N</Text>
         <Text>  </Text>
         <Text style={{
           margin:2,
           color:"#2d7dd2",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#2d7dd2",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>E</Text>
+          fontFamily: FONTS.VarelaRound,}}>E</Text>
         <Text style={{
           margin:2,
           color:"#4062bb",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#4062bb",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>N</Text>
+          fontFamily: FONTS.VarelaRound,}}>N</Text>
         <Text style={{
           margin:2,
           color:"#52489c",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#52489c",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>G</Text>
+          fontFamily: FONTS.VarelaRound,}}>G</Text>
         <Text style={{
           margin:2,
           color:"red",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "red",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>L</Text>
+          fontFamily: FONTS.VarelaRound,}}>L</Text>
         <Text style={{
           margin:2,
           color:"#f45d01",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#f45d01",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>I</Text>
+          fontFamily: FONTS.VarelaRound,}}>I</Text>
         <Text style={{
           margin:2,
           color:"#eeb902",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#eeb902",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>S</Text>
+          fontFamily: FONTS.VarelaRound,}}>S</Text>
         <Text style={{
           margin:2,
           color:"#4062bb",
-          fontSize: "30px",
+          fontSize: "35px",
           fontWeight:"900",
           textShadowColor: "#4062bb",
           textShadowOffset: {width: 1, height: 0},
           textShadowRadius: 0,
-          fontFamily: FONTS.bold,}}>H</Text>
+          fontFamily: FONTS.VarelaRound,}}>H</Text>
       </View>
 
   )
