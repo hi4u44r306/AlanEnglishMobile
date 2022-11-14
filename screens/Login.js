@@ -113,6 +113,7 @@ const Login = () => {
                     >
                     <Toast
                         position='top'
+                        zIndex='20'
                         topOffset={20}
                         config={toastConfig}
                     />
