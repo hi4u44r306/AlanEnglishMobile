@@ -71,7 +71,7 @@ export const LoginButton = ({ minWidth, fontSize, handlePress, margin, ...props 
     >
       <Text
         style={{
-          fontFamily: "Varela Round",
+          fontFamily: FONTS.VarelaRound,
           fontSize: fontSize,
           fontWeight: 900,
           color: COLORS.primary,

@@ -34,11 +34,11 @@ const Home = () => {
         />
         <View style={{ zIndex: 0 }}>
           <FlatList
+            ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}
             data={nftData}
             renderItem={({ item }) => <NFTCard data={item} />}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}
           />
         </View>
       </View>
