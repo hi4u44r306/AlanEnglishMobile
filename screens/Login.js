@@ -6,31 +6,32 @@ import { SafeAreaView, Text, View, TextInput, StyleSheet,Keyboard,KeyboardAvoidi
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, assets, FONTS } from "../constants";
 import firebase from "./firebase";
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
+
+
 
 const toastConfig = {
     successToast: ({ text1, text2 }) => (
       <View style={{ 
         height: 100, 
         width: '80%', 
-        backgroundColor: '#2e9421',
+        backgroundColor: '#2d7dd2',
         borderRadius: '20px',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth:'7px',
+        borderWidth:'5px',
         borderColor:'#ffbf3f',
-        zIndex: 1000,
         }}>
         <Text style={{
             color:'white',
-            fontWeight: 600,
-            fontSize:'20px',
+            fontWeight: 900,
+            fontSize:'25px',
             fontFamily:FONTS.VarelaRound,
         }}>{text1}</Text>
         <Text style={{
             color:'white',
-            fontWeight: 500,
-            fontSize:'20px',
+            fontWeight: 900,
+            fontSize:'23px',
             fontFamily:FONTS.VarelaRound,
         }}>{text2}</Text>
       </View>
@@ -59,7 +60,7 @@ const Login = () => {
             Toast.show({
                 visibilityTime:1000,
                 type: 'successToast',
-                text1: 'Welcome 👋',
+                text1: 'Welcome',
                 text2: `${email}`,
             });
           }
@@ -90,6 +91,13 @@ const Login = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
+        <View style={{zIndex:'100000000000000'}}>
+            <Toast
+                position='center'
+                topOffset={50}
+                config={toastConfig}
+            />
+        </View>
         <FocusedStatusBar backgroundColor="black" />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
@@ -112,12 +120,7 @@ const Login = () => {
                             borderRadius:10,
                         }}
                     >
-                    <Toast
-                        position='top'
-                        zIndex='20'
-                        topOffset={20}
-                        config={toastConfig}
-                    />
+                   
                         <Text style={{fontSize: SIZES.extraLarge,fontWeight:900,margin:10}}>帳號</Text>
                         <TextInput
                             placeholder="Email..."
