@@ -19,6 +19,7 @@ const toastConfig = {
         alignItems: 'center',
         borderWidth:'7px',
         borderColor:'#ffbf3f',
+        zIndex: 1000,
         }}>
         <Text style={{
             color:'white',

@@ -7,13 +7,13 @@ const SubBrand = () => {
     <View>
       <Text style=
       {{
-        fontSize: '18px',
+        fontSize: '20px',
         fontFamily: FONTS.VarelaRound,
         fontWeight:900,
         color: COLORS.inputfieldgreen,
         padding:10,
       }}>
-      系統化 | 口語化 | 聽力導向 
+      系統化  |  口語化  |  聽力導向 
       </Text>
     </View>
   )
