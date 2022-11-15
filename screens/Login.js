@@ -2,7 +2,7 @@
 // import { View, SafeAreaView, FlatList } from "react-native";
 import React,{useState} from 'react'
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, Text, View, TextInput, StyleSheet,Keyboard,KeyboardAvoidingView, TouchableWithoutFeedback,Platform} from "react-native";
+import { SafeAreaView, Text, Image, View, TextInput, StyleSheet,Keyboard,KeyboardAvoidingView, TouchableWithoutFeedback,Platform} from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, assets, FONTS } from "../constants";
 import firebase from "./firebase";
@@ -13,9 +13,59 @@ import Toast from 'react-native-toast-message';
 const toastConfig = {
     successToast: ({ text1, text2 }) => (
       <View style={{ 
-        height: 100, 
+        height: 80, 
         width: '80%', 
-        backgroundColor: '#2d7dd2',
+        backgroundColor: '#ffffff',
+        // backgroundColor: '#31afd4',
+        borderRadius: '20px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth:'5px',
+        borderColor:'#ffbf3f',
+        }}>
+        <Text style={{
+            color:'red',
+            fontWeight: 700,
+            fontSize:'20px',
+            fontFamily:FONTS.VarelaRound,
+        }}>
+        <Image
+            source={assets.badge}
+            resizeMode="contain"
+            style={{
+            position: "absolute",
+            width: 25,
+            height: 25,
+            top: '30%',
+            left: 10,
+            }}
+        />
+        {text1}
+        <Image
+            source={assets.badge}
+            resizeMode="contain"
+            style={{
+            position: "absolute",
+            width: 25,
+            height: 25,
+            top: '30%',
+            right: 10,
+            }}
+        />
+        </Text>
+        <Text style={{
+            color:'black',
+            fontWeight: 900,
+            fontSize:'23px',
+            fontFamily:FONTS.VarelaRound,
+        }}>{text2}</Text>
+      </View>
+    ),
+    errorToast: ({ text1 }) => (
+      <View style={{ 
+        height: 100, 
+        width: '90%', 
+        backgroundColor: '#fe5f55',
         borderRadius: '20px',
         justifyContent: 'center',
         alignItems: 'center',
@@ -24,16 +74,34 @@ const toastConfig = {
         }}>
         <Text style={{
             color:'white',
-            fontWeight: 900,
-            fontSize:'25px',
+            fontWeight: 700,
+            fontSize:'20px',
             fontFamily:FONTS.VarelaRound,
-        }}>{text1}</Text>
-        <Text style={{
-            color:'white',
-            fontWeight: 900,
-            fontSize:'23px',
-            fontFamily:FONTS.VarelaRound,
-        }}>{text2}</Text>
+        }}>
+        <Image
+            source={assets.badge}
+            resizeMode="contain"
+            style={{
+            position: "absolute",
+            width: 25,
+            height: 25,
+            top: '30%',
+            left: 10,
+            }}
+        />
+        {text1}
+        <Image
+            source={assets.badge}
+            resizeMode="contain"
+            style={{
+            position: "absolute",
+            width: 25,
+            height: 25,
+            top: '30%',
+            right: 10,
+            }}
+        />
+        </Text>
       </View>
     )
   };
@@ -43,19 +111,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-
     const login = () =>{
-        // success();
-        // function subtractDays(numOfDays, date = new Date()) {
-        //     const dateCopy = new Date(date.getTime());
-        //     dateCopy.setDate(dateCopy.getDate() - numOfDays);
-        //     return dateCopy;
-        // }
-        
-        // const date = new Date('2022-11-07');
-        // const result = subtractDays(7, date);
-        // const calculateaccountexpiretime = result.toJSON().slice(0,10)
-
         const success = () => {
             Toast.show({
                 visibilityTime:1000,
@@ -64,24 +120,20 @@ const Login = () => {
                 text2: `${email}`,
             });
           }
+        const error = () => {
+            Toast.show({
+                visibilityTime:1000,
+                type: 'errorToast',
+                text1: 'Email or Password is incorrect',
+            });
+          }
 
         firebase.auth().signInWithEmailAndPassword(email,password)
         .then(()=>{
-            //檢查次帳號試用期是否已到 //
-            // firebase.firestore().collection('student').doc(userCredential.user.uid).get().then((doc)=>{
-            //     if(doc.data().accountcreatetime === calculateaccountexpiretime){
-            //         // expire();
-            //         alert('expire')
-            //     }else{
-            //         // success();
-            //         setTimeout(()=>{navigation.navigate("Home")} ,1000);
-            //     }
-            // })
             success();
-            setTimeout(function(){navigation.navigate("Home")},1000) 
+            // setTimeout(function(){navigation.navigate("Home")},1000) 
         }).catch(()=>{
-            // error();
-            alert('error')
+            error();
         })
     }
 
@@ -116,7 +168,7 @@ const Login = () => {
                             paddingHorizontal: SIZES.font,
                             paddingVertical: SIZES.small - 2,
                             borderColor: "#ffbf3f",
-                            borderWidth: 10,
+                            borderWidth: 5,
                             borderRadius:10,
                         }}
                     >

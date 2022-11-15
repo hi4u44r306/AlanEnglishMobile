@@ -7,7 +7,7 @@ const Blackboard = () => {
     <View style={{
         backgroundColor:"#2e9421",
         borderColor: "#ffbf3f",
-        borderWidth: 10,
+        borderWidth: 5,
         borderRadius:10,
         width: "90%",
         padding: 10,
