@@ -62,11 +62,12 @@ const HomeHeader = ({ onSearch }) => {
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
+          alignContent:'center',
           alignItems: "center",
         }}
       >
-        <Brand/>
-        <View style={{ width: "fit-content", height: 45 }}>
+        <Brand fontSize={18} margin={1}/>
+        <View style={{ width: "fit-content", height: 45, justifyContent:'center' }}>
           <Text
             style={{
               fontFamily: FONTS.bold,

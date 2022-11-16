@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, Text, Image } from "react-native";
 
 import { COLORS, SIZES, FONTS, SHADOWS } from "../constants";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
   return (
@@ -83,6 +84,7 @@ export const LoginButton = ({ minWidth, fontSize, handlePress, margin, ...props 
     </TouchableOpacity>
   );
 };
+
 export const LogoutButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
@@ -108,3 +110,116 @@ export const LogoutButton = ({ minWidth, fontSize, handlePress, ...props }) => {
     </TouchableOpacity>
   );
 };
+
+export const HomeButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        alignItems:'center',
+        backgroundColor: COLORS.white,
+        padding: SIZES.small,
+        borderRadius: SIZES.extraLarge,
+        minWidth: minWidth,
+        ...props,
+      }}
+      onPress={handlePress}
+    >
+    <Ionicons name="home" size={25} color="green" />
+      <Text
+        style={{
+          fontFamily: FONTS.semiBold,
+          fontSize: fontSize,
+          color: COLORS.primary,
+          textAlign: "center",
+        }}
+      >
+        Home
+      </Text>
+    </TouchableOpacity>
+  );
+};
+export const LeaderBoardButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        alignItems:'center',
+        backgroundColor: COLORS.white,
+        padding: SIZES.small,
+        borderRadius: SIZES.extraLarge,
+        minWidth: minWidth,
+        ...props,
+      }}
+      onPress={handlePress}
+    >
+    <Ionicons name="medal" size={25} color="red"></Ionicons>
+      <Text
+        style={{
+          fontFamily: FONTS.VarelaRound,
+          fontWeight: 900,
+          fontSize: fontSize,
+          color: COLORS.primary,
+          textAlign: "center",
+        }}
+      >
+        LeaderBoard
+      </Text>
+    </TouchableOpacity>
+  );
+};
+export const MusicButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        alignItems:'center',
+        backgroundColor: COLORS.white,
+        padding: SIZES.small,
+        borderRadius: SIZES.extraLarge,
+        minWidth: minWidth,
+        ...props,
+      }}
+      onPress={handlePress}
+    >
+    <Ionicons name="musical-notes" size={25} color="green" />
+      <Text
+        style={{
+          fontFamily: FONTS.VarelaRound,
+          fontSize: fontSize,
+          fontWeight: 900,
+          color: COLORS.primary,
+          textAlign: "center",
+        }}
+      >
+        Listening
+      </Text>
+    </TouchableOpacity>
+  );
+};
+export const ProfileButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        alignItems:'center',
+        backgroundColor: COLORS.white,
+        padding: SIZES.small,
+        minWidth: minWidth,
+        ...props,
+      }}
+      onPress={handlePress}
+    >
+      <Ionicons name="person-circle" size={25} color="blue" />
+      <Text
+        style={{
+          fontFamily: FONTS.VarelaRound,
+          fontSize: fontSize,
+          fontWeight:900,
+          color: COLORS.primary,
+          textAlign: "center",
+        }}
+      >
+        Account
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+

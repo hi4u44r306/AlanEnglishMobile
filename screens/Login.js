@@ -29,7 +29,7 @@ const toastConfig = {
             fontSize:'20px',
             fontFamily:FONTS.VarelaRound,
         }}>
-        <Image
+        {/* <Image
             source={assets.badge}
             resizeMode="contain"
             style={{
@@ -39,8 +39,15 @@ const toastConfig = {
             top: '30%',
             left: 10,
             }}
-        />
-        {text1}
+        /> */}
+        {text1} {text2}
+        </Text>
+        <Text style={{
+            color:'black',
+            fontWeight: 900,
+            fontSize:'23px',
+            fontFamily:FONTS.VarelaRound,
+        }}>{text2}</Text>
         <Image
             source={assets.badge}
             resizeMode="contain"
@@ -52,13 +59,6 @@ const toastConfig = {
             right: 10,
             }}
         />
-        </Text>
-        <Text style={{
-            color:'black',
-            fontWeight: 900,
-            fontSize:'23px',
-            fontFamily:FONTS.VarelaRound,
-        }}>{text2}</Text>
       </View>
     ),
     errorToast: ({ text1 }) => (
@@ -131,7 +131,7 @@ const Login = () => {
         firebase.auth().signInWithEmailAndPassword(email,password)
         .then(()=>{
             success();
-            // setTimeout(function(){navigation.navigate("Home")},1000) 
+            setTimeout(()=>{navigation.navigate("Root")},1000) 
         }).catch(()=>{
             error();
         })
@@ -155,7 +155,7 @@ const Login = () => {
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
                     
                     <Blackboard/>
-                    <Brand/>
+                    <Brand fontSize={20}/>
                     <SubBrand/>
                     <View
                         style={{
