@@ -66,7 +66,7 @@ const HomeHeader = ({ onSearch,display }) => {
           alignItems: "center",
         }}
       >
-        <Brand fontSize={18} margin={1}/>
+        <Brand fontSize={23} margin={1}/>
         <View style={{ width: "fit-content", height: 45, justifyContent:'center' }}>
           <Text
             style={{

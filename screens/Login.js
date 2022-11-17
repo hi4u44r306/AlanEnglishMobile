@@ -14,7 +14,7 @@ const toastConfig = {
     successToast: ({ text1, text2 }) => (
       <View style={{ 
         height: 80, 
-        width: '80%', 
+        width: '70%', 
         backgroundColor: '#ffffff',
         // backgroundColor: '#31afd4',
         borderRadius: '20px',
@@ -23,13 +23,7 @@ const toastConfig = {
         borderWidth:'5px',
         borderColor:'#ffbf3f',
         }}>
-        <Text style={{
-            color:'red',
-            fontWeight: 700,
-            fontSize:'20px',
-            fontFamily:FONTS.VarelaRound,
-        }}>
-        {/* <Image
+        <Image
             source={assets.badge}
             resizeMode="contain"
             style={{
@@ -39,10 +33,16 @@ const toastConfig = {
             top: '30%',
             left: 10,
             }}
-        /> */}
-        {text1} {text2}
-        </Text>
+        />
         <Text style={{
+            color:'red',
+            fontWeight: 700,
+            fontSize:'20px',
+            fontFamily:'Arial',
+        }}>
+        {text1}
+        </Text>
+        {/* <Text style={{
             color:'black',
             fontWeight: 900,
             fontSize:'23px',
@@ -58,7 +58,7 @@ const toastConfig = {
             top: '30%',
             right: 10,
             }}
-        />
+        /> */}
       </View>
     ),
     errorToast: ({ text1 }) => (
@@ -76,31 +76,9 @@ const toastConfig = {
             color:'white',
             fontWeight: 700,
             fontSize:'20px',
-            fontFamily:FONTS.VarelaRound,
+            fontFamily:'Arial',
         }}>
-        <Image
-            source={assets.badge}
-            resizeMode="contain"
-            style={{
-            position: "absolute",
-            width: 25,
-            height: 25,
-            top: '30%',
-            left: 10,
-            }}
-        />
         {text1}
-        <Image
-            source={assets.badge}
-            resizeMode="contain"
-            style={{
-            position: "absolute",
-            width: 25,
-            height: 25,
-            top: '30%',
-            right: 10,
-            }}
-        />
         </Text>
       </View>
     )
@@ -116,8 +94,8 @@ const Login = () => {
             Toast.show({
                 visibilityTime:1000,
                 type: 'successToast',
-                text1: 'Welcome',
-                text2: `${email}`,
+                text1: 'Welcome Back',
+                // text2: `${email}`,
             });
           }
         const error = () => {
@@ -155,7 +133,7 @@ const Login = () => {
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent:"center" }}>
                     
                     <Blackboard/>
-                    <Brand fontSize={20}/>
+                    <Brand fontSize={30} margin={2}/>
                     <SubBrand/>
                     <View
                         style={{

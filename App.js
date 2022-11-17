@@ -31,7 +31,7 @@ const leaderboardpage = 'Rank';
 function Root(){
   return (
     <Tab.Navigator 
-      initialRouteName="Profile"
+      initialRouteName="Home"
       screenOptions={({route})=>({
       headerShown:false,
         tabBarIcon : ({focused, color ,size})=>{
