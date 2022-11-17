@@ -31,7 +31,7 @@ const leaderboardpage = 'Rank';
 function Root(){
   return (
     <Tab.Navigator 
-      initialRouteName="Home"
+      initialRouteName="Profile"
       screenOptions={({route})=>({
       headerShown:false,
         tabBarIcon : ({focused, color ,size})=>{
@@ -47,10 +47,10 @@ function Root(){
           }else if (rn === leaderboardpage){
             iconName = focused ? 'medal' : 'medal-outline';
           }
-          return <Ionicons name={iconName} size={30} color='#ff3c38' style={{margin:20}}/>
+          return <Ionicons name={iconName} size={30} color={color} style={{margin:20}}/>
           
         },
-        tabBarStyle:{padding:5, height:70},
+        tabBarStyle:{paddingVertical:10, paddingBottom:20, height:80},
         tabBarLabelStyle:{fontWeight: 900, fontFamily: FONTS.VarelaRound, fontSize:15},
         tabBarActiveTintColor:'#ff3c38',
         tabBarInactiveTintColor:'grey'

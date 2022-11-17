@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, SafeAreaView, FlatList } from "react-native";
 
-import { NFTCard, HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
+import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
 import { COLORS, NFTData, SIZES } from "../constants";
 
 const Home = () => {
@@ -27,11 +27,6 @@ const Home = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <View style={{ flex: 1 }}>
-        <LogoutButton
-          minWidth={120}
-          fontSize={SIZES.font}
-          handlePress={() => navigation.navigate("Login")}
-        />
         <View style={{ zIndex: 0 }}>
           <FlatList
             ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}

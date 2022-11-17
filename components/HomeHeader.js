@@ -7,7 +7,7 @@ import { Brand } from "./Brand";
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
-const HomeHeader = ({ onSearch }) => {
+const HomeHeader = ({ onSearch,display }) => {
 
   const db = firebase.firestore();
   const [navusername, setnavUsername] = useState();
@@ -96,8 +96,8 @@ const HomeHeader = ({ onSearch }) => {
         </View>
       </View>
 
-      <View style={{ marginVertical: SIZES.font }}>
-        {/* <Text
+      {/* <View style={{ marginVertical: SIZES.font }}>
+        <Text
           style={{
             fontFamily: FONTS.regular,
             fontSize: SIZES.small,
@@ -105,7 +105,7 @@ const HomeHeader = ({ onSearch }) => {
           }}
         >
           Hello {navusername || "Loading..."} 👋
-        </Text> */}
+        </Text>
 
         <Text
           style={{
@@ -117,9 +117,9 @@ const HomeHeader = ({ onSearch }) => {
         >
           Let's learn English
         </Text>
-      </View>
+      </View> */}
 
-      <View style={{ marginTop: SIZES.font }}>
+      <View style={{ marginTop: SIZES.font , display:display}}>
         <View
           style={{
             width: "100%",
