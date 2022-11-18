@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
 
-import { EthPrice } from "./SubInfo";
+import { Timeplayed } from "./SubInfo";
 import { COLORS, SIZES, FONTS } from "../constants";
 
-const DetailsBid = ({ bid }) => {
+const DetailsBid = ({ music }) => {
   return (
     <View
       style={{
@@ -15,13 +15,13 @@ const DetailsBid = ({ bid }) => {
         marginVertical: SIZES.base,
         paddingHorizontal: SIZES.base,
       }}
-      key={bid.id}
+      key={music.id}
     >
-      <Image
+      {/* <Image
         source={bid.image}
         resizeMode="contain"
         style={{ width: 48, height: 48 }}
-      />
+      /> */}
 
       <View
         style={{
@@ -37,9 +37,9 @@ const DetailsBid = ({ bid }) => {
             color: COLORS.primary,
           }}
         >
-          Bid placed by {bid.name}
+          Bid placed by {music.bookname}
         </Text>
-        <Text
+        {/* <Text
           style={{
             fontFamily: FONTS.regular,
             fontSize: SIZES.small - 2,
@@ -47,11 +47,11 @@ const DetailsBid = ({ bid }) => {
             marginTop: 3,
           }}
         >
-          {bid.date}
-        </Text>
+          {music.date}
+        </Text> */}
       </View>
 
-      <EthPrice price={bid.price} />
+      <Timeplayed price={music.timePlayed} />
     </View>
   );
 };

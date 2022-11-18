@@ -6,6 +6,7 @@ import { Brand } from "./Brand";
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import { Ionicons } from "@expo/vector-icons";
 
 const HomeHeader = ({ onSearch,display }) => {
 
@@ -86,21 +87,17 @@ const HomeHeader = ({ onSearch,display }) => {
           style={{
             width: "100%",
             borderRadius: SIZES.font,
-            backgroundColor: COLORS.primary,
+            backgroundColor: 'white',
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: SIZES.font,
             paddingVertical: SIZES.small - 2,
           }}
         >
-          <Image
-            source={assets.search}
-            resizeMode="contain"
-            style={{ width: 20, height: 20, marginRight: SIZES.base }}
-          />
+          <Text><Ionicons name='search-outline' source={assets.search} resizeMode="contain" style={{width: 20, height: 20, marginRight: SIZES.base}}/></Text>
           <TextInput
             placeholder="Search Tracks........"
-            style={{ flex: 1 , color: '#ffffff'}}
+            style={{ flex: 1 , color: 'black'}}
             onChangeText={onSearch}
           />
         </View>

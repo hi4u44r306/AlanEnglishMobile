@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
-// import { useFonts } from "expo-font"
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFonts } from "expo-font"
+import { Text } from "react-native";
 
 
 import Home from "./screens/Home";
@@ -21,6 +21,7 @@ const theme = {
 }
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FONTS } from "./constants";
+import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +32,7 @@ const leaderboardpage = 'Rank';
 function Root(){
   return (
     <Tab.Navigator 
-      initialRouteName="Profile"
+      initialRouteName="Home"
       screenOptions={({route})=>({
       headerShown:false,
         tabBarIcon : ({focused, color})=>{
@@ -47,7 +48,7 @@ function Root(){
           }else if (rn === leaderboardpage){
             iconName = focused ? 'medal' : 'medal-outline';
           }
-          return <Ionicons name={iconName} size={30} color={color} style={{margin:20}}/>
+          return <Text><Ionicons name={iconName} size={30} color={color} style={{margin:20}}/></Text>
           
         },
         tabBarStyle:{ paddingBottom:30, height:90},
@@ -65,20 +66,20 @@ function Root(){
 }
 
 const App = () => {
-  // const [loaded] = useFonts({
-  //   InterBold: require("./assets/fonts/Inter-Bold.ttf"),
-  //   InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
-  //   InterMedium: require("./assets/fonts/Inter-Medium.ttf"),
-  //   InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
-  //   InterLight: require("./assets/fonts/Inter-Light.ttf"),
-  //   LibreRegular: require("./assets/fonts/LibreBaskerville-Bold.ttf"),
-  //   LibreBold: require("./assets/fonts/LibreBaskerville-Regular.ttf"),
-  //   VarelaRound: require("./assets/fonts/VarelaRound-Regular.ttf"),
-  // })
-  // if (!loaded) return null;
+  const [loaded] = useFonts({
+    InterBold: require("./assets/fonts/Inter-Bold.ttf"),
+    InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
+    InterMedium: require("./assets/fonts/Inter-Medium.ttf"),
+    InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
+    InterLight: require("./assets/fonts/Inter-Light.ttf"),
+    LibreRegular: require("./assets/fonts/LibreBaskerville-Bold.ttf"),
+    LibreBold: require("./assets/fonts/LibreBaskerville-Regular.ttf"),
+    VarelaRound: require("./assets/fonts/VarelaRound-Regular.ttf"),
+  })
+  if (!loaded) return null;
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName="Login">
+      <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName="Root">
         <Stack.Screen name="Root" component={Root}/>
         <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="Details" component={Details}/>

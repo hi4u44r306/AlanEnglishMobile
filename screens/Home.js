@@ -1,25 +1,25 @@
 import React, { useState } from "react";
 import { View, SafeAreaView, FlatList } from "react-native";
 
-import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
-import { COLORS, NFTData, SIZES } from "../constants";
+import { MusicCard, HomeHeader, FocusedStatusBar } from "../components";
+import { COLORS, musicDB, SIZES } from "../constants";
 
 const Home = () => {
-  const [nftData, setNftData] = useState(NFTData);
+  const [musicData, setMusicData] = useState(musicDB);
 
   const handleSearch = (value) => {
     if (value.length === 0) {
-      setNftData(NFTData);
+      setMusicData(musicData);
     }
 
-    const filteredData = NFTData.filter((item) =>
+    const filteredData = musicData.filter((item) =>
       item.name.toLowerCase().includes(value.toLowerCase())
     );
 
     if (filteredData.length === 0) {
-      setNftData(NFTData);
+      setMusicData(musicData);
     } else {
-      setNftData(filteredData);
+      setMusicData(filteredData);
     }
   };
 
@@ -30,8 +30,8 @@ const Home = () => {
         <View style={{ zIndex: 0 }}>
           <FlatList
             ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}
-            data={nftData}
-            renderItem={({ item }) => <NFTCard data={item} />}
+            data={musicData}
+            renderItem={({ item }) => <MusicCard data={item} />}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
           />

@@ -33,7 +33,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: COLORS.primary,
+        backgroundColor: '#759fbc',
         padding: SIZES.small,
         borderRadius: SIZES.extraLarge,
         minWidth: minWidth,
@@ -49,7 +49,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
           textAlign: "center",
         }}
       >
-        Show More...
+        <Ionicons name="arrow-forward-circle-outline" style={{fontSize:25, fontWeight:600 ,color:'white',}}/>
       </Text>
     </TouchableOpacity>
   );

@@ -1,15 +1,16 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { View, Image, Text } from "react-native";
 
 import { SIZES, FONTS, COLORS, SHADOWS, assets } from "../constants";
 
-export const NFTTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
+export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
   return (
-    <View>
+    <View style={{gap:5}}>
       <Text
         style={{
           fontFamily: FONTS.semiBold,
-          fontSize: titleSize,
+          fontSize: 18,
           color: COLORS.primary,
         }}
       >
@@ -18,34 +19,31 @@ export const NFTTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
       <Text
         style={{
           fontFamily: FONTS.regular,
-          fontSize: subTitleSize,
+          fontSize: 15,
           color: COLORS.primary,
         }}
       >
-        by {subTitle}
+        {subTitle}
       </Text>
     </View>
   );
 };
 
-export const EthPrice = ({ price }) => {
+export const Timeplayed = ({ price }) => {
   return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Image
-        source={assets.eth}
-        resizeMode="contain"
-        style={{ width: 20, height: 20, marginRight: 2 }}
-      />
-      <Text
-        style={{
-          fontFamily: FONTS.medium,
-          fontSize: SIZES.font,
-          color: COLORS.primary,
-        }}
-      >
+  
+    <Text style={{  
+    flexDirection: "row",
+    // justifyContent: "space-between",
+    alignItems: "center",
+    alignContent:'center',
+    }}>
+      <Ionicons name="musical-notes-outline" resizeMode="contain" style={{marginRight: SIZES.base, color:'red',}}/>播放次數 
+      <Text style={{marginLeft:10,}}>
         {price}
       </Text>
-    </View>
+    </Text>
+      
   );
 };
 

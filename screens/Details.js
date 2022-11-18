@@ -50,12 +50,12 @@ const Details = ({ route, navigation }) => {
           zIndex: 1,
         }}
       >
-        <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} />
+        {/* <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} /> */}
       </View>
 
       <FlatList
         data={data.bids}
-        renderItem={({ item }) => <DetailsBid bid={item} />}
+        renderItem={({ item }) => <DetailsBid music={music} />}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -64,11 +64,11 @@ const Details = ({ route, navigation }) => {
         ListHeaderComponent={() => (
           <React.Fragment>
             <DetailsHeader data={data} navigation={navigation} />
-            <SubInfo />
+            {/* <SubInfo /> */}
             <View style={{ padding: SIZES.font }}>
-              <DetailsDesc data={data} />
+              <DetailsDesc data={data} /> 
 
-              {data.bids.length > 0 && (
+              {/* {data.timesPlayed.length > 0 && (
                 <Text
                   style={{
                     fontSize: SIZES.font,
@@ -78,7 +78,7 @@ const Details = ({ route, navigation }) => {
                 >
                   Current Bid
                 </Text>
-              )}
+              )} */}
             </View>
           </React.Fragment>
         )}
