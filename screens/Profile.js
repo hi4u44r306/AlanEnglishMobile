@@ -28,7 +28,7 @@ const Profile = () => {
           // showsVerticalScrollIndicator={false}
         /> */}
         <HomeHeader display='none' />
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <View style={{alignItems:'center', justifyContent:'center'}}>
           <Text style=
             {{
               fontSize:26,
@@ -44,7 +44,7 @@ const Profile = () => {
           }}>
           <LogoutButton
             minWidth={80}
-            fontSize={SIZES.font}
+            fontSize={15}
             handlePress={Logout}
           />
         </View>

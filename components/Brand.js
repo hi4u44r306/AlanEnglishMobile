@@ -13,68 +13,68 @@ export const Brand = ({fontSize, margin}) => {
           color:"red",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>A</Text>
+          fontFamily:FONTS.bold,}}>A</Text>
         <Text style={{
           margin:margin,
           color:"#f45d01",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>L</Text>
+          fontFamily:FONTS.bold,}}>L</Text>
         <Text style={{
           margin:margin,
           color:"#eeb902",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>A</Text>
+          fontFamily:FONTS.bold,}}>A</Text>
         <Text style={{
           margin:margin,
           color:"#04cc0b",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>N</Text>
+          fontFamily:FONTS.bold,}}>N</Text>
         <Text>  </Text>
         <Text style={{
           margin:margin,
           color:"#2d7dd2",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>E</Text>
+          fontFamily:FONTS.bold,}}>E</Text>
         <Text style={{
           margin:margin,
           color:"#4062bb",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>N</Text>
+          fontFamily:FONTS.bold,}}>N</Text>
         <Text style={{
           margin:margin,
           color:"#52489c",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>G</Text>
+          fontFamily:FONTS.bold,}}>G</Text>
         <Text style={{
           margin:margin,
           color:"red",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>L</Text>
+          fontFamily:FONTS.bold,}}>L</Text>
         <Text style={{
           margin:margin,
           color:"#f45d01",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>I</Text>
+          fontFamily:FONTS.bold,}}>I</Text>
         <Text style={{
           margin:margin,
           color:"#eeb902",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>S</Text>
+          fontFamily:FONTS.bold,}}>S</Text>
         <Text style={{
           margin:margin,
           color:"#4062bb",
           fontSize: fontSize,
           fontWeight:900,
-          fontFamily:'Arial',}}>H</Text>
+          fontFamily:FONTS.bold,}}>H</Text>
       </View>
 
   )

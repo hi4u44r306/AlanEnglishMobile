@@ -17,6 +17,8 @@ const Leaderboard = () => {
           <Text style={{
             fontSize:26,
             fontWeight:'bold',
+            padding:20,
+            color:'black',
           }}>Leaderboard</Text>
         </View>
       </View>

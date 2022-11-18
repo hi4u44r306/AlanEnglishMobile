@@ -22,6 +22,8 @@ const Music = () => {
           <Text style={{
             fontSize:26,
             fontWeight:'bold',
+            padding:20,
+            color:'black',
           }}>Music</Text>
         </View>
       </View>

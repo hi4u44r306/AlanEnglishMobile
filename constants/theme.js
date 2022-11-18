@@ -24,6 +24,8 @@ export const FONTS = {
   regular: "InterRegular",
   light: "InterLight",
   VarelaRound: "VarelaRound",
+  LibreRegular: "LibreRegular",
+  LibreBold: "LibreBold",
 };
 
 export const SHADOWS = {
