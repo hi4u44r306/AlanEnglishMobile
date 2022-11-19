@@ -1,14 +1,48 @@
-import React from "react";
+import React, {useState} from "react";
+// import {useDispatch} from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
 
 import { COLORS, SIZES, SHADOWS } from "../constants";
-import { Timeplayed, MusicTitle } from "./SubInfo";
-import { RectButton } from "./Button";
+import { Timeplayed, MusicTitle, GameScore } from "./SubInfo";
+import { PlayButton, GameButton } from "./Button";
+import firebase from 'firebase/app';
 
 const MusicCard = ({ data }) => {
-
+  // const {bookname , page , img, questions} = props.music;
   const navigation = useNavigation();
+
+  const db = firebase.firestore();
+    const [timeplayed, setTimesplayed] = useState();
+    const [gamescore, setGamescore] = useState();
+    
+    firebase.auth().onAuthStateChanged(user => {
+        if(user){
+            db.collection('student').onSnapshot(() =>{
+                getUserInfo(user);
+            });
+        }else{
+            getUserInfo();
+        }
+    })
+
+    const getUserInfo = (user) =>{ 
+        if(user){
+            const convertmusicid = "'" + data.id + "'";
+            db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc)=>{
+                setTimesplayed(doc.data().timeplayed);
+            })
+            db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc)=>{
+                setGamescore(doc.data().gamescore);
+            })
+
+            // .catch((err)=>{
+            //     console.log("There no data for some ID", err)
+            // })
+        }else{
+            console.log('no data');
+        }
+    }   
 
   return (
     <View
@@ -22,24 +56,33 @@ const MusicCard = ({ data }) => {
     >
 
       <View style={{ width: "100%", padding: SIZES.font, justifyContent:'center', alignContent:'center' }}>
-        <MusicTitle
-          title={data.bookname}
-          subTitle={data.page}
-          titleSize={SIZES.large}
-          subTitleSize={SIZES.small}
-        />
-
+        <View style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            alignContent:'center',
+          }}>
+          <MusicTitle
+            title={data.bookname}
+            subTitle={data.page}
+            titleSize={SIZES.large}
+            subTitleSize={SIZES.small}
+          />
+          <PlayButton
+            // handlePress={handleplaying}
+          />
+        </View>
         <View
           style={{
-            marginTop: SIZES.font,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
             alignContent:'center',
           }}
         >
-          <Timeplayed price={data.timesPlayed} />
-          <RectButton
+          <Timeplayed timeplayed={timeplayed} />
+          <GameScore gamescore={gamescore} />
+          <GameButton
             minWidth={10}
             fontSize={SIZES.font}
             handlePress={() => navigation.navigate("Details", { data })}

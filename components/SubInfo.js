@@ -29,7 +29,7 @@ export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
   );
 };
 
-export const Timeplayed = ({ price }) => {
+export const GameScore = ({ gamescore }) => {
   return (
   
     <Text style={{  
@@ -38,9 +38,25 @@ export const Timeplayed = ({ price }) => {
     alignItems: "center",
     alignContent:'center',
     }}>
-      <Ionicons name="musical-notes-outline" resizeMode="contain" style={{marginRight: SIZES.base, color:'red',}}/>播放次數 
       <Text style={{marginLeft:10,}}>
-        {price}
+        {gamescore}
+      </Text>
+    </Text>
+      
+  );
+};
+export const Timeplayed = ({ timeplayed }) => {
+  return (
+  
+    <Text style={{  
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    alignContent:'center',
+    }}>
+      <Ionicons name="musical-notes-outline" resizeMode="contain" style={{marginRight:5,color:'red', fontSize:15}}/>播放次數 
+      <Text style={{marginLeft:10, fontWeight:600, color:'red'}}>
+        {timeplayed}
       </Text>
     </Text>
       

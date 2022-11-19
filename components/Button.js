@@ -4,7 +4,7 @@ import { TouchableOpacity, Text, Image } from "react-native";
 import { COLORS, SIZES, FONTS, SHADOWS } from "../constants";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
+export const CircleButton = ({ imgUrl, handlePress,...props }) => {
   return (
     <TouchableOpacity
       style={{
@@ -29,7 +29,32 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
   );
 };
 
-export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+export const PlayButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        // backgroundColor: '#759fbc',
+        padding: SIZES.small,
+        borderRadius: SIZES.extraLarge,
+        minWidth: minWidth,
+        ...props,
+      }}
+      onPress={handlePress}
+    >
+      <Text
+        style={{
+          fontFamily: FONTS.semiBold,
+          fontSize: fontSize,
+          color: COLORS.white,
+          textAlign: "center",
+        }}
+      >
+        <Ionicons name="ios-play-circle" style={{fontSize:35, fontWeight:600 ,color:'red',}}/>
+      </Text>
+    </TouchableOpacity>
+  );
+};
+export const GameButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
@@ -49,7 +74,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
           textAlign: "center",
         }}
       >
-        <Ionicons name="arrow-forward-circle-outline" style={{fontSize:25, fontWeight:600 ,color:'white',}}/>
+        小測驗
       </Text>
     </TouchableOpacity>
   );

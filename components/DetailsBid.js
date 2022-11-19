@@ -17,11 +17,6 @@ const DetailsBid = ({ music }) => {
       }}
       key={music.id}
     >
-      {/* <Image
-        source={bid.image}
-        resizeMode="contain"
-        style={{ width: 48, height: 48 }}
-      /> */}
 
       <View
         style={{

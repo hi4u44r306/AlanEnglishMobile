@@ -2,15 +2,15 @@ import React from "react";
 import { View, Text, SafeAreaView, Image, StatusBar, FlatList } from "react-native";
 
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar } from "../components";
+import { CircleButton, RectButton, SubInfo, Game, DetailsBid, FocusedStatusBar } from "../components";
 
 const DetailsHeader = ({ data, navigation }) => (
-  <View style={{ width: "100%", height: 373 }}>
-    <Image
+  <View style={{ width: "100%", height: 80 , backgroundColor: COLORS.ricewhite }}>
+    {/* <Image
       source={data.image}
       resizeMode="cover"
       style={{ width: "100%", height: "100%" }}
-    />
+    /> */}
 
     <CircleButton
       imgUrl={assets.left}
@@ -19,11 +19,11 @@ const DetailsHeader = ({ data, navigation }) => (
       top={StatusBar.currentHeight + 10}
     />
 
-    <CircleButton
+    {/* <CircleButton
       imgUrl={assets.heart}
       right={15}
       top={StatusBar.currentHeight + 10}
-    />
+    /> */}
   </View>
 );
 
@@ -66,7 +66,7 @@ const Details = ({ route, navigation }) => {
             <DetailsHeader data={data} navigation={navigation} />
             {/* <SubInfo /> */}
             <View style={{ padding: SIZES.font }}>
-              <DetailsDesc data={data} /> 
+              <Game data={data} /> 
 
               {/* {data.timesPlayed.length > 0 && (
                 <Text
