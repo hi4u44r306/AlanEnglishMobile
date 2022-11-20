@@ -91,46 +91,46 @@ const musicDB = [
       
     }
     ,
-    {
-        id: 2,
-        bookname: "Super Easy Reading 1",
-        page:"Track 4",
-        img: "headphone.png",
-        lang: "SuperEasyReading1",
-        timesPlayed: 0,
-        type: "SER1",
-        musicName: "super easy reading 1/SER1track04.mp3"
-    },
-    {
-        id: 3,
-        bookname: "Super Easy Reading 1",
-        page:"Track 5",
-        img: "headphone.png",
-        lang: "SuperEasyReading1",
-        timesPlayed: 0,
-        type: "SER1",
-        musicName: "super easy reading 1/SER1track05.mp3"
-    },
-    {
-        id: 4,
-        bookname: "Super Easy Reading 1",
-        page:"Track 6",
-        img: "headphone.png",
-        lang: "SuperEasyReading1",
-        timesPlayed: 0,
-        type: "SER1",
-        musicName: "super easy reading 1/SER1track06.mp3"
-    },
-    {
-        id: 5,
-        bookname: "Super Easy Reading 1",
-        page:"Track 7",
-        img: "headphone.png",
-        lang: "SuperEasyReading1",
-        timesPlayed: 0,
-        type: "SER1",
-        musicName: "super easy reading 1/SER1track07.mp3"
-    },
+    // {
+    //     id: 2,
+    //     bookname: "Super Easy Reading 1",
+    //     page:"Track 4",
+    //     img: "headphone.png",
+    //     lang: "SuperEasyReading1",
+    //     timesPlayed: 0,
+    //     type: "SER1",
+    //     musicName: "super easy reading 1/SER1track04.mp3"
+    // },
+    // {
+    //     id: 3,
+    //     bookname: "Super Easy Reading 1",
+    //     page:"Track 5",
+    //     img: "headphone.png",
+    //     lang: "SuperEasyReading1",
+    //     timesPlayed: 0,
+    //     type: "SER1",
+    //     musicName: "super easy reading 1/SER1track05.mp3"
+    // },
+    // {
+    //     id: 4,
+    //     bookname: "Super Easy Reading 1",
+    //     page:"Track 6",
+    //     img: "headphone.png",
+    //     lang: "SuperEasyReading1",
+    //     timesPlayed: 0,
+    //     type: "SER1",
+    //     musicName: "super easy reading 1/SER1track06.mp3"
+    // },
+    // {
+    //     id: 5,
+    //     bookname: "Super Easy Reading 1",
+    //     page:"Track 7",
+    //     img: "headphone.png",
+    //     lang: "SuperEasyReading1",
+    //     timesPlayed: 0,
+    //     type: "SER1",
+    //     musicName: "super easy reading 1/SER1track07.mp3"
+    // },
 //     {
 //         id: 6,
 //         bookname: "Super Easy Reading 1",

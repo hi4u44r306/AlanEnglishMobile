@@ -32,7 +32,7 @@ const leaderboardpage = 'Rank';
 function Root(){
   return (
     <Tab.Navigator 
-      initialRouteName="Music"
+      initialRouteName="Home"
       screenOptions={({route})=>({
       headerShown:false,
         tabBarIcon : ({focused, color})=>{
@@ -79,7 +79,7 @@ const App = () => {
   if (!loaded) return null;
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName="Root">
+      <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName="Login">
         <Stack.Screen name="Root" component={Root}/>
         <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="Details" component={Details}/>
