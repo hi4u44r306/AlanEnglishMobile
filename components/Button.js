@@ -4,7 +4,7 @@ import { TouchableOpacity, Text, Image } from "react-native";
 import { COLORS, SIZES, FONTS, SHADOWS } from "../constants";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export const CircleButton = ({ imgUrl, handlePress,...props }) => {
+export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
@@ -49,7 +49,7 @@ export const PlayButton = ({ minWidth, fontSize, handlePress, ...props }) => {
           textAlign: "center",
         }}
       >
-        <Ionicons name="ios-play-circle" style={{fontSize:35, fontWeight:600 ,color:'red',}}/>
+        <Ionicons name="ios-play-circle" style={{ fontSize: 35, fontWeight: 600, color: 'red', }} />
       </Text>
     </TouchableOpacity>
   );
@@ -80,12 +80,12 @@ export const GameButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   );
 };
 
-export const LoginButton = ({ minWidth, fontSize, handlePress, margin, ...props }) => {
+export const LoginButton = ({ minWidth, padding, fontSize, handlePress, margin, ...props }) => {
   return (
     <TouchableOpacity
       style={{
         backgroundColor: COLORS.white,
-        padding: SIZES.small,
+        padding: padding,
         borderWidth: 3.5,
         borderColor: "#2d7dd2",
         borderRadius: 10,
@@ -140,7 +140,7 @@ export const HomeButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
-        alignItems:'center',
+        alignItems: 'center',
         backgroundColor: COLORS.white,
         padding: SIZES.small,
         borderRadius: SIZES.extraLarge,
@@ -149,7 +149,7 @@ export const HomeButton = ({ minWidth, fontSize, handlePress, ...props }) => {
       }}
       onPress={handlePress}
     >
-    <Ionicons name="home" size={25} color="green" />
+      <Ionicons name="home" size={25} color="green" />
       <Text
         style={{
           fontFamily: FONTS.semiBold,
@@ -167,7 +167,7 @@ export const LeaderBoardButton = ({ minWidth, fontSize, handlePress, ...props })
   return (
     <TouchableOpacity
       style={{
-        alignItems:'center',
+        alignItems: 'center',
         backgroundColor: COLORS.white,
         padding: SIZES.small,
         borderRadius: SIZES.extraLarge,
@@ -176,7 +176,7 @@ export const LeaderBoardButton = ({ minWidth, fontSize, handlePress, ...props })
       }}
       onPress={handlePress}
     >
-    <Ionicons name="medal" size={25} color="red"></Ionicons>
+      <Ionicons name="medal" size={25} color="red"></Ionicons>
       <Text
         style={{
           fontFamily: FONTS.VarelaRound,
@@ -195,7 +195,7 @@ export const MusicButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
-        alignItems:'center',
+        alignItems: 'center',
         backgroundColor: COLORS.white,
         padding: SIZES.small,
         borderRadius: SIZES.extraLarge,
@@ -204,7 +204,7 @@ export const MusicButton = ({ minWidth, fontSize, handlePress, ...props }) => {
       }}
       onPress={handlePress}
     >
-    <Ionicons name="musical-notes" size={25} color="green" />
+      <Ionicons name="musical-notes" size={25} color="green" />
       <Text
         style={{
           fontFamily: FONTS.VarelaRound,
@@ -223,7 +223,7 @@ export const ProfileButton = ({ minWidth, fontSize, handlePress, ...props }) => 
   return (
     <TouchableOpacity
       style={{
-        alignItems:'center',
+        alignItems: 'center',
         backgroundColor: COLORS.white,
         padding: SIZES.small,
         minWidth: minWidth,
@@ -236,7 +236,7 @@ export const ProfileButton = ({ minWidth, fontSize, handlePress, ...props }) => 
         style={{
           fontFamily: FONTS.VarelaRound,
           fontSize: fontSize,
-          fontWeight:900,
+          fontWeight: 900,
           color: COLORS.primary,
           textAlign: "center",
         }}

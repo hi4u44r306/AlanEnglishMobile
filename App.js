@@ -10,11 +10,13 @@ import Profile from "./screens/Profile";
 import Music from "./screens/Music";
 import Leaderboard from './screens/Leaderboard';
 import Details from './screens/Details';
+import Solve from "./screens/Solve";
+
 
 const Stack = createStackNavigator();
 const theme = {
   ...DefaultTheme,
-  colors:{
+  colors: {
     ...DefaultTheme.colors,
     background: "transparent",
   }
@@ -29,38 +31,38 @@ const homepage = 'Home';
 const musicpage = 'Music';
 const profilepage = 'Profile';
 const leaderboardpage = 'Rank';
-function Root(){
+function Root() {
   return (
-    <Tab.Navigator 
-      initialRouteName="Home"
-      screenOptions={({route})=>({
-      headerShown:false,
-        tabBarIcon : ({focused, color})=>{
+    <Tab.Navigator
+      initialRouteName="Music"
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
           let rn = route.name;
 
-          if (rn === homepage){
+          if (rn === homepage) {
             iconName = focused ? 'home' : 'home-outline';
-          }else if (rn === musicpage){
+          } else if (rn === musicpage) {
             iconName = focused ? 'musical-notes' : 'musical-notes-outline';
-          }else if (rn === profilepage){
+          } else if (rn === profilepage) {
             iconName = focused ? 'person-circle' : 'person-circle-outline';
-          }else if (rn === leaderboardpage){
+          } else if (rn === leaderboardpage) {
             iconName = focused ? 'medal' : 'medal-outline';
           }
-          return <Text><Ionicons name={iconName} size={30} color={color} style={{margin:20}}/></Text>
-          
+          return <Text><Ionicons name={iconName} size={30} color={color} style={{ margin: 20 }} /></Text>
+
         },
-        tabBarStyle:{ paddingBottom:30, height:90},
-        tabBarLabelStyle:{fontWeight: 600, fontFamily: 'Arial', fontSize:15},
-        tabBarActiveTintColor:'#ff3c38',
-        tabBarInactiveTintColor:'grey'
-      })} 
+        tabBarStyle: { paddingBottom: 30, height: 90 },
+        tabBarLabelStyle: { fontWeight: 600, fontFamily: 'Arial', fontSize: 15 },
+        tabBarActiveTintColor: '#ff3c38',
+        tabBarInactiveTintColor: 'grey'
+      })}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Rank" component={Leaderboard} />
       <Tab.Screen name="Music" component={Music} />
-      <Tab.Screen name="Profile" component={Profile}/>
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 }
@@ -79,10 +81,11 @@ const App = () => {
   if (!loaded) return null;
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName="Login">
-        <Stack.Screen name="Root" component={Root}/>
-        <Stack.Screen name="Login" component={Login}/>
-        <Stack.Screen name="Details" component={Details}/>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Login">
+        <Stack.Screen name="Root" component={Root} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Details" component={Details} />
+        <Stack.Screen name="Solve" component={Solve} />
       </Stack.Navigator>
     </NavigationContainer>
   );

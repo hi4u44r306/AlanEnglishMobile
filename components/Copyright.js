@@ -5,7 +5,7 @@ import { FONTS } from '../constants'
 const Copyright = () => {
   return (
     <View>
-      <Text style={{color:"red",fontSize:'15px', fontFamily: FONTS.VarelaRound, fontWeight:900, margin:10}}>Copyright © 2022 Alan English Inc.</Text>
+      <Text style={{ color: "red", fontSize: '15px', fontFamily: FONTS.VarelaRound, fontWeight: 900, margin: 10 }}>Copyright © 2023 Alan English Inc.</Text>
     </View>
   )
 }
