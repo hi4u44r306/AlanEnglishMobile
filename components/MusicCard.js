@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 // import {useDispatch} from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
@@ -14,37 +14,37 @@ const MusicCard = ({ data, onclickmusic }) => {
   const navigation = useNavigation();
 
   const db = firebase.firestore();
-    const [timeplayed, setTimesplayed] = useState();
-    const [gamescore, setGamescore] = useState();
-    
-    
-    firebase.auth().onAuthStateChanged(user => {
-        if(user){
-            db.collection('student').onSnapshot(() =>{
-                getUserInfo(user);
-            });
-        }else{
-            getUserInfo();
-        }
-    })
+  // const [timeplayed, setTimesplayed] = useState();
+  // const [gamescore, setGamescore] = useState();
 
-    const getUserInfo = (user) =>{ 
-        if(user){
-            const convertmusicid = "'" + data.id + "'";
-            db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc)=>{
-                setTimesplayed(doc.data().timeplayed);
-            })
-            db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc)=>{
-                setGamescore(doc.data().gamescore);
-            })
 
-            // .catch((err)=>{
-            //     console.log("There no data for some ID", err)
-            // })
-        }else{
-            console.log('no data');
-        }
-    }   
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      db.collection('student').onSnapshot(() => {
+        getUserInfo(user);
+      });
+    } else {
+      getUserInfo();
+    }
+  })
+
+  const getUserInfo = (user) => {
+    if (user) {
+      const convertmusicid = "'" + data.id + "'";
+      // db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc) => {
+      //   setTimesplayed(doc.data().timeplayed);
+      // })
+      // db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc)=>{
+      //     setGamescore(doc.data().gamescore);
+      // })
+
+      // .catch((err)=>{
+      //     console.log("There no data for some ID", err)
+      // })
+    } else {
+      console.log('no data');
+    }
+  }
 
   return (
     <View
@@ -56,14 +56,13 @@ const MusicCard = ({ data, onclickmusic }) => {
         ...SHADOWS.dark,
       }}
     >
-
-      <View style={{ width: "100%", padding: SIZES.font, justifyContent:'center', alignContent:'center' }}>
+      <View style={{ width: "100%", padding: SIZES.font, justifyContent: 'center', alignContent: 'center' }}>
         <View style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            alignContent:'center',
-          }}>
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          alignContent: 'center',
+        }}>
           <MusicTitle
             title={data.bookname}
             subTitle={data.page}
@@ -79,11 +78,9 @@ const MusicCard = ({ data, onclickmusic }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            alignContent:'center',
+            alignContent: 'center',
           }}
         >
-          <Timeplayed timeplayed={timeplayed} />
-          <GameScore gamescore={gamescore} />
           <GameButton
             minWidth={10}
             fontSize={SIZES.font}

@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, Image } from "react-native";
+import { TouchableOpacity, Text, Image, View } from "react-native";
 
 import { COLORS, SIZES, FONTS, SHADOWS } from "../constants";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -8,9 +8,13 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
-        width: 40,
+        marginTop: 5,
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 5,
+        width: "auto",
         height: 40,
-        backgroundColor: COLORS.white,
+        // backgroundColor: COLORS.white,
         position: "absolute",
         borderRadius: SIZES.extraLarge,
         alignItems: "center",
@@ -25,6 +29,9 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
         resizeMode="contain"
         style={{ width: 24, height: 24 }}
       />
+      <Text>
+        回首頁
+      </Text>
     </TouchableOpacity>
   );
 };
