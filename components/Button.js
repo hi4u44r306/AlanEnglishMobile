@@ -11,14 +11,12 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
         marginTop: 5,
         display: 'flex',
         flexDirection: 'row',
-        gap: 5,
         width: "auto",
-        height: 40,
-        // backgroundColor: COLORS.white,
+        height: 30,
         position: "absolute",
-        borderRadius: SIZES.extraLarge,
         alignItems: "center",
         justifyContent: "center",
+        justifyContentAlign: "center",
         ...SHADOWS.light,
         ...props,
       }}
@@ -27,10 +25,10 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
       <Image
         source={imgUrl}
         resizeMode="contain"
-        style={{ width: 24, height: 24 }}
+        style={{ width: 24, height: 23 }}
       />
-      <Text>
-        回首頁
+      <Text style={{ fontSize: 15 }}>
+        回播放列表
       </Text>
     </TouchableOpacity>
   );

@@ -35,7 +35,7 @@ function PlaylistDetail() {
             </View>
             <View style={{ marginTop: 40 }}>
                 <View style={styles.typetitle}>
-                    <Text style={{ fontSize: 20, fontWeight: 600, }}>
+                    <Text style={styles.titletext}>
                         {musicType}
                     </Text>
                 </View>
@@ -55,15 +55,18 @@ function PlaylistDetail() {
 }
 
 const styles = StyleSheet.create({
-    test: {
-        backgroundColor: 'rgba(185,25,55,0.8)',
-    },
     typetitle: {
         display: 'flex',
         justifyContent: 'center',
         alignContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(185,25,55,0.8)',
+        backgroundColor: '#005b7f',
+    },
+    titletext: {
+        fontSize: 18,
+        fontWeight: 600,
+        color: '#fff4d5',
+        fontFamily: "Nunito",
     }
 
 })
