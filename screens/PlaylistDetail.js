@@ -54,6 +54,7 @@ function PlaylistDetail() {
     );
 }
 
+
 const styles = StyleSheet.create({
     typetitle: {
         display: 'flex',

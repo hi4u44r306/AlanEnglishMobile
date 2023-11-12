@@ -52,13 +52,13 @@ function Root() {
           } else if (rn === leaderboardpage) {
             iconName = focused ? 'medal' : 'medal-outline';
           }
-          return <Text><Ionicons name={iconName} size={30} color={color} style={{ margin: 20 }} /></Text>
+          return <Text><Ionicons name={iconName} size={18} color={color} style={{ margin: 20, }} /></Text>
 
         },
         tabBarStyle: { paddingBottom: 30, height: 90 },
-        tabBarLabelStyle: { fontWeight: 600, fontFamily: 'Arial', fontSize: 15 },
-        tabBarActiveTintColor: '#ff3c38',
-        tabBarInactiveTintColor: 'grey'
+        tabBarLabelStyle: { fontWeight: 700, fontFamily: 'Nunito', fontSize: 15 },
+        tabBarActiveTintColor: 'rgb(64, 98, 187)',
+        tabBarInactiveTintColor: 'gray'
       })}
     >
       <Tab.Screen name="Home" component={Home} />
