@@ -138,7 +138,7 @@ const App = () => {
   if (!loaded) return null;
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Login">
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Root">
         <Stack.Screen name="Root" component={Root} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Details" component={Details} />
