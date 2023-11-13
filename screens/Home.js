@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { View, SafeAreaView, FlatList, Text } from "react-native";
+import React from "react";
+import { View, SafeAreaView, Text } from "react-native";
 
-import { MusicCard, HomeHeader, FocusedStatusBar } from "../components";
-import { COLORS, musicDB, SIZES } from "../constants";
+import { HomeHeader, FocusedStatusBar } from "../components";
+import { COLORS } from "../constants";
 
 const Home = () => {
   // const [musicData, setMusicData] = useState(musicDB);
@@ -24,28 +24,21 @@ const Home = () => {
   // };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <View style={{ flex: 1 }}>
         <View style={{ zIndex: 0 }}>
-          {/* <FlatList
-            ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}
-            data={musicData}
-            renderItem={({ item }) => <MusicCard data={item} />}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-          /> */}
-          <HomeHeader/>
-          <View style={{alignItems:'center', justifyContent:'center'}}>
-          <Text style=
-            {{
-              fontSize:26,
-              fontWeight:'bold',
-              padding:20,
-            }}>
-            Home
-          </Text>
-        </View>
+          <HomeHeader display='none' />
+          <View style={{ alignItems: 'center', justifyContent: 'center', }}>
+            <Text style=
+              {{
+                fontSize: 26,
+                fontWeight: 'bold',
+                padding: 20,
+              }}>
+              Home
+            </Text>
+          </View>
         </View>
       </View>
     </SafeAreaView>

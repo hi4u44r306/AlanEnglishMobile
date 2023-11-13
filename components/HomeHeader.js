@@ -42,7 +42,7 @@ const HomeHeader = ({ onSearch, display }) => {
         }}
       >
         <Brand fontSize={23} margin={1} />
-        <View style={{ width: "fit-content", height: 45, justifyContent: 'center' }}>
+        <View style={{ height: 45, justifyContent: 'center' }}>
           <Text
             style={{
               fontFamily: FONTS.bold,

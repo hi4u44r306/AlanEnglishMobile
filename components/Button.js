@@ -4,7 +4,7 @@ import { TouchableOpacity, Text, Image, View } from "react-native";
 import { COLORS, SIZES, FONTS, SHADOWS } from "../constants";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
+export const CircleButton = ({ imgUrl, handlePress, text, ...props }) => {
   return (
     <TouchableOpacity
       style={{
@@ -28,7 +28,7 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
         style={{ width: 24, height: 23 }}
       />
       <Text style={{ fontSize: 15 }}>
-        回播放列表
+        {text}
       </Text>
     </TouchableOpacity>
   );

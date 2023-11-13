@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         borderWidth: 3.5,
         borderRadius: 5,
         width: "80%",
-        height: 40,
+        // height: 40,
         margin: 3,
         padding: 10,
     },

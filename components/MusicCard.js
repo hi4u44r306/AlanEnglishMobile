@@ -50,10 +50,9 @@ const MusicCard = ({ data, onclickmusic }) => {
     <View
       style={{
         backgroundColor: COLORS.white,
-        borderRadius: SIZES.font,
-        marginBottom: SIZES.extraLarge,
-        margin: SIZES.base,
-        ...SHADOWS.dark,
+        // borderRadius: SIZES.font,
+        // margin: SIZES.base,
+        ...SHADOWS.medium,
       }}
     >
       <View style={{ width: "100%", padding: SIZES.font, justifyContent: 'center', alignContent: 'center' }}>
@@ -73,7 +72,7 @@ const MusicCard = ({ data, onclickmusic }) => {
             handlePress={onclickmusic}
           />
         </View>
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -86,7 +85,7 @@ const MusicCard = ({ data, onclickmusic }) => {
             fontSize={SIZES.font}
             handlePress={() => navigation.navigate("Details", { data })}
           />
-        </View>
+        </View> */}
       </View>
     </View>
   );

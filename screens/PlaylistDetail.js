@@ -1,19 +1,22 @@
 import React from 'react';
-import { ScrollView, SafeAreaView, StatusBar, Text, View, FlatList, StyleSheet } from 'react-native';
+import { SafeAreaView, StatusBar, Text, View, FlatList, StyleSheet } from 'react-native';
 import { CircleButton, FocusedStatusBar, MusicCard } from '../components';
 import { COLORS, assets, musicDB } from '../constants';
-import { useRoute } from '@react-navigation/native';
 import FooterMusicPlayer from '../components/FooterMusicPlayer';
 import { useState } from 'react';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 
-function PlaylistDetail() {
+const PlaylistDetail = () => {
     const route = useRoute();
-    const musicType = route.params?.musicType || 'Default Type'; // Default value for testing
+    const navigation = useNavigation();
+    const musicType = route.params?.musicType || 'Default Type';
     const [selectedMusic, setSelectedMusic] = useState(null);
+
     const handleCardClick = (data) => {
         setSelectedMusic(data);
     };
+
     const filterMusicByType = (type) => {
         if (type === musicType) {
             return musicDB.filter((item) => item.type === type);
@@ -22,37 +25,39 @@ function PlaylistDetail() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <FocusedStatusBar backgroundColor={COLORS.primary} />
-            <View style={styles.test}>
+            <View>
                 <CircleButton
                     imgUrl={assets.left}
-                    handlePress={() => navigation.navigate("Playlist")} // Go back to the Playlist screen
+                    handlePress={() => navigation.goBack()}
                     left={15}
-                    top={StatusBar.currentHeight + 10}
-                    title={musicType}
+                    top={StatusBar.currentHeight}
+                    text={"回播放列表"}
                 />
             </View>
-            <View style={{ marginTop: 40 }}>
+            <View style={{ marginTop: 50, flex: 1 }}>
                 <View style={styles.typetitle}>
-                    <Text style={styles.titletext}>
-                        {musicType}
-                    </Text>
+                    <Text style={styles.titletext}>{musicType}</Text>
                 </View>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <FlatList
-                        data={filterMusicByType(musicType)}
-                        renderItem={({ item }) => (
-                            <MusicCard data={item} onclickmusic={() => handleCardClick(item)} />
-                        )}
-                        keyExtractor={(item) => item.musicName}
-                    />
-                </ScrollView>
+                <FlatList
+                    data={filterMusicByType(musicType)}
+                    renderItem={({ item }) => (
+                        <MusicCard data={item} onclickmusic={() => handleCardClick(item)} />
+                    )}
+                    keyExtractor={(item) => item.musicName}
+                />
             </View>
-            <FooterMusicPlayer display={selectedMusic ? "flex" : "none"} data={selectedMusic} />
+            {selectedMusic && (
+                <FooterMusicPlayer
+                    display="flex"
+                    data={selectedMusic}
+                    playlistDetailHeight={selectedMusic ? '75%' : '85%'} // Adjust the percentage as needed
+                />
+            )}
         </SafeAreaView>
     );
-}
+};
 
 
 const styles = StyleSheet.create({
@@ -62,12 +67,12 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         alignItems: 'center',
         backgroundColor: '#005b7f',
+        padding: 8,
     },
     titletext: {
         fontSize: 18,
-        fontWeight: 600,
+        fontWeight: '600',
         color: '#fff4d5',
-        fontFamily: "Nunito",
     }
 
 })

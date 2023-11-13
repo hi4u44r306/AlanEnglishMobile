@@ -26,10 +26,10 @@ const theme = {
 }
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const homepage = 'Home';
-const playlistpage = 'Playlist';
-const profilepage = 'Profile';
-const leaderboardpage = 'Rank';
+const homepage = '首頁';
+const playlistpage = '播放列表';
+const profilepage = '用戶';
+const leaderboardpage = '排行榜';
 
 
 
@@ -52,19 +52,19 @@ function Root() {
           } else if (rn === leaderboardpage) {
             iconName = focused ? 'medal' : 'medal-outline';
           }
-          return <Text><Ionicons name={iconName} size={18} color={color} style={{ margin: 20, }} /></Text>
+          return <Text><Ionicons name={iconName} size={20} color={color} style={{ margin: 20, }} /></Text>
 
         },
         tabBarStyle: { paddingBottom: 30, height: 90 },
-        tabBarLabelStyle: { fontWeight: 700, fontFamily: 'Nunito', fontSize: 15 },
+        tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 15 },
         tabBarActiveTintColor: 'rgb(64, 98, 187)',
         tabBarInactiveTintColor: 'gray'
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Rank" component={Leaderboard} />
-      <Tab.Screen name="Playlist" component={Playlist} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="首頁" component={Home} />
+      <Tab.Screen name="排行榜" component={Leaderboard} />
+      <Tab.Screen name="播放列表" component={Playlist} />
+      <Tab.Screen name="用戶" component={Profile} />
     </Tab.Navigator>
   );
 }
@@ -79,6 +79,7 @@ const App = () => {
     LibreRegular: require("./assets/fonts/LibreBaskerville-Bold.ttf"),
     LibreBold: require("./assets/fonts/LibreBaskerville-Regular.ttf"),
     VarelaRound: require("./assets/fonts/VarelaRound-Regular.ttf"),
+    Nunito: require("./assets/fonts/Nunito-VariableFont_wght.ttf"),
   })
 
   const db = firebase.firestore();
@@ -90,7 +91,7 @@ const App = () => {
         const studentDoc = await db.collection('student').doc(user.uid).get();
         await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
         await AsyncStorage.setItem('ae-username', studentDoc.data()?.name);
-        await AsyncStorage.setItem('ae-totaltimeplayed', studentDoc.data()?.totaltimeplayed);
+        await AsyncStorage.setItem('ae-totaltimeplayed', JSON.stringify(studentDoc.data()?.totaltimeplayed));
       } catch (error) {
         console.error('Error while setting student data:', error);
       }
@@ -102,28 +103,28 @@ const App = () => {
         console.error('Error while setting teacher data:', error);
       }
 
-      try {
-        const snapshot = await firebase.database().ref('TeachingResources/').once('value');
-        const data = snapshot.val();
+      // try {
+      //   const snapshot = await firebase.database().ref('TeachingResources/').once('value');
+      //   const data = snapshot.val();
 
-        if (data) {
-          const dataArray = Object.entries(data).map(([date, details]) => ({
-            date,
-            ...details,
-          }));
+      //   if (data) {
+      //     const dataArray = Object.entries(data).map(([date, details]) => ({
+      //       date,
+      //       ...details,
+      //     }));
 
-          await AsyncStorage.setItem('teachingResourcesData', JSON.stringify(dataArray));
-        } else {
-          const placeholderData = {
-            description: 'This is a placeholder node.',
-            timestamp: '2023-10-19 12:00:00',
-          };
+      //     await AsyncStorage.setItem('teachingResourcesData', JSON.stringify(dataArray));
+      //   } else {
+      //     const placeholderData = {
+      //       description: 'This is a placeholder node.',
+      //       timestamp: '2023-10-19 12:00:00',
+      //     };
 
-          await AsyncStorage.setItem('teachingResourcesData', JSON.stringify(placeholderData));
-        }
-      } catch (error) {
-        console.error('Error while setting teaching resources data:', error);
-      }
+      //     await AsyncStorage.setItem('teachingResourcesData', JSON.stringify(placeholderData));
+      //   }
+      // } catch (error) {
+      //   console.error('Error while setting teaching resources data:', error);
+      // }
     } else {
       await AsyncStorage.setItem('ae-class', '');
       await AsyncStorage.setItem('ae-useruid', '');
@@ -137,7 +138,7 @@ const App = () => {
   if (!loaded) return null;
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Root">
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Login">
         <Stack.Screen name="Root" component={Root} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Details" component={Details} />
