@@ -7,16 +7,12 @@ import { COLORS, SIZES, SHADOWS } from "../constants";
 import { Timeplayed, MusicTitle, GameScore } from "./SubInfo";
 import { PlayButton, GameButton } from "./Button";
 import firebase from 'firebase/app';
+import { Audio } from 'expo-av';
 
 
 const MusicCard = ({ data, onclickmusic }) => {
-  // const {bookname , page , img, questions} = props.music;
   const navigation = useNavigation();
-
   const db = firebase.firestore();
-  // const [timeplayed, setTimesplayed] = useState();
-  // const [gamescore, setGamescore] = useState();
-
 
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
@@ -50,8 +46,6 @@ const MusicCard = ({ data, onclickmusic }) => {
     <View
       style={{
         backgroundColor: COLORS.white,
-        // borderRadius: SIZES.font,
-        // margin: SIZES.base,
         ...SHADOWS.medium,
       }}
     >
@@ -68,9 +62,8 @@ const MusicCard = ({ data, onclickmusic }) => {
             titleSize={SIZES.large}
             subTitleSize={SIZES.small}
           />
-          <PlayButton
-            handlePress={onclickmusic}
-          />
+          {/* <PlayButton handlePress={onclickmusic} /> */}
+          <PlayButton handlePress={() => onclickmusic(data)} />
         </View>
         {/* <View
           style={{

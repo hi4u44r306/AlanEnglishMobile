@@ -1,38 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS, musicDB } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
+import { useRef } from 'react';
 
-// Assuming you have React Navigation installed
-import { useNavigation } from '@react-navigation/native';
-
-const MusicPlayer = ({ display, data }) => {
+const MusicPlayer = ({ display, data, autoPlay, }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  // const navigation = useNavigation();
-  const handlePress = () => {
-    // Navigate to MusicPlayerScreen
-    // navigation.navigate('MusicPlayerScreen', { data }); // You may need to adjust the route name
+  const [sound, setSound] = useState();
+  const [music, setMusic] = useState(data.musicName);
+
+  useEffect(() => {
+    return sound ? () => sound.unloadAsync() : undefined;
+  }, [sound]);
+
+  useEffect(() => {
+    if (autoPlay) {
+      playSound();
+    }
+  }, [autoPlay]);
+
+  useEffect(() => {
+    // Set the music when the data changes
+    setMusic(data.musicName);
+  }, [data]);
+
+  const playSound = async () => {
+    if (sound) {
+      if (isPlaying) {
+        await sound.pauseAsync();
+      } else {
+        await sound.playAsync();
+      }
+      setIsPlaying(!isPlaying);
+    } else {
+      const { sound } = await Audio.Sound.createAsync(
+        require(`../assets/music/${music}`)
+      );
+      setSound(sound);
+      setIsPlaying(true);
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        // You can handle playback status updates here if needed
+      });
+    }
   };
 
-  // useEffect(() => {
-  //   // Add a track when the component mounts
-  //   TrackPlayer.add([{
-  //     id: '1',
-  //     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Adjust the path based on your project structure
-  //     title: data.bookname,
-  //     artist: data.page,
-  //     artwork: require('../assets/img/headphone.png'), // Adjust the path based on your project structure
-  //   }]);
-  // }, [data]);
+  const handleClickNext = async () => {
+  };
 
-  // const togglePlayback = async () => {
-  //   if (isPlaying) {
-  //     await TrackPlayer.pause();
-  //   } else {
-  //     await TrackPlayer.play();
-  //   }
-  //   setIsPlaying(!isPlaying);
-  // };
+  const handleClickPrevious = async () => {
+  };
+
+
 
   return (
     <TouchableOpacity >
@@ -50,20 +70,24 @@ const MusicPlayer = ({ display, data }) => {
 
             {/* Controls */}
             <View style={styles.controlsContainer}>
-              <Text>{isPlaying ? 'Playing' : 'Paused'}</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleClickPrevious}>
+                <AntDesign name="stepbackward" size={24} color="black" style={styles.controlIcon} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={playSound}>
                 {isPlaying ? (
                   <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} />
                 ) : (
                   <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
                 )}
               </TouchableOpacity>
+              <TouchableOpacity onPress={handleClickNext}>
+                <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
+              </TouchableOpacity>
             </View>
           </View>
         )}
       </View>
     </TouchableOpacity>
-
   );
 };
 
@@ -101,3 +125,4 @@ const styles = StyleSheet.create({
 });
 
 export default MusicPlayer;
+
