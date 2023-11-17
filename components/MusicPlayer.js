@@ -1,55 +1,92 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { COLORS, musicDB } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
-import { useRef } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentPlaying } from "./actions/actions";
 
-const MusicPlayer = ({ display, data, autoPlay, }) => {
+// import TrackPlayer from 'react-native-track-player';
+
+
+function MusicPlayer({ display, autoPlay, music }) {
+  const [{ bookname, page, musicName }, setCurrTrack] = useState(music);
   const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState();
-  const [music, setMusic] = useState(data.musicName);
 
   useEffect(() => {
-    return sound ? () => sound.unloadAsync() : undefined;
-  }, [sound]);
+    setCurrTrack(music);
+  }, [music]);
 
-  useEffect(() => {
-    if (autoPlay) {
-      playSound();
-    }
-  }, [autoPlay]);
+  // const playSound = async () => {
+  //   // Set up the player
+  //   await TrackPlayer.setupPlayer();
 
-  useEffect(() => {
-    // Set the music when the data changes
-    setMusic(data.musicName);
-  }, [data]);
+  //   // Add a track to the queue
+  //   await TrackPlayer.add({
+  //     url: require(`../assets/music/${musicName}`),
+  //     title: bookname,
+  //     artist: 'Track Artist',
+  //   });
 
-  const playSound = async () => {
-    if (sound) {
-      if (isPlaying) {
-        await sound.pauseAsync();
-      } else {
-        await sound.playAsync();
-      }
-      setIsPlaying(!isPlaying);
-    } else {
-      const { sound } = await Audio.Sound.createAsync(
-        require(`../assets/music/${music}`)
-      );
-      setSound(sound);
-      setIsPlaying(true);
-      await sound.playAsync();
-      sound.setOnPlaybackStatusUpdate((status) => {
-        // You can handle playback status updates here if needed
-      });
-    }
-  };
+  //   // Start playing it
+  //   await TrackPlayer.play();
+  // }
 
+
+  // useEffect(() => {
+  //   return sound ? () => sound.unloadAsync() : undefined;
+  // }, [sound]);
+
+  // const playSound = async () => {
+  //   try {
+  //     if (sound) {
+  //       isPlaying ? await sound.pauseAsync() : await sound.playAsync();
+  //       setIsPlaying(!isPlaying);
+  //     } else {
+  //       const { sound: newSound } = await Audio.Sound.createAsync(
+  //         require(`../assets/music/${musicName}`)
+  //       );
+  //       setSound(newSound); // Update sound state with the new sound
+  //       setIsPlaying(true);
+  //       await newSound.playAsync();
+  //       newSound.setOnPlaybackStatusUpdate((status) => {
+  //         if (status.didJustFinish) {
+  //           setIsPlaying(false);
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error playing sound:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (autoPlay) {
+  //     playSound();
+  //   }
+  // }, [autoPlay]);
+
+
+
+
+  // const currentTrack = playlists.findIndex(obj => obj.musicName === musicName)
   const handleClickNext = async () => {
+    console.log('Next Track')
+    // let abc = currentTrack + 1;
+    // if ((currentTrack + 1) >= playlists.length) {
+    //   abc = 0;
+    // }
+    // dispatch(setCurrentPlaying(playlists[abc]));
   };
 
   const handleClickPrevious = async () => {
+    console.log('Previous Track')
+    // let abc = currentTrack - 1;
+    // if ((currentTrack - 1) <= -1) {
+    //   abc = playlists.length - 1;
+    // }
+    // dispatch(setCurrentPlaying(playlists[abc]));
   };
 
 
@@ -57,15 +94,15 @@ const MusicPlayer = ({ display, data, autoPlay, }) => {
   return (
     <TouchableOpacity >
       <View style={{ display: display }}>
-        {data && (
+        {music && (
           <View style={styles.container}>
             {/* Image */}
             <Image source={require('../assets/img/headphone.png')} style={styles.image} />
 
             {/* Details */}
             <View style={styles.detailsContainer}>
-              <Text style={styles.bookName}>{data.bookname}</Text>
-              <Text style={styles.page}>{`Page ${data.page}`}</Text>
+              <Text style={styles.bookName}>{bookname}</Text>
+              <Text style={styles.page}>{`Page ${page}`}</Text>
             </View>
 
             {/* Controls */}
@@ -84,6 +121,7 @@ const MusicPlayer = ({ display, data, autoPlay, }) => {
                 <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
               </TouchableOpacity>
             </View>
+
           </View>
         )}
       </View>

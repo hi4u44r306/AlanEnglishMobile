@@ -7,11 +7,18 @@ import { COLORS, SIZES, SHADOWS } from "../constants";
 import { Timeplayed, MusicTitle, GameScore } from "./SubInfo";
 import { PlayButton, GameButton } from "./Button";
 import firebase from 'firebase/app';
-import { Audio } from 'expo-av';
+
+import { useDispatch } from "react-redux";
+import { setCurrentPlaying } from "./actions/actions";
 
 
-const MusicCard = ({ data, onclickmusic }) => {
+function MusicCard(props) {
+  const { music } = props;
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+
+
+
   const db = firebase.firestore();
 
   firebase.auth().onAuthStateChanged(user => {
@@ -26,7 +33,7 @@ const MusicCard = ({ data, onclickmusic }) => {
 
   const getUserInfo = (user) => {
     if (user) {
-      const convertmusicid = "'" + data.id + "'";
+      // const convertmusicid = "'" + data.id + "'";
       // db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc) => {
       //   setTimesplayed(doc.data().timeplayed);
       // })
@@ -40,6 +47,15 @@ const MusicCard = ({ data, onclickmusic }) => {
     } else {
       console.log('no data');
     }
+  }
+
+  function handlePlay() {
+    console.log('Play button pressed');
+    dispatch(setCurrentPlaying(music));
+    props.onclickmusic(music);
+  }
+  function handleStop() {
+    dispatch(setCurrentPlaying());
   }
 
   return (
@@ -57,13 +73,13 @@ const MusicCard = ({ data, onclickmusic }) => {
           alignContent: 'center',
         }}>
           <MusicTitle
-            title={data.bookname}
-            subTitle={data.page}
+            title={music.bookname}
+            subTitle={music.page}
             titleSize={SIZES.large}
             subTitleSize={SIZES.small}
           />
-          {/* <PlayButton handlePress={onclickmusic} /> */}
-          <PlayButton handlePress={() => onclickmusic(data)} />
+          <PlayButton handlePress={handlePlay} />
+          {/* <PlayButton handlePress={() => onclickmusic(data)} /> */}
         </View>
         {/* <View
           style={{

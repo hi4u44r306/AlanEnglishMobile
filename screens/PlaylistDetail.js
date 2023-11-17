@@ -5,12 +5,21 @@ import { COLORS, assets, musicDB } from '../constants';
 import MusicPlayer from '../components/MusicPlayer';
 import { useState } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const PlaylistDetail = () => {
     const route = useRoute();
     const navigation = useNavigation();
     const musicType = route.params?.musicType || 'Default Type';
     const [selectedMusic, setSelectedMusic] = useState();
+    const { playing } = useSelector(state => state.musicReducer);
+    const [currMusic, setCurrMusic] = useState(null);
+
+    useEffect(() => {
+        setCurrMusic(playing)
+    }, [playing]);
+
 
     const handleCardClick = (data) => {
         setSelectedMusic(data);
@@ -43,22 +52,18 @@ const PlaylistDetail = () => {
                 <FlatList
                     data={filterMusicByType(musicType)}
                     renderItem={({ item }) => (
-                        <MusicCard data={item} onclickmusic={handleCardClick} />
+                        <MusicCard music={item} onclickmusic={handleCardClick} />
                     )}
                     keyExtractor={(item) => item.musicName}
                 />
             </View>
-            {selectedMusic && (
+
+            {currMusic && (
                 <MusicPlayer
+                    music={currMusic}
                     display="flex"
-                    data={selectedMusic}
                     autoPlay={true}
-                    onNext={() => {
-                        // Handle next song logic
-                    }}
-                    onPrevious={() => {
-                        // Handle previous song logic
-                    }}
+                    playlistDetailHeight={selectedMusic ? '75%' : '85%'}
                 />
             )}
             {/* {selectedMusic && (

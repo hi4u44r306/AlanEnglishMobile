@@ -3,6 +3,7 @@ import { View, TouchableOpacity, StyleSheet, Text, Image, FlatList, SafeAreaView
 import { useNavigation } from "@react-navigation/native";
 import { FocusedStatusBar, HomeHeader } from "../components";
 import { COLORS, SHADOWS, SIZES } from "../constants";
+
 const playlists = {
   習作本: ['Workbook_1', 'Workbook_2', 'Workbook_3', 'Workbook_4', 'Workbook_5'],
   SuperEasyReading: ['SER1', 'SER2', 'SER3'],
@@ -15,7 +16,6 @@ const playlists = {
 
 const Playlist = () => {
   const navigation = useNavigation();
-
   const handlePlaylistDetailNavigation = (musicType) => {
     navigation.navigate("PlaylistDetail", { musicType });
   };

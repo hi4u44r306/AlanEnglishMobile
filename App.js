@@ -15,6 +15,12 @@ import Solve from "./screens/Solve";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from "@expo/vector-icons";
 import PlaylistDetail from "./screens/PlaylistDetail";
+import { Provider } from "react-redux";
+
+import { createStore } from 'redux';
+import rootReducer from './reducer/reducer'; // Assuming you have a rootReducer
+
+const store = createStore(rootReducer);
 
 
 const theme = {
@@ -137,15 +143,17 @@ const App = () => {
 
   if (!loaded) return null;
   return (
-    <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Root">
-        <Stack.Screen name="Root" component={Root} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Details" component={Details} />
-        <Stack.Screen name="PlaylistDetail" component={PlaylistDetail} />
-        <Stack.Screen name="Solve" component={Solve} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer theme={theme}>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Root">
+          <Stack.Screen name="Root" component={Root} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Details" component={Details} />
+          <Stack.Screen name="PlaylistDetail" component={PlaylistDetail} />
+          <Stack.Screen name="Solve" component={Solve} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 export default App;
