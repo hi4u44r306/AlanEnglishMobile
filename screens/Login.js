@@ -135,7 +135,7 @@ const Login = () => {
                         }}
                     >
 
-                        <Text style={styles.inputtitle}>帳號</Text>
+                        {/* <Text style={styles.inputtitle}>帳號</Text>
                         <TextInput
                             placeholder="Email..."
                             onChangeText={setEmail}
@@ -150,7 +150,26 @@ const Login = () => {
                             onChange={(event) => { setPassword(event.target.value) }}
                             style={styles.input}
                             secureTextEntry={true}
+                        /> */}
+
+                        <Text style={styles.inputtitle}>帳號</Text>
+                        <input
+                            type="text"
+                            placeholder="Email..."
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            style={styles.input}
                         />
+
+                        <Text style={styles.inputtitle}>密碼</Text>
+                        <input
+                            type="password"
+                            placeholder="Password..."
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            style={styles.input}
+                        />
+
                         <LoginButton
                             margin={10}
                             minWidth={100}

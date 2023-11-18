@@ -30,7 +30,8 @@ const HomeHeader = ({ onSearch, display }) => {
     <View
       style={{
         backgroundColor: COLORS.ricewhite,
-        padding: SIZES.font,
+        paddingLeft: 10,
+        paddingRight: 10,
       }}
     >
       <View
@@ -45,12 +46,12 @@ const HomeHeader = ({ onSearch, display }) => {
         <View style={{ height: 45, justifyContent: 'center' }}>
           <Text
             style={{
-              fontFamily: FONTS.bold,
-              fontSize: SIZES.large,
+              fontFamily: FONTS.VarelaRound,
+              fontSize: 15,
               color: COLORS.primary,
             }}
           >
-            {username || "Loading..."} 👋
+            User: {username || "Loading..."}
           </Text>
         </View>
       </View>

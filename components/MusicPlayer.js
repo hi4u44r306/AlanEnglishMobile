@@ -7,6 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPlaying } from "./actions/actions";
 
 // import TrackPlayer from 'react-native-track-player';
+// TrackPlayer.updateOptions({
+//   stopWithApp: false,
+//   capabilities: [TrackPlayer.CAPABILITY_PLAY, TrackPlayer.CAPABILITY_PAUSE],
+//   compactCapabilities: [
+//     TrackPlayer.CAPABILITY_PLAY,
+//     TrackPlayer.CAPABILITY_PAUSE,
+//   ],
+// });
 
 
 function MusicPlayer({ display, autoPlay, music }) {
@@ -18,55 +26,72 @@ function MusicPlayer({ display, autoPlay, music }) {
     setCurrTrack(music);
   }, [music]);
 
-  // const playSound = async () => {
-  //   // Set up the player
-  //   await TrackPlayer.setupPlayer();
-
-  //   // Add a track to the queue
-  //   await TrackPlayer.add({
-  //     url: require(`../assets/music/${musicName}`),
-  //     title: bookname,
-  //     artist: 'Track Artist',
-  //   });
-
-  //   // Start playing it
-  //   await TrackPlayer.play();
-  // }
-
-
-  // useEffect(() => {
-  //   return sound ? () => sound.unloadAsync() : undefined;
-  // }, [sound]);
-
-  // const playSound = async () => {
+  // const setUpTrackPlayer = async () => {
   //   try {
-  //     if (sound) {
-  //       isPlaying ? await sound.pauseAsync() : await sound.playAsync();
-  //       setIsPlaying(!isPlaying);
-  //     } else {
-  //       const { sound: newSound } = await Audio.Sound.createAsync(
-  //         require(`../assets/music/${musicName}`)
-  //       );
-  //       setSound(newSound); // Update sound state with the new sound
-  //       setIsPlaying(true);
-  //       await newSound.playAsync();
-  //       newSound.setOnPlaybackStatusUpdate((status) => {
-  //         if (status.didJustFinish) {
-  //           setIsPlaying(false);
-  //         }
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error('Error playing sound:', error);
+  //     await TrackPlayer.setupPlayer();
+  //     await TrackPlayer.add(tracks);
+  //     console.log('Tracks added');
+  //   } catch (e) {
+  //     console.log(e);
   //   }
   // };
 
   // useEffect(() => {
-  //   if (autoPlay) {
-  //     playSound();
-  //   }
-  // }, [autoPlay]);
+  //   setUpTrackPlayer();
 
+  //   return () => TrackPlayer.destroy();
+  // }, []);
+
+  const playSound = async () => {
+    console.log('playsound')
+    try {
+      if (sound) {
+        isPlaying ? await sound.pauseAsync() : await sound.playAsync();
+        setIsPlaying(!isPlaying);
+      } else {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require(`../assets/music/${musicName}`)
+        );
+        setSound(newSound); // Update sound state with the new sound
+        setIsPlaying(true);
+        await newSound.playAsync();
+        newSound.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            setIsPlaying(false);
+            setSound(null);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error playing sound:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (autoPlay) {
+      playSound();
+    }
+  }, [autoPlay]);
+
+
+
+  useEffect(() => {
+    // Stop the current sound when the music prop changes
+    stopSound();
+  }, [music]);
+
+  const stopSound = async () => {
+    console.log('stop sound')
+    try {
+      if (sound) {
+        await sound.stopAsync();
+        setIsPlaying(false);
+        setSound(null); // Remove the reference to the sound
+      }
+    } catch (error) {
+      console.error('Error stopping sound:', error);
+    }
+  };
 
 
 
@@ -93,7 +118,14 @@ function MusicPlayer({ display, autoPlay, music }) {
 
   return (
     <TouchableOpacity >
-      <View style={{ display: display }}>
+      <View style={{
+        display: display,
+        position: 'absolute',
+        bottom: 90,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
         {music && (
           <View style={styles.container}>
             {/* Image */}
@@ -106,6 +138,22 @@ function MusicPlayer({ display, autoPlay, music }) {
             </View>
 
             {/* Controls */}
+            {/* <View style={styles.controlsContainer}>
+              <TouchableOpacity onPress={() => TrackPlayer.skipToPrevious()}>
+                <AntDesign name="stepbackward" size={24} color="black" style={styles.controlIcon} />
+              </TouchableOpacity>
+              <TouchableOpacity >
+                {isPlaying ? (
+                  <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} onPress={() => TrackPlayer.play()} />
+                ) : (
+                  <AntDesign name="play" size={24} color="black" style={styles.controlIcon} onPress={() => TrackPlayer.pause()} />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}  >
+                <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
+              </TouchableOpacity>
+            </View> */}
+
             <View style={styles.controlsContainer}>
               <TouchableOpacity onPress={handleClickPrevious}>
                 <AntDesign name="stepbackward" size={24} color="black" style={styles.controlIcon} />
@@ -117,7 +165,10 @@ function MusicPlayer({ display, autoPlay, music }) {
                   <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
                 )}
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleClickNext}>
+              <TouchableOpacity onPress={stopSound}>
+                <AntDesign name="closecircle" size={24} color="black" style={styles.controlIcon} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleClickNext}  >
                 <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
               </TouchableOpacity>
             </View>
@@ -135,6 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.ricewhite,
     padding: 10,
+    width: '100%',
   },
   image: {
     width: 50,

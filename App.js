@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack"
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
+import { NavigationContainer, DefaultTheme, useNavigation } from "@react-navigation/native"
 import { useFonts } from "expo-font"
 import { Text } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,11 +15,19 @@ import Solve from "./screens/Solve";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from "@expo/vector-icons";
 import PlaylistDetail from "./screens/PlaylistDetail";
-import { Provider } from "react-redux";
 
+// import TrackPlayer from 'react-native-track-player';
+// TrackPlayer.registerPlaybackService(() => require('./service.js'));
+
+import { Provider, useSelector } from "react-redux";
 import { createStore } from 'redux';
 import rootReducer from './reducer/reducer'; // Assuming you have a rootReducer
-
+import { useState } from "react";
+import Homework from "./screens/Homework";
+import { useEffect } from "react";
+import MusicPlayer from "./components/MusicPlayer";
+import { View } from "react-native";
+import { FONTS } from "./constants";
 const store = createStore(rootReducer);
 
 
@@ -36,44 +44,82 @@ const homepage = '首頁';
 const playlistpage = '播放列表';
 const profilepage = '用戶';
 const leaderboardpage = '排行榜';
+const homework = '聯絡簿';
 
-
+const PlaylistStackScreen = () => (
+  <Stack.Navigator initialRouteName="Playlist" headerMode="none">
+    <Stack.Screen name="Playlist" component={Playlist} />
+    <Stack.Screen name="PlaylistDetail" component={PlaylistDetail}
+      options={{
+        headerShown: true, title: '回播放列表', headerStyle: { height: 50 }, headerTitleStyle: { fontFamily: FONTS.VarelaRound, fontSize: 16 }
+      }} />
+  </Stack.Navigator>
+);
 
 function Root() {
+  const { playing } = useSelector(state => state.musicReducer);
+  const [currMusic, setCurrMusic] = useState(null);
+
+  useEffect(() => {
+    setCurrMusic(playing)
+  }, [playing]);
+
   return (
-    <Tab.Navigator
-      initialRouteName="Playlist"
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ focused, color }) => {
-          let iconName;
-          let rn = route.name;
+    <View style={{ flex: 1 }}>
+      <Tab.Navigator
+        initialRouteName="播放列表"
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarIcon: ({ focused, color }) => {
+            let iconName;
+            let rn = route.name;
 
-          if (rn === homepage) {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (rn === playlistpage) {
-            iconName = focused ? 'musical-notes' : 'musical-notes-outline';
-          } else if (rn === profilepage) {
-            iconName = focused ? 'person-circle' : 'person-circle-outline';
-          } else if (rn === leaderboardpage) {
-            iconName = focused ? 'medal' : 'medal-outline';
-          }
-          return <Text><Ionicons name={iconName} size={20} color={color} style={{ margin: 20, }} /></Text>
+            if (rn === homepage) {
+              iconName = focused ? 'home' : 'home-outline';
+            }
+            else if (rn === playlistpage) {
+              iconName = focused ? 'musical-notes' : 'musical-notes-outline';
+            }
+            else if (rn === profilepage) {
+              iconName = focused ? 'person-circle' : 'person-circle-outline';
+            }
+            else if (rn === leaderboardpage) {
+              iconName = focused ? 'medal' : 'medal-outline';
+            }
+            else if (rn === homework) {
+              iconName = focused ? 'book' : 'book-outline';
+            }
 
-        },
-        tabBarStyle: { paddingBottom: 30, height: 90 },
-        tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 15 },
-        tabBarActiveTintColor: 'rgb(64, 98, 187)',
-        tabBarInactiveTintColor: 'gray'
-      })}
-    >
-      <Tab.Screen name="首頁" component={Home} />
-      <Tab.Screen name="排行榜" component={Leaderboard} />
-      <Tab.Screen name="播放列表" component={Playlist} />
-      <Tab.Screen name="用戶" component={Profile} />
-    </Tab.Navigator>
+            return <Text><Ionicons name={iconName} size={20} color={color} style={{ margin: 20, }} /></Text>
+
+          },
+          // tabBarStyle: { paddingBottom: 30, height: 90 },
+          tabBarStyle: { paddingBottom: 30, height: 90 },
+          tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 15 },
+          tabBarActiveTintColor: 'rgb(64, 98, 187)',
+          tabBarInactiveTintColor: 'gray'
+        })}
+      >
+        <Tab.Screen name="首頁" component={Home} />
+        <Tab.Screen name="排行榜" component={Leaderboard} />
+        <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
+        <Tab.Screen name="用戶" component={Profile} />
+        {/* {role === 'Teacher' && <Tab.Screen name="聯絡簿" component={Homework} />} */}
+        <Tab.Screen name="聯絡簿" component={Homework} />
+      </Tab.Navigator>
+      <View>
+        {currMusic && (
+          <MusicPlayer
+            music={currMusic}
+            display="flex"
+            autoPlay={true}
+          />
+        )}
+      </View>
+    </View>
   );
 }
+
 
 const App = () => {
   const [loaded] = useFonts({
@@ -92,7 +138,6 @@ const App = () => {
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
       await AsyncStorage.setItem('ae-useruid', user.uid);
-
       try {
         const studentDoc = await db.collection('student').doc(user.uid).get();
         await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
@@ -149,12 +194,15 @@ const App = () => {
           <Stack.Screen name="Root" component={Root} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Details" component={Details} />
-          <Stack.Screen name="PlaylistDetail" component={PlaylistDetail} />
           <Stack.Screen name="Solve" component={Solve} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
   );
 }
+
+
+
+
 export default App;
 

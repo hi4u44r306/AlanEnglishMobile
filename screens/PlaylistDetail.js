@@ -1,12 +1,12 @@
 import React from 'react';
 import { SafeAreaView, StatusBar, Text, View, FlatList, StyleSheet } from 'react-native';
-import { CircleButton, FocusedStatusBar, MusicCard } from '../components';
+import { CircleButton, FocusedStatusBar, HomeHeader, MusicCard } from '../components';
 import { COLORS, assets, musicDB } from '../constants';
-import MusicPlayer from '../components/MusicPlayer';
 import { useState } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+
 
 const PlaylistDetail = () => {
     const route = useRoute();
@@ -45,7 +45,7 @@ const PlaylistDetail = () => {
                     text={"回播放列表"}
                 />
             </View>
-            <View style={{ marginTop: 50, flex: 1 }}>
+            <View style={{ flex: 1, marginBottom: 75 }}>
                 <View style={styles.typetitle}>
                     <Text style={styles.titletext}>{musicType}</Text>
                 </View>
@@ -57,23 +57,6 @@ const PlaylistDetail = () => {
                     keyExtractor={(item) => item.musicName}
                 />
             </View>
-
-            {currMusic && (
-                <MusicPlayer
-                    music={currMusic}
-                    display="flex"
-                    autoPlay={true}
-                    playlistDetailHeight={selectedMusic ? '75%' : '85%'}
-                />
-            )}
-            {/* {selectedMusic && (
-                <MusicPlayer
-                    display="flex"
-                    data={selectedMusic}
-                    playlistDetailHeight={selectedMusic ? '75%' : '85%'}
-                    autoPlay={true} // Set autoPlay to true
-                />
-            )} */}
         </SafeAreaView>
     );
 };
@@ -86,7 +69,7 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         alignItems: 'center',
         backgroundColor: '#005b7f',
-        padding: 8,
+        padding: 5,
     },
     titletext: {
         fontSize: 18,

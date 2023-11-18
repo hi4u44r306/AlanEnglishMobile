@@ -106,14 +106,14 @@ class Leaderboard extends Component {
   render() {
     const columns = ["名次", "姓名", "上線日期", "播放次數"];
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fcf8ec' }}>
 
         {/* FocusedStatusBar and Homeheader always on the top */}
         <FocusedStatusBar backgroundColor={COLORS.primary} />
         <HomeHeader display='none' />
         {/* FocusedStatusBar and Homeheader always on the top */}
 
-        <ScrollView style={{ flex: 1, backgroundColor: 'white' }}
+        <ScrollView style={{ flex: 1, backgroundColor: '#fcf8ec', marginBottom: 75 }}
           stickyHeaderIndices={[0]}>
           <View style={{ flex: 1 }}>
             {/* A班 */}

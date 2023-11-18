@@ -44,9 +44,9 @@ const Playlist = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
-      <HomeHeader />
+      <HomeHeader display="none" />
       <FlatList
-        style={{ height: "84%" }}
+        style={{ marginBottom: 75, }}
         data={[
           { title: '習作本', data: playlists.習作本 },
           { title: 'Super Easy Reading', data: playlists.SuperEasyReading },

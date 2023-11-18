@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, Text, StyleSheet } from "react-native";
+import { View, SafeAreaView, Text, StyleSheet, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
@@ -42,12 +42,40 @@ const Profile = () => {
     });
   }, [currentDate, currentMonth, db, useruid]);
 
+  // const Logout = () => {
+  //   Alert.alert(
+  //     'Confirmation',
+  //     'Are you sure you want to proceed?',
+  //     [
+  //       {
+  //         text: 'Cancel',
+  //         style: 'cancel',
+  //       },
+  //       {
+  //         text: 'OK',
+  //         onPress: () => {
+  //           // Handle the confirmation action
+  //           console.log('User confirmed');
+  //           firebase.auth().signOut()
+  //             .then(() => {
+  //               navigation.navigate("Login");
+
+  //             }).catch((err) => {
+  //               console.log(err);
+  //             });
+  //         },
+  //       },
+  //     ],
+  //     { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
+  //   );
+  // };
+
   const Logout = () => {
     firebase.auth().signOut()
       .then(() => {
         navigation.navigate("Login");
-      }).catch((err) => {
-        console.log(err);
+      }).catch((error) => {
+        console.log(error);
       });
   };
 

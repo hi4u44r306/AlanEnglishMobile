@@ -45,7 +45,7 @@ function MusicCard(props) {
       //     console.log("There no data for some ID", err)
       // })
     } else {
-      console.log('no data');
+      // console.log('no data');
     }
   }
 
@@ -65,7 +65,7 @@ function MusicCard(props) {
         ...SHADOWS.medium,
       }}
     >
-      <View style={{ width: "100%", padding: SIZES.font, justifyContent: 'center', alignContent: 'center' }}>
+      <View style={{ width: "100%", paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignContent: 'center' }}>
         <View style={{
           flexDirection: "row",
           justifyContent: "space-between",
