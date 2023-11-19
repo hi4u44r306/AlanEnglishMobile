@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
 import { COLORS, SIZES } from "../constants";
 import firebase from "./firebase";
+import ScreenContainer from "./ScreenContainer";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -80,7 +81,7 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <HomeHeader display='none' />
       <View style={styles.contentContainer}>
@@ -107,7 +108,7 @@ const Profile = () => {
           />
         </View>
       </View>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 };
 

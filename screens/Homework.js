@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, Text, TextInput, CheckBox, Button } from "react-native";
+import { View, SafeAreaView, Text, TextInput, Button } from "react-native";
+import { CheckBoxComponent } from "@react-native-community/checkbox";
 
 import { HomeHeader, FocusedStatusBar } from "../components";
 import { COLORS } from "../constants";
@@ -72,17 +73,17 @@ const Homework = () => {
 
                     {isTeacher && (
                         <View style={{ width: "80%" }}>
-                            <CheckBox
+                            {/* <CheckBoxComponent
                                 value={booksToRead.includes("Book1")}
                                 onValueChange={() => handleBookCheck("Book1")}
                             />
                             <Text style={{ color: COLORS.primaryText }}>Book 1</Text>
 
-                            <CheckBox
+                            <CheckBoxComponent
                                 value={booksToRead.includes("Book2")}
                                 onValueChange={() => handleBookCheck("Book2")}
                             />
-                            <Text style={{ color: COLORS.primaryText }}>Book 2</Text>
+                            <Text style={{ color: COLORS.primaryText }}>Book 2</Text> */}
 
                             <TextInput
                                 style={styles.input}

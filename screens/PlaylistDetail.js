@@ -37,8 +37,6 @@ const PlaylistDetail = () => {
 
     return (
         <ScreenContainer>
-            <FocusedStatusBar backgroundColor={COLORS.primary} />
-
             <View style={styles.typetitle}>
                 <Text style={styles.titletext}>{musicType}</Text>
             </View>
@@ -53,7 +51,7 @@ const PlaylistDetail = () => {
                     <View style={styles.endOfList}>
                         <Ionicons name="checkmark-done-circle-outline" size={30} color="rgb(64, 98, 187)" style={{}} />
                         <Text style={styles.endOfListText}>
-                            This is the end of the playlist !!
+                            這是播放列表的末端了
                         </Text>
                         <Ionicons name="checkmark-done-circle-outline" size={30} color="rgb(64, 98, 187)" style={{}} />
                     </View>
@@ -85,6 +83,7 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         alignItems: 'center',
         marginTop: 10, // Add margin or adjust as needed
+        marginBottom: 30, // Add margin or adjust as needed
         gap: 5,
     },
     endOfListText: {

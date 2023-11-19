@@ -36,7 +36,7 @@ const toastConfig = {
             />
             <Text style={{
                 color: 'red',
-                fontWeight: 700,
+                fontWeight: '700',
                 fontSize: '20px',
                 fontFamily: 'VarelaRound',
             }}>
@@ -57,7 +57,7 @@ const toastConfig = {
         }}>
             <Text style={{
                 color: 'white',
-                fontWeight: 700,
+                fontWeight: '700',
                 fontSize: '20px',
                 fontFamily: 'VarelaRound',
             }}>
@@ -105,14 +105,14 @@ const Login = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
-            <View style={{ zIndex: '100000000000000' }}>
+            <View>
                 <Toast
                     position='center'
                     topOffset={50}
                     config={toastConfig}
                 />
             </View>
-            <FocusedStatusBar backgroundColor="black" />
+            <FocusedStatusBar />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent: "center" }}>
 
@@ -135,7 +135,7 @@ const Login = () => {
                         }}
                     >
 
-                        {/* <Text style={styles.inputtitle}>帳號</Text>
+                        <Text style={styles.inputtitle}>帳號</Text>
                         <TextInput
                             placeholder="Email..."
                             onChangeText={setEmail}
@@ -150,10 +150,10 @@ const Login = () => {
                             onChange={(event) => { setPassword(event.target.value) }}
                             style={styles.input}
                             secureTextEntry={true}
-                        /> */}
+                        />
 
-                        <Text style={styles.inputtitle}>帳號</Text>
-                        <input
+                        {/* <Text style={styles.inputtitle}>帳號</Text>
+                        <TextInput
                             type="text"
                             placeholder="Email..."
                             value={email}
@@ -162,13 +162,13 @@ const Login = () => {
                         />
 
                         <Text style={styles.inputtitle}>密碼</Text>
-                        <input
+                        <TextInput
                             type="password"
                             placeholder="Password..."
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             style={styles.input}
-                        />
+                        /> */}
 
                         <LoginButton
                             margin={10}
@@ -191,7 +191,7 @@ const Login = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // paddingTop: 40,
+        paddingTop: 40,
     },
     inputtitle: {
         fontFamily: FONTS.VarelaRound,

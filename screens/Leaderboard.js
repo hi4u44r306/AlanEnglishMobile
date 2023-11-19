@@ -1,7 +1,7 @@
 import { View, SafeAreaView, Text, FlatList, Image, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
 import React, { Component } from 'react';
 import { HomeHeader, FocusedStatusBar } from "../components";
-import { COLORS } from "../constants";
+import { COLORS, FONTS } from "../constants";
 import firebase from "firebase";
 import first from '../assets/img/firstplace.png'
 import second from '../assets/img/secondplace.png'
@@ -109,7 +109,6 @@ class Leaderboard extends Component {
     const columns = ["名次", "姓名", "上線日期", "播放次數"];
     return (
       <ScreenContainer>
-        <FocusedStatusBar backgroundColor={COLORS.primary} />
         <HomeHeader display='none' />
         <ScrollView style={{ flex: 1, paddingBottom: 30 }}>
           {/* A班 */}
@@ -119,30 +118,19 @@ class Leaderboard extends Component {
               <ActivityIndicator size="large" color={COLORS.primary} />
             ) : (
               <>
+                <View style={styles.titleBar}>
+                  {columns.map((column, index) => (
+                    <Text key={index} style={styles.titleColumn}>
+                      {column}
+                    </Text>
+                  ))}
+                </View>
                 <FlatList
-                  ListHeaderComponent={
-                    <View style={styles.titleBar}>
-                      {columns.map((column, index) => (
-                        <Text key={index} style={styles.titleColumn}>
-                          {column}
-                        </Text>
-                      ))}
-                    </View>
-                  }
                   data={this.state.studentsA}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item, index }) => (
                     <View style={styles.studentContainer}>
                       <Text style={[styles.place, { textAlign: 'center' }]}>
-                        {/* {index < 3 ? (
-                            <Image
-                              style={{ width: 20, height: 20 }}
-                              source={[first, second, third][index]}
-                              alt={`${index + 1}st`}
-                            />
-                          ) : (
-                            index + 1
-                          )} */}
                         {index + 1}
                       </Text>
                       <Text style={styles.studentName}>{item.name}</Text>
@@ -162,30 +150,19 @@ class Leaderboard extends Component {
               <ActivityIndicator size="large" color={COLORS.primary} />
             ) : (
               <>
+                <View style={styles.titleBar}>
+                  {columns.map((column, index) => (
+                    <Text key={index} style={styles.titleColumn}>
+                      {column}
+                    </Text>
+                  ))}
+                </View>
                 <FlatList
-                  ListHeaderComponent={
-                    <View style={styles.titleBar}>
-                      {columns.map((column, index) => (
-                        <Text key={index} style={styles.titleColumn}>
-                          {column}
-                        </Text>
-                      ))}
-                    </View>
-                  }
                   data={this.state.studentsB}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item, index }) => (
                     <View style={styles.studentContainer}>
-                      <Text style={styles.place}>
-                        {/* {index < 3 ? (
-                            <Image
-                              style={{ width: 20, height: 20 }}
-                              source={[first, second, third][index]}
-                              alt={`${index + 1}st`}
-                            />
-                          ) : (
-                            index + 1
-                          )} */}
+                      <Text style={[styles.place, { textAlign: 'center' }]}>
                         {index + 1}
                       </Text>
                       <Text style={styles.studentName}>{item.name}</Text>
@@ -205,30 +182,19 @@ class Leaderboard extends Component {
               <ActivityIndicator size="large" color={COLORS.primary} />
             ) : (
               <>
+                <View style={styles.titleBar}>
+                  {columns.map((column, index) => (
+                    <Text key={index} style={styles.titleColumn}>
+                      {column}
+                    </Text>
+                  ))}
+                </View>
                 <FlatList
-                  ListHeaderComponent={
-                    <View style={styles.titleBar}>
-                      {columns.map((column, index) => (
-                        <Text key={index} style={styles.titleColumn}>
-                          {column}
-                        </Text>
-                      ))}
-                    </View>
-                  }
                   data={this.state.studentsC}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item, index }) => (
                     <View style={styles.studentContainer}>
-                      <Text style={styles.place}>
-                        {/* {index < 3 ? (
-                            <Image
-                              style={{ width: 20, height: 20 }}
-                              source={[first, second, third][index]}
-                              alt={`${index + 1}st`}
-                            />
-                          ) : (
-                            index + 1
-                          )} */}
+                      <Text style={[styles.place, { textAlign: 'center' }]}>
                         {index + 1}
                       </Text>
                       <Text style={styles.studentName}>{item.name}</Text>
@@ -248,30 +214,19 @@ class Leaderboard extends Component {
               <ActivityIndicator size="large" color={COLORS.primary} />
             ) : (
               <>
+                <View style={styles.titleBar}>
+                  {columns.map((column, index) => (
+                    <Text key={index} style={styles.titleColumn}>
+                      {column}
+                    </Text>
+                  ))}
+                </View>
                 <FlatList
-                  ListHeaderComponent={
-                    <View style={styles.titleBar}>
-                      {columns.map((column, index) => (
-                        <Text key={index} style={styles.titleColumn}>
-                          {column}
-                        </Text>
-                      ))}
-                    </View>
-                  }
                   data={this.state.studentsD}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item, index }) => (
                     <View style={styles.studentContainer}>
-                      <Text style={styles.place}>
-                        {/* {index < 3 ? (
-                            <Image
-                              style={{ width: 20, height: 20 }}
-                              source={[first, second, third][index]}
-                              alt={`${index + 1}st`}
-                            />
-                          ) : (
-                            index + 1
-                          )} */}
+                      <Text style={[styles.place, { textAlign: 'center' }]}>
                         {index + 1}
                       </Text>
                       <Text style={styles.studentName}>{item.name}</Text>
@@ -299,13 +254,17 @@ class Leaderboard extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    // padding: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: 'white',
     borderRadius: 8,
   },
   heading: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '800',
+    fontFamily: FONTS.bold,
+    letterSpacing: 2,
     marginBottom: 10,
     textAlign: 'center',
     backgroundColor: 'rgb(0, 91, 127)',
@@ -356,6 +315,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     marginTop: 10, // Add margin or adjust as needed
+    marginBottom: 30,
     gap: 5,
   },
   endOfListText: {

@@ -16,7 +16,7 @@ export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
         <Text
           style={{
             // fontFamily: FONTS.semiBold,
-            fontWeight: 700,
+            fontWeight: '700',
             fontSize: 15,
             color: COLORS.primary,
           }}
@@ -26,7 +26,7 @@ export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
         <Text
           style={{
             // fontFamily: FONTS.regular,
-            fontWeight: 400,
+            fontWeight: '400',
             fontSize: 11,
             color: COLORS.primary,
           }}

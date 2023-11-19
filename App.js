@@ -52,7 +52,7 @@ const PlaylistStackScreen = () => (
     <Stack.Screen name="Playlist" component={Playlist} />
     <Stack.Screen name="PlaylistDetail" component={PlaylistDetail}
       options={{
-        headerShown: true, title: '回播放列表', headerStyle: { height: 50 }, headerTitleStyle: { fontFamily: FONTS.VarelaRound, fontSize: 16 }
+        headerShown: true, title: '', headerStyle: { height: 90, backgroundColor: 'white' }, headerTitleStyle: { fontFamily: FONTS.VarelaRound, fontSize: 16 }
       }} />
   </Stack.Navigator>
 );

@@ -25,7 +25,7 @@ const Playlist = () => {
   };
 
 
-
+  //類別方框
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
       onPress={() => handlePlaylistDetailNavigation(`${item}`)}
@@ -33,8 +33,8 @@ const Playlist = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 120,
-        padding: 8,
+        width: 150,
+        padding: 15,
         backgroundColor: COLORS.white,
         borderRadius: SIZES.font,
         marginBottom: SIZES.extraLarge,
@@ -68,7 +68,7 @@ const Playlist = () => {
             <View style={styles.typetitle}>
               <Text style={{
                 fontFamily: FONTS.VarelaRound,
-                fontWeight: 700,
+                fontWeight: '700',
                 height: 20,
                 color: 'white',
                 fontSize: 17,

@@ -5,12 +5,16 @@ import { AntDesign } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useDispatch, useSelector } from "react-redux";
 
+import Video from 'react-native-video';
+
 function MusicPlayer({ music }) {
   const { musicplayerdisplay, autoplay } = useSelector(state => state.musicReducer);
   const [{ bookname, page, musicName }, setCurrTrack] = useState(music);
   const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState();
   const dispatch = useDispatch();
+  // const videoRef = useRef(null);
+
 
   const animatedOpacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -26,29 +30,50 @@ function MusicPlayer({ music }) {
     setCurrTrack(music);
   }, [music]);
 
+
+  // useEffect(() => {
+  //   return () => {
+  //     // Cleanup and stop the video when the component unmounts
+  //     if (sound) {
+  //       sound.release();
+  //     }
+  //   };
+  // }, []);
+
+  // const playPause = () => {
+  //   if (sound) {
+  //     isPlaying ? sound.pause() : sound.play();
+  //     setIsPlaying(!isPlaying);
+  //   }
+  // };
+
+
+
+
+
+
   const playSound = async () => {
-    console.log('playsound')
-    try {
-      if (sound) {
-        isPlaying ? await sound.pauseAsync() : await sound.playAsync();
-        setIsPlaying(!isPlaying);
-      } else {
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require(`../assets/music/${musicName}`)
-        );
-        setSound(newSound); // Update sound state with the new sound
-        setIsPlaying(true);
-        await newSound.playAsync();
-        newSound.setOnPlaybackStatusUpdate((status) => {
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-            setSound(null);
-          }
-        });
-      }
-    } catch (error) {
-      console.error('Error playing sound:', error);
-    }
+    // try {
+    //   if (sound) {
+    //     isPlaying ? await sound.pauseAsync() : await sound.playAsync();
+    //     setIsPlaying(!isPlaying);
+    //   } else {
+    //     const { sound: newSound } = await Audio.Sound.createAsync(
+    //       require(`../assets/music/${musicName}`)
+    //     );
+    //     setSound(newSound); // Update sound state with the new sound
+    //     setIsPlaying(true);
+    //     await newSound.playAsync();
+    //     newSound.setOnPlaybackStatusUpdate((status) => {
+    //       if (status.didJustFinish) {
+    //         setIsPlaying(false);
+    //         setSound(null);
+    //       }
+    //     });
+    //   }
+    // } catch (error) {
+    //   console.error('Error playing sound:', error);
+    // }
   };
 
   useEffect(() => {
@@ -111,6 +136,15 @@ function MusicPlayer({ music }) {
               <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
             )}
           </TouchableOpacity>
+
+
+          {/* <Video
+            source={{ uri: `../assets/music/習作本1/習作本1 P.34.mp3` }}
+            audioOnly
+            paused={!isPlaying}
+          /> */}
+
+
           {/* <TouchableOpacity onPress={stopSound}>
                 <AntDesign name="closecircle" size={24} color="black" style={styles.controlIcon} />
               </TouchableOpacity> */}
