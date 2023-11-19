@@ -1,46 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { COLORS, musicDB } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentPlaying } from "./actions/actions";
 
-// import TrackPlayer from 'react-native-track-player';
-// TrackPlayer.updateOptions({
-//   stopWithApp: false,
-//   capabilities: [TrackPlayer.CAPABILITY_PLAY, TrackPlayer.CAPABILITY_PAUSE],
-//   compactCapabilities: [
-//     TrackPlayer.CAPABILITY_PLAY,
-//     TrackPlayer.CAPABILITY_PAUSE,
-//   ],
-// });
-
-
-function MusicPlayer({ display, autoPlay, music }) {
+function MusicPlayer({ music }) {
+  const { musicplayerdisplay, autoplay } = useSelector(state => state.musicReducer);
   const [{ bookname, page, musicName }, setCurrTrack] = useState(music);
   const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState();
+  const dispatch = useDispatch();
+
+  const animatedOpacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(animatedOpacity, {
+      toValue: musicplayerdisplay === 'flex' ? 1 : 0,
+      duration: 500, // Adjust the duration as needed
+      useNativeDriver: false, // Ensure this is set to false for opacity animations
+    }).start();
+  }, [musicplayerdisplay]);
+
 
   useEffect(() => {
     setCurrTrack(music);
   }, [music]);
-
-  // const setUpTrackPlayer = async () => {
-  //   try {
-  //     await TrackPlayer.setupPlayer();
-  //     await TrackPlayer.add(tracks);
-  //     console.log('Tracks added');
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   setUpTrackPlayer();
-
-  //   return () => TrackPlayer.destroy();
-  // }, []);
 
   const playSound = async () => {
     console.log('playsound')
@@ -68,32 +52,10 @@ function MusicPlayer({ display, autoPlay, music }) {
   };
 
   useEffect(() => {
-    if (autoPlay) {
+    if (autoplay === true) {
       playSound();
     }
-  }, [autoPlay]);
-
-
-
-  useEffect(() => {
-    // Stop the current sound when the music prop changes
-    stopSound();
-  }, [music]);
-
-  const stopSound = async () => {
-    console.log('stop sound')
-    try {
-      if (sound) {
-        await sound.stopAsync();
-        setIsPlaying(false);
-        setSound(null); // Remove the reference to the sound
-      }
-    } catch (error) {
-      console.error('Error stopping sound:', error);
-    }
-  };
-
-
+  }, [autoplay]);
 
   // const currentTrack = playlists.findIndex(obj => obj.musicName === musicName)
   const handleClickNext = async () => {
@@ -117,66 +79,47 @@ function MusicPlayer({ display, autoPlay, music }) {
 
 
   return (
-    <TouchableOpacity >
-      <View style={{
-        display: display,
-        position: 'absolute',
-        bottom: 90,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-        {music && (
-          <View style={styles.container}>
-            {/* Image */}
-            <Image source={require('../assets/img/headphone.png')} style={styles.image} />
+    // <TouchableOpacity >
+    // </TouchableOpacity>
+    <Animated.View style={{
+      display: musicplayerdisplay,
+      position: 'absolute',
+      bottom: 90,
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      opacity: animatedOpacity,
+    }}>
+      <View style={styles.container}>
+        {/* Image */}
+        <Image source={require('../assets/img/headphone.png')} style={styles.image} />
 
-            {/* Details */}
-            <View style={styles.detailsContainer}>
-              <Text style={styles.bookName}>{bookname}</Text>
-              <Text style={styles.page}>{`Page ${page}`}</Text>
-            </View>
+        {/* Details */}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.bookName}>{bookname}</Text>
+          <Text style={styles.page}>{`Page ${page}`}</Text>
+        </View>
 
-            {/* Controls */}
-            {/* <View style={styles.controlsContainer}>
-              <TouchableOpacity onPress={() => TrackPlayer.skipToPrevious()}>
-                <AntDesign name="stepbackward" size={24} color="black" style={styles.controlIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity >
-                {isPlaying ? (
-                  <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} onPress={() => TrackPlayer.play()} />
-                ) : (
-                  <AntDesign name="play" size={24} color="black" style={styles.controlIcon} onPress={() => TrackPlayer.pause()} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}  >
-                <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
-              </TouchableOpacity>
-            </View> */}
-
-            <View style={styles.controlsContainer}>
-              <TouchableOpacity onPress={handleClickPrevious}>
-                <AntDesign name="stepbackward" size={24} color="black" style={styles.controlIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={playSound}>
-                {isPlaying ? (
-                  <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} />
-                ) : (
-                  <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity onPress={stopSound}>
+        <View style={styles.controlsContainer}>
+          <TouchableOpacity onPress={handleClickPrevious}>
+            <AntDesign name="stepbackward" size={24} color="black" style={styles.controlIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={playSound}>
+            {isPlaying ? (
+              <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} />
+            ) : (
+              <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
+            )}
+          </TouchableOpacity>
+          {/* <TouchableOpacity onPress={stopSound}>
                 <AntDesign name="closecircle" size={24} color="black" style={styles.controlIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleClickNext}  >
-                <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
-              </TouchableOpacity>
-            </View>
-
-          </View>
-        )}
+              </TouchableOpacity> */}
+          <TouchableOpacity onPress={handleClickNext}  >
+            <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </TouchableOpacity>
+    </Animated.View>
   );
 };
 

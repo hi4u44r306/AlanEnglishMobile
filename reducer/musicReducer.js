@@ -5,7 +5,10 @@ export const initialState = {
     playing: null,
     bannerOpen: false,
     search: null,
-    language: null
+    language: null,
+    screenmargin: 0,
+    autoplay: true,
+    musicplayerdisplay: 'none',
 };
 const musicReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -13,6 +16,11 @@ const musicReducer = (state = initialState, action) => {
             return {
                 ...state,
                 playlists: action.payload
+            }
+        case "SET_AUTOPLAY":
+            return {
+                ...state,
+                autoplay: action.payload
             }
         case "SET_CURR_PLAYING":
             return {
@@ -36,6 +44,16 @@ const musicReducer = (state = initialState, action) => {
             return {
                 ...state,
                 language: action.payload
+            };
+        case "SET_CURR_MARGIN":
+            return {
+                ...state,
+                screenmargin: action.payload
+            };
+        case "SET_MUSIC_PLAYER_DISPLAY":
+            return {
+                ...state,
+                musicplayerdisplay: action.payload
             };
         default:
             return state;

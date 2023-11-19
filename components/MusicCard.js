@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // import {useDispatch} from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { COLORS, SIZES, SHADOWS } from "../constants";
 import { Timeplayed, MusicTitle, GameScore } from "./SubInfo";
@@ -9,10 +9,10 @@ import { PlayButton, GameButton } from "./Button";
 import firebase from 'firebase/app';
 
 import { useDispatch } from "react-redux";
-import { setCurrentPlaying } from "./actions/actions";
+import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
 
 
-function MusicCard(props) {
+const MusicCard = React.memo((props) => {
   const { music } = props;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -51,8 +51,10 @@ function MusicCard(props) {
 
   function handlePlay() {
     console.log('Play button pressed');
+    dispatch(setMusicPlayerDisplay('flex'))
     dispatch(setCurrentPlaying(music));
-    props.onclickmusic(music);
+    dispatch(setCurrentMargin(75))
+    // props.onclickmusic(music);
   }
   function handleStop() {
     dispatch(setCurrentPlaying());
@@ -62,10 +64,10 @@ function MusicCard(props) {
     <View
       style={{
         backgroundColor: COLORS.white,
-        ...SHADOWS.medium,
+        // ...SHADOWS.medium,
       }}
     >
-      <View style={{ width: "100%", paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignContent: 'center' }}>
+      <View style={styles.musiclist}>
         <View style={{
           flexDirection: "row",
           justifyContent: "space-between",
@@ -98,6 +100,19 @@ function MusicCard(props) {
       </View>
     </View>
   );
-};
+});
 
 export default MusicCard;
+
+const styles = StyleSheet.create({
+  musiclist: {
+    width: "100%",
+    paddingLeft: 10,
+    paddingRight: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+  },
+})

@@ -119,24 +119,31 @@ export const LogoutButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: COLORS.primary,
+        // backgroundColor: COLORS.primary,
         padding: SIZES.small,
         borderRadius: SIZES.extraLarge,
+        borderWidth: 2,
+        borderColor: 'black',
+        borderStyle: 'solid',
         minWidth: minWidth,
         ...props,
       }}
       onPress={handlePress}
     >
-      <Text
-        style={{
-          fontFamily: FONTS.semiBold,
-          fontSize: fontSize,
-          color: COLORS.white,
-          textAlign: "center",
-        }}
-      >
-        Logout
-      </Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <Ionicons name="exit" size={20} color="rgb(232, 35, 35)" style={{ margin: 20, }} />
+
+        <Text
+          style={{
+            fontFamily: FONTS.semiBold,
+            fontSize: fontSize,
+            color: 'black',
+            textAlign: "center",
+          }}
+        >
+          Logout
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };

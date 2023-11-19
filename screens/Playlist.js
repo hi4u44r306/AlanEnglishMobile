@@ -2,7 +2,9 @@ import React from "react";
 import { View, TouchableOpacity, StyleSheet, Text, Image, FlatList, SafeAreaView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FocusedStatusBar, HomeHeader } from "../components";
-import { COLORS, SHADOWS, SIZES } from "../constants";
+import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
+import { useSelector } from "react-redux";
+import ScreenContainer from "./ScreenContainer";
 
 const playlists = {
   習作本: ['Workbook_1', 'Workbook_2', 'Workbook_3', 'Workbook_4', 'Workbook_5'],
@@ -16,9 +18,13 @@ const playlists = {
 
 const Playlist = () => {
   const navigation = useNavigation();
+  const { screenmargin } = useSelector(state => state.musicReducer);
+
   const handlePlaylistDetailNavigation = (musicType) => {
     navigation.navigate("PlaylistDetail", { musicType });
   };
+
+
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -28,7 +34,7 @@ const Playlist = () => {
         alignItems: 'center',
         justifyContent: 'center',
         width: 120,
-        padding: 5,
+        padding: 8,
         backgroundColor: COLORS.white,
         borderRadius: SIZES.font,
         marginBottom: SIZES.extraLarge,
@@ -42,11 +48,11 @@ const Playlist = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <HomeHeader display="none" />
       <FlatList
-        style={{ marginBottom: 75, }}
+        style={{ paddingTop: 10, paddingBottom: 20 }}
         data={[
           { title: '習作本', data: playlists.習作本 },
           { title: 'Super Easy Reading', data: playlists.SuperEasyReading },
@@ -61,7 +67,8 @@ const Playlist = () => {
           <View>
             <View style={styles.typetitle}>
               <Text style={{
-                fontWeight: '700',
+                fontFamily: FONTS.VarelaRound,
+                fontWeight: 700,
                 height: 20,
                 color: 'white',
                 fontSize: 17,
@@ -81,7 +88,8 @@ const Playlist = () => {
           </View>
         )}
       />
-    </SafeAreaView>
+    </ScreenContainer>
+
   );
 };
 

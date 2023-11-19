@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, TextInput } from "react-native";
+import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { Brand } from "./Brand";
@@ -8,11 +8,12 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 
 
 const HomeHeader = ({ onSearch, display }) => {
-
+  const navigation = useNavigation();
   const db = firebase.firestore();
   const [username, setUsername] = useState();
   const currentDate = new Date().toJSON().slice(0, 10);
@@ -25,6 +26,11 @@ const HomeHeader = ({ onSearch, display }) => {
     setUsername(await AsyncStorage.getItem('ae-username'))
   };
   getUsername();
+
+  const handleProfilePress = () => {
+    // Navigate to the profile page when clicked
+    navigation.navigate('用戶'); // Replace 'Profile' with the actual name of your profile screen
+  };
 
   return (
     <View
@@ -43,17 +49,22 @@ const HomeHeader = ({ onSearch, display }) => {
         }}
       >
         <Brand fontSize={23} margin={1} />
-        <View style={{ height: 45, justifyContent: 'center' }}>
-          <Text
-            style={{
-              fontFamily: FONTS.VarelaRound,
-              fontSize: 15,
-              color: COLORS.primary,
-            }}
-          >
-            User: {username || "Loading..."}
-          </Text>
-        </View>
+        <TouchableOpacity onPress={handleProfilePress}>
+          <View style={{ height: 45, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+            <Ionicons name="person-circle" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 8, }} />
+            <Text
+              style={{
+                fontFamily: FONTS.VarelaRound,
+                fontWeight: 700,
+                fontSize: 15,
+                color: COLORS.primary,
+              }}
+            >
+              {username || "Loading..."}
+            </Text>
+          </View>
+        </TouchableOpacity>
+
       </View>
 
 

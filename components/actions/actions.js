@@ -4,6 +4,24 @@ export const setPlaylist = (playlist) => {
         payload: playlist
     };
 };
+export const setCurrentMargin = (curr_margin) => {
+    return {
+        type: "SET_CURR_MARGIN",
+        payload: curr_margin
+    };
+}
+export const setMusicPlayerDisplay = (musicplayerdisplay) => {
+    return {
+        type: "SET_MUSIC_PLAYER_DISPLAY",
+        payload: musicplayerdisplay
+    };
+}
+export const setAutoPlay = (autoplay) => {
+    return {
+        type: "SET_AUTOPLAY",
+        payload: autoplay
+    };
+}
 export const setCurrentPlaying = (curr_music) => {
     return {
         type: "SET_CURR_PLAYING",

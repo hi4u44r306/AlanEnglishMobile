@@ -28,6 +28,7 @@ import { useEffect } from "react";
 import MusicPlayer from "./components/MusicPlayer";
 import { View } from "react-native";
 import { FONTS } from "./constants";
+
 const store = createStore(rootReducer);
 
 
@@ -47,7 +48,7 @@ const leaderboardpage = '排行榜';
 const homework = '聯絡簿';
 
 const PlaylistStackScreen = () => (
-  <Stack.Navigator initialRouteName="Playlist" headerMode="none">
+  <Stack.Navigator initialRouteName="Playlist" screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Playlist" component={Playlist} />
     <Stack.Screen name="PlaylistDetail" component={PlaylistDetail}
       options={{
@@ -63,6 +64,8 @@ function Root() {
   useEffect(() => {
     setCurrMusic(playing)
   }, [playing]);
+
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -108,13 +111,11 @@ function Root() {
         <Tab.Screen name="聯絡簿" component={Homework} />
       </Tab.Navigator>
       <View>
-        {currMusic && (
-          <MusicPlayer
-            music={currMusic}
-            display="flex"
-            autoPlay={true}
-          />
-        )}
+        {currMusic
+          &&
+          (
+            <MusicPlayer music={currMusic} />
+          )}
       </View>
     </View>
   );

@@ -4,6 +4,7 @@ import { View, SafeAreaView, Text, TextInput, CheckBox, Button } from "react-nat
 import { HomeHeader, FocusedStatusBar } from "../components";
 import { COLORS } from "../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ScreenContainer from "./ScreenContainer";
 
 const Homework = () => {
     const [isTeacher, setIsTeacher] = useState(true);
@@ -53,7 +54,7 @@ const Homework = () => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
+        <ScreenContainer>
             <FocusedStatusBar backgroundColor={COLORS.primary} />
             <HomeHeader display="none" />
             <View style={{ flex: 1, padding: 20 }}>
@@ -116,7 +117,7 @@ const Homework = () => {
                     )}
                 </View>
             </View>
-        </SafeAreaView>
+        </ScreenContainer>
     );
 };
 

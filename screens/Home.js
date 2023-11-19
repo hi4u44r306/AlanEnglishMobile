@@ -3,6 +3,7 @@ import { View, SafeAreaView, Text } from "react-native";
 
 import { HomeHeader, FocusedStatusBar } from "../components";
 import { COLORS } from "../constants";
+import ScreenContainer from "./ScreenContainer";
 
 const Home = () => {
   // const [musicData, setMusicData] = useState(musicDB);
@@ -24,7 +25,7 @@ const Home = () => {
   // };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <View style={{ flex: 1 }}>
         <View style={{ zIndex: 0 }}>
@@ -41,7 +42,7 @@ const Home = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 };
 
