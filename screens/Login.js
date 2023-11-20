@@ -105,7 +105,7 @@ const Login = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
-            <View>
+            <View style={{ zIndex: 999 }}>
                 <Toast
                     position='center'
                     topOffset={50}

@@ -92,11 +92,11 @@ const Profile = () => {
 
         <View style={styles.userInfoContainer}>
           <Text style={styles.userInfoText}>
-            用戶名稱: {username}
+            用戶名稱: {username || '錯誤'}
             {'\n'}
-            總聽力次數: {usertimeplayed}
+            總聽力次數: {usertimeplayed || '0'}
             {'\n'}
-            今日聽力次數: {dailytimeplayed}
+            今日聽力次數: {dailytimeplayed || '0'}
           </Text>
         </View>
 

@@ -27,7 +27,7 @@ import Homework from "./screens/Homework";
 import { useEffect } from "react";
 import MusicPlayer from "./components/MusicPlayer";
 import { View } from "react-native";
-import { FONTS } from "./constants";
+import { COLORS, FONTS } from "./constants";
 
 const store = createStore(rootReducer);
 
@@ -97,18 +97,18 @@ function Root() {
 
           },
           // tabBarStyle: { paddingBottom: 30, height: 90 },
-          tabBarStyle: { paddingBottom: 30, height: 90 },
+          tabBarStyle: { paddingBottom: 30, height: 90, backgroundColor: COLORS.ricewhite },
           tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 15 },
           tabBarActiveTintColor: 'rgb(64, 98, 187)',
-          tabBarInactiveTintColor: 'gray'
+          tabBarInactiveTintColor: 'black'
         })}
       >
         <Tab.Screen name="首頁" component={Home} />
         <Tab.Screen name="排行榜" component={Leaderboard} />
         <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
-        <Tab.Screen name="用戶" component={Profile} />
         {/* {role === 'Teacher' && <Tab.Screen name="聯絡簿" component={Homework} />} */}
         <Tab.Screen name="聯絡簿" component={Homework} />
+        <Tab.Screen name="用戶" component={Profile} />
       </Tab.Navigator>
       <View>
         {currMusic
