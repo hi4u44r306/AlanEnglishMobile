@@ -51,10 +51,10 @@ const HomeHeader = ({ onSearch, display }) => {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.ricewhite, }}>
+    <SafeAreaView style={{ backgroundColor: COLORS.main, }}>
       <View
         style={{
-          backgroundColor: COLORS.ricewhite,
+          backgroundColor: COLORS.main,
           paddingTop: 5,
           paddingBottom: 5,
           paddingLeft: 10,

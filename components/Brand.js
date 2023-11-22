@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { FONTS } from '../constants';
 
 const textStyle = (color, fontSize, margin) => ({
@@ -9,22 +9,29 @@ const textStyle = (color, fontSize, margin) => ({
   textShadowRadius: 0,
   color,
   fontSize,
-  fontWeight: 900,
-  fontFamily: FONTS.VarelaRound,
+  fontFamily: FONTS.medium,
+  letterSpacing: 0.6,
 });
 
 export const Brand = ({ fontSize, margin }) => {
   return (
     <View style={{
       flexDirection: 'row',
-      backgroundColor: 'white',
+      alignItems: 'center',
+      // backgroundColor: 'white',
       paddingTop: 5,
       paddingBottom: 5,
       paddingLeft: 15,
       paddingRight: 15,
       borderRadius: 10
     }}>
-      <Text style={textStyle('red', fontSize, margin)}>A</Text>
+      <Image source={require('../assets/A-logo.png')} style={{
+        width: 35,
+        height: 35,
+        marginRight: 3,
+      }} />
+      <Text style={textStyle('black', 25, margin)}>English</Text>
+      {/* <Text style={textStyle('red', fontSize, margin)}>A</Text>
       <Text style={textStyle('#f45d01', fontSize, margin)}>L</Text>
       <Text style={textStyle('#eeb902', fontSize, margin)}>A</Text>
       <Text style={textStyle('#04cc0b', fontSize, margin)}>N</Text>
@@ -35,7 +42,7 @@ export const Brand = ({ fontSize, margin }) => {
       <Text style={textStyle('red', fontSize, margin)}>L</Text>
       <Text style={textStyle('#f45d01', fontSize, margin)}>I</Text>
       <Text style={textStyle('#eeb902', fontSize, margin)}>S</Text>
-      <Text style={textStyle('#4062bb', fontSize, margin)}>H</Text>
+      <Text style={textStyle('#4062bb', fontSize, margin)}>H</Text> */}
     </View>
   );
 };

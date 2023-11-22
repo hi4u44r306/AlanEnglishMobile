@@ -9,13 +9,13 @@ import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 
 const Profile = () => {
-  // const { username, useruid, usertotaltimeplayed } = useSelector(state => state.userReducer);
   const navigation = useNavigation();
   const db = firebase.firestore();
   const [username, setUsername] = useState();
   const [useruid, setUserUID] = useState();
-  const [usertimeplayed, setUsertimeplayed] = useState();
-  const [dailytimeplayed, setDailyTimeplayed] = useState();
+  const [usertimeplayed, setUsertimeplayed] = useState(0);
+  const [dailytimeplayed, setDailyTimeplayed] = useState(0);
+  const [userclass, setUserclass] = useState('');
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
   const Month = new Date().toJSON().slice(5, 7);
@@ -27,6 +27,7 @@ const Profile = () => {
         setUsername(await AsyncStorage.getItem('ae-username'));
         setUserUID(await AsyncStorage.getItem('ae-useruid'));
         setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
+        setUserclass(await AsyncStorage.getItem('ae-class'));
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
@@ -94,19 +95,43 @@ const Profile = () => {
       <HomeHeader display='none' />
       <View style={styles.Upper}>
         <View style={styles.titleContainer}>
-          <View style={{ backgroundColor: '#fcf3e3', borderRadius: 20, padding: 20, }}>
+          <View style={{
+            backgroundColor: 'white',
+            borderRadius: 100,
+            padding: 20,
+            position: 'absolute',
+            top: 20,
+            borderWidth: 2,
+            borderColor: '#5784e9',
+          }}>
             <Image source={require('../assets/img/headphone.png')} style={{
-              width: 90,
-              height: 90,
+              width: 100,
+              height: 100,
             }} />
           </View>
-          <Text style={styles.titleText}>{username}</Text>
-          <Text style={styles.secondtitleText}>{Month} 月聽力次數 : {usertimeplayed}</Text>
-          <Text style={styles.secondtitleText}>今日聽力次數 : {dailytimeplayed}</Text>
+        </View>
+        <Text style={styles.titleText}>{username}</Text>
+        <View style={styles.userInfoContainer}>
+          <View style={{ padding: 20 }}>
+            <Text style={{ fontSize: 20, fontFamily: FONTS.bold }}>Account</Text>
+            <View style={styles.userinfo}>
+              <Text style={styles.userinfolabel}>班級</Text>
+              <Text style={styles.secondtitleText}>{userclass}</Text>
+            </View>
+            <View style={styles.userinfo}>
+              <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
+              <Text style={styles.secondtitleText}>{usertimeplayed}</Text>
+            </View>
+            <View style={styles.userinfo}>
+              <Text style={styles.userinfolabel}>今日聽力次數 </Text>
+              <Text style={styles.secondtitleText}>{dailytimeplayed}</Text>
+            </View>
+          </View>
+
         </View>
       </View>
       <View>
-        <View style={styles.userInfoContainer}>
+        <View style={styles.listeningCountContainer}>
           <View style={{ paddingLeft: 20, paddingRight: 20 }}>
             <Text style={styles.userInfoText}>
               今日目標聽力次數 : 30 次
@@ -146,12 +171,10 @@ const Profile = () => {
             </View>
           </View>
         </View>
-        <View style={styles.logoutButtonContainer}>
-          <LogoutButton
-            fontSize={20}
-            handlePress={Logout}
-          />
-        </View>
+        <LogoutButton
+          fontSize={20}
+          handlePress={Logout}
+        />
       </View>
     </ScreenContainer>
   );
@@ -170,28 +193,50 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 40,
+    paddingTop: 50,
     paddingBottom: 50,
-    marginBottom: 20,
-    backgroundColor: '#e5cabf',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    marginBottom: 50,
+    backgroundColor: COLORS.main,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
     elevation: 3,
+    position: 'relative', // Make the container relative to position the absolute image
   },
+
   titleText: {
-    marginTop: 15,
+    marginTop: 25,
     fontSize: 26,
     fontWeight: '900',
     fontFamily: FONTS.bold,
     color: COLORS.primary,
   },
+  userinfolabel: {
+    marginTop: 15,
+    fontSize: 15,
+    fontFamily: FONTS.bold,
+    color: 'black',
+  },
   secondtitleText: {
     marginTop: 15,
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: FONTS.bold,
     color: 'gray',
   },
   userInfoContainer: {
+    width: '90%',
+    backgroundColor: 'white',
+    margin: 15,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    padding: SIZES.base, // You can adjust this padding as needed
+    borderRadius: SIZES.base,
+    // elevation: 3,
+    // shadowColor: COLORS.black,
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 2,
+  },
+  listeningCountContainer: {
     backgroundColor: '#5784e9',//blue background
     margin: 15,
     alignItems: 'flex-start',
@@ -204,21 +249,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
+  userinfo: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
   userInfoText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: 'white',
     paddingTop: 25,
     paddingBottom: 15,
   },
   userSecondInfoText: {
     fontSize: 15,
-    color: '#FFFFFF',
+    color: 'white',
     paddingBottom: 20,
   },
-  logoutButtonContainer: {
-    marginTop: 30,
-  },
+
 });
 
 export default Profile;

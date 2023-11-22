@@ -128,8 +128,7 @@ export const LogoutButton = ({ minWidth, fontSize, handlePress, ...props }) => {
       onPress={handlePress}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        <Ionicons name="exit" size={20} color="rgb(232, 35, 35)" style={{ margin: 20, }} />
-
+        <Ionicons name="exit" size={20} color="rgb(232, 35, 35)" style={{ margin: 10, }} />
         <Text
           style={{
             fontFamily: FONTS.semiBold,
