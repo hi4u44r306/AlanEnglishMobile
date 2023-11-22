@@ -1,125 +1,41 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { FONTS } from '../constants'
+import React from 'react';
+import { View, Text } from 'react-native';
+import { FONTS } from '../constants';
+
+const textStyle = (color, fontSize, margin) => ({
+  margin,
+  textShadowColor: color,
+  textShadowOffset: { width: 1.5, height: 0 },
+  textShadowRadius: 0,
+  color,
+  fontSize,
+  fontWeight: 900,
+  fontFamily: FONTS.VarelaRound,
+});
 
 export const Brand = ({ fontSize, margin }) => {
   return (
     <View style={{
-      flexDirection: "row",
+      flexDirection: 'row',
+      backgroundColor: 'white',
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 15,
+      paddingRight: 15,
+      borderRadius: 10
     }}>
-      <Text
-        style={{
-          color: "red",
-          textShadowColor: 'red',
-          textShadowOffset: { width: 1, height: 0 },
-          textShadowRadius: 0,
-          margin: margin,
-          fontSize: fontSize,
-          fontWeight: 900,
-          fontFamily: FONTS.VarelaRound,
-        }}>A</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#f45d01',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#f45d01",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>L</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#eeb902',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#eeb902",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>A</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#04cc0b',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#04cc0b",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>N</Text>
+      <Text style={textStyle('red', fontSize, margin)}>A</Text>
+      <Text style={textStyle('#f45d01', fontSize, margin)}>L</Text>
+      <Text style={textStyle('#eeb902', fontSize, margin)}>A</Text>
+      <Text style={textStyle('#04cc0b', fontSize, margin)}>N</Text>
       <Text>  </Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#2d7dd2',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#2d7dd2",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>E</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#4062bb',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#4062bb",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>N</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#52489c',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#52489c",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>G</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: 'red',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "red",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>L</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#f45d01',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#f45d01",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>I</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#eeb902',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#eeb902",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>S</Text>
-      <Text style={{
-        margin: margin,
-        textShadowColor: '#4062bb',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 0,
-        color: "#4062bb",
-        fontSize: fontSize,
-        fontWeight: 900,
-        fontFamily: FONTS.VarelaRound,
-      }}>H</Text>
+      <Text style={textStyle('#2d7dd2', fontSize, margin)}>E</Text>
+      <Text style={textStyle('#4062bb', fontSize, margin)}>N</Text>
+      <Text style={textStyle('#52489c', fontSize, margin)}>G</Text>
+      <Text style={textStyle('red', fontSize, margin)}>L</Text>
+      <Text style={textStyle('#f45d01', fontSize, margin)}>I</Text>
+      <Text style={textStyle('#eeb902', fontSize, margin)}>S</Text>
+      <Text style={textStyle('#4062bb', fontSize, margin)}>H</Text>
     </View>
-
-  )
-}
+  );
+};

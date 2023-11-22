@@ -55,3 +55,50 @@ export const setMusicLang = (langList) => {
         payload: langList
     };
 };
+
+export const setUserID = (useruid) => {
+    return {
+        type: "USER_NAME",
+        payload: useruid
+    };
+};
+
+export const setUsername = (username) => {
+    return {
+        type: "USER_NAME",
+        payload: username
+    };
+};
+
+export const setUserclass = (userclass) => {
+    return {
+        type: "USER_CLASS",
+        payload: userclass
+    };
+};
+
+export const setUsertodaytimeplayed = (usertodaytimeplayed) => {
+    return {
+        type: "USER_TOTAL_TIME_PLAYED",
+        payload: usertodaytimeplayed
+    };
+};
+export const setUsertotaltimeplayed = (usertotaltimeplayed) => {
+    return {
+        type: "USER_TOTAL_TIME_PLAYED",
+        payload: usertotaltimeplayed
+    };
+};
+
+export const setTeacherschool = (teacherschool) => {
+    return {
+        type: "TEACHER_SCHOOL",
+        payload: teacherschool
+    };
+};
+export const setSidebar = (sidebarshow) => {
+    return {
+        type: "SIDEBAR_SHOW",
+        payload: sidebarshow
+    };
+};

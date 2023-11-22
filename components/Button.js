@@ -122,9 +122,6 @@ export const LogoutButton = ({ minWidth, fontSize, handlePress, ...props }) => {
         // backgroundColor: COLORS.primary,
         padding: SIZES.small,
         borderRadius: SIZES.extraLarge,
-        borderWidth: 2,
-        borderColor: 'black',
-        borderStyle: 'solid',
         minWidth: minWidth,
         ...props,
       }}

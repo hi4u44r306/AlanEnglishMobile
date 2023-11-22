@@ -49,7 +49,7 @@ const Playlist = () => {
 
   return (
     <ScreenContainer>
-      <FocusedStatusBar backgroundColor={COLORS.primary} />
+      <FocusedStatusBar backgroundColor={COLORS.black} />
       <HomeHeader display="none" />
       <FlatList
         style={{ paddingTop: 10, paddingBottom: 20 }}

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, Text, StyleSheet, Alert } from "react-native";
+import { View, SafeAreaView, Text, StyleSheet, Alert, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
-import { COLORS, SIZES } from "../constants";
+import { COLORS, FONTS, SIZES } from "../constants";
 import firebase from "./firebase";
 import ScreenContainer from "./ScreenContainer";
+import { ProgressBar } from 'react-native-paper';
 
 const Profile = () => {
+  // const { username, useruid, usertotaltimeplayed } = useSelector(state => state.userReducer);
   const navigation = useNavigation();
   const db = firebase.firestore();
   const [username, setUsername] = useState();
@@ -16,6 +18,8 @@ const Profile = () => {
   const [dailytimeplayed, setDailyTimeplayed] = useState();
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
+  const Month = new Date().toJSON().slice(5, 7);
+  const [percentage, setPercentage] = useState(0);
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -33,8 +37,12 @@ const Profile = () => {
 
   useEffect(() => {
     db.collection('student').doc(useruid).collection('Logfile').doc(currentMonth).collection(currentMonth).doc(currentDate).get().then((doc) => {
+      // dispatch(setUsertodaytimeplayed(doc.data().todaytotaltimeplayed))
       setDailyTimeplayed(doc.data().todaytotaltimeplayed);
+      setPercentage(todaytotaltimeplayed / 30)
+
     }).catch(() => {
+      // dispatch(setUsertodaytimeplayed(doc.data().todaytotaltimeplayed))
       setDailyTimeplayed("0");
     });
 
@@ -84,26 +92,63 @@ const Profile = () => {
     <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <HomeHeader display='none' />
-      <View style={styles.contentContainer}>
-
+      <View style={styles.Upper}>
         <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>Profile</Text>
+          <View style={{ backgroundColor: '#fcf3e3', borderRadius: 20, padding: 20, }}>
+            <Image source={require('../assets/img/headphone.png')} style={{
+              width: 90,
+              height: 90,
+            }} />
+          </View>
+          <Text style={styles.titleText}>{username}</Text>
+          <Text style={styles.secondtitleText}>{Month} 月聽力次數 : {usertimeplayed}</Text>
+          <Text style={styles.secondtitleText}>今日聽力次數 : {dailytimeplayed}</Text>
         </View>
-
+      </View>
+      <View>
         <View style={styles.userInfoContainer}>
-          <Text style={styles.userInfoText}>
-            用戶名稱: {username || '錯誤'}
-            {'\n'}
-            總聽力次數: {usertimeplayed || '0'}
-            {'\n'}
-            今日聽力次數: {dailytimeplayed || '0'}
-          </Text>
+          <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+            <Text style={styles.userInfoText}>
+              今日目標聽力次數 : 30 次
+            </Text>
+            <Text style={styles.userSecondInfoText}>
+              今天已經聽了 {dailytimeplayed} 次了，加油!!!
+            </Text>
+          </View>
+          <View style={{ width: '90%', margin: 20, }}>
+            {
+              percentage ?
+                <ProgressBar
+                  progress={0} theme={{
+                    colors: {
+                      primary: '#ffffff',
+                      surfaceVariant: '#89a9f0'
+                    },
+                  }} style={{
+                    height: 8,
+                    borderRadius: 30
+                  }}
+                />
+                :
+                <ProgressBar progress={percentage} theme={{
+                  colors: {
+                    primary: '#ffffff',
+                    surfaceVariant: '#89a9f0'
+                  },
+                }} style={{
+                  height: 8,
+                  borderRadius: 30
+                }} />
+            }
+            <View style={{ marginTop: 10, alignItems: 'stretch', justifyContent: 'space-between', flexDirection: 'row' }}>
+              <Text style={{ color: 'white', fontWeight: '700' }}>0次</Text>
+              <Text style={{ color: 'white', fontWeight: '700' }}>30次</Text>
+            </View>
+          </View>
         </View>
-
         <View style={styles.logoutButtonContainer}>
           <LogoutButton
-            minWidth={80}
-            fontSize={15}
+            fontSize={20}
             handlePress={Logout}
           />
         </View>
@@ -117,27 +162,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  contentContainer: {
-    flex: 1,
+  Upper: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   titleContainer: {
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: SIZES.padding,
+    paddingTop: 40,
+    paddingBottom: 50,
+    marginBottom: 20,
+    backgroundColor: '#e5cabf',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    elevation: 3,
   },
   titleText: {
+    marginTop: 15,
     fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: '900',
+    fontFamily: FONTS.bold,
     color: COLORS.primary,
   },
+  secondtitleText: {
+    marginTop: 15,
+    fontSize: 14,
+    fontFamily: FONTS.bold,
+    color: 'gray',
+  },
   userInfoContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#5784e9',//blue background
+    margin: 15,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     padding: SIZES.base,
-    margin: 20,
-    backgroundColor: COLORS.white,
     borderRadius: SIZES.base,
     elevation: 3,
     shadowColor: COLORS.black,
@@ -146,14 +205,19 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   userInfoText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: COLORS.black,
-    padding: 20,
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    paddingTop: 25,
+    paddingBottom: 15,
+  },
+  userSecondInfoText: {
+    fontSize: 15,
+    color: '#FFFFFF',
+    paddingBottom: 20,
   },
   logoutButtonContainer: {
-    marginTop: SIZES.padding,
+    marginTop: 30,
   },
 });
 

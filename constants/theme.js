@@ -1,10 +1,11 @@
 export const COLORS = {
   primary: "#001F2D",
   secondary: "#4D626C",
-
+  black: 'black',
   white: "#FFF",
   gray: "#74858C",
-  ricewhite: "#fcf8ec",
+  // ricewhite: "#fcf8ec",//這是原本的
+  ricewhite: "#e5cabf",
   inputfieldgreen: "#2e9421",
 };
 

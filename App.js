@@ -29,6 +29,9 @@ import MusicPlayer from "./components/MusicPlayer";
 import { View } from "react-native";
 import { COLORS, FONTS } from "./constants";
 
+import { useDispatch } from "react-redux";
+import { setUsername, setTeacherschool, setUserID, setUserclass, setUsertotaltimeplayed } from "./components/actions/actions";
+import Sidebar from "./components/Sidebar";
 const store = createStore(rootReducer);
 
 
@@ -93,12 +96,11 @@ function Root() {
               iconName = focused ? 'book' : 'book-outline';
             }
 
-            return <Text><Ionicons name={iconName} size={20} color={color} style={{ margin: 20, }} /></Text>
+            return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          // tabBarStyle: { paddingBottom: 30, height: 90 },
-          tabBarStyle: { paddingBottom: 30, height: 90, backgroundColor: COLORS.ricewhite },
-          tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 15 },
+          tabBarStyle: { height: 80, backgroundColor: 'white' },
+          tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 14 },
           tabBarActiveTintColor: 'rgb(64, 98, 187)',
           tabBarInactiveTintColor: 'black'
         })}
@@ -117,6 +119,7 @@ function Root() {
             <MusicPlayer music={currMusic} />
           )}
       </View>
+      <Sidebar />
     </View>
   );
 }
@@ -135,12 +138,18 @@ const App = () => {
     Nunito: require("./assets/fonts/Nunito-VariableFont_wght.ttf"),
   })
 
+  // const dispatch = useDispatch();
   const db = firebase.firestore();
+
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
+      // dispatch(setUserID(user.uid));
       await AsyncStorage.setItem('ae-useruid', user.uid);
       try {
         const studentDoc = await db.collection('student').doc(user.uid).get();
+        // dispatch(setUsername(studentDoc.data()?.name))
+        // dispatch(setUserclass(studentDoc.data()?.class))
+        // dispatch(setUsertotaltimeplayed(JSON.stringify(studentDoc.data()?.totaltimeplayed)))
         await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
         await AsyncStorage.setItem('ae-username', studentDoc.data()?.name);
         await AsyncStorage.setItem('ae-totaltimeplayed', JSON.stringify(studentDoc.data()?.totaltimeplayed));
@@ -150,6 +159,8 @@ const App = () => {
 
       try {
         const teacherDoc = await db.collection('teacher').doc(user.uid).get();
+        // dispatch(setTeacherschool(teacherDoc.data()?.school))
+
         await AsyncStorage.setItem('ae-teacherschool', teacherDoc.data()?.school || '');
       } catch (error) {
         console.error('Error while setting teacher data:', error);
@@ -178,6 +189,11 @@ const App = () => {
       //   console.error('Error while setting teaching resources data:', error);
       // }
     } else {
+      // dispatch(setUserID(''));
+      // dispatch(setUsername(''))
+      // dispatch(setUserclass(''))
+      // dispatch(setUsertotaltimeplayed(''))
+      // dispatch(setTeacherschool(''))
       await AsyncStorage.setItem('ae-class', '');
       await AsyncStorage.setItem('ae-useruid', '');
       await AsyncStorage.setItem('ae-username', '');
@@ -191,7 +207,20 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer theme={theme}>
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Root">
+        <Stack.Navigator
+          initialRouteName="Root"
+          screenOptions={{
+            headerShown: false,
+            cardStyle: { backgroundColor: 'transparent' },
+            cardOverlayEnabled: true,
+            cardStyleInterpolator: ({ current: { progress } }) => ({
+              cardStyle: {
+                opacity: progress,
+              },
+            }),
+          }}
+          mode="modal"
+        >
           <Stack.Screen name="Root" component={Root} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Details" component={Details} />

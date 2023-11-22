@@ -11,10 +11,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import FocusedStatusBar from "./FocusedStatusBar";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSidebar } from "./actions/actions";
 
 
 
 const HomeHeader = ({ onSearch, display }) => {
+  // const { username } = useSelector(state => state.userReducer);
   const navigation = useNavigation();
   const db = firebase.firestore();
   const [username, setUsername] = useState();
@@ -39,17 +42,21 @@ const HomeHeader = ({ onSearch, display }) => {
     getUsername();
   }, []);
 
+  const dispatch = useDispatch();
   const handleProfilePress = () => {
-    // Navigate to the profile page when clicked
-    navigation.navigate('用戶'); // Replace 'Profile' with the actual name of your profile screen
+    dispatch(setSidebar('flex'))
+    console.log('sidebar open')
+
+    // navigation.navigate('用戶'); 
   };
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.ricewhite, }}>
-      <FocusedStatusBar />
       <View
         style={{
           backgroundColor: COLORS.ricewhite,
+          paddingTop: 5,
+          paddingBottom: 5,
           paddingLeft: 10,
           paddingRight: 10,
         }}
@@ -62,11 +69,12 @@ const HomeHeader = ({ onSearch, display }) => {
             alignItems: "center",
           }}
         >
-          <Brand fontSize={23} margin={1} />
+          <Brand fontSize={25} margin={0.7} />
           <TouchableOpacity onPress={handleProfilePress}>
             <View style={{ height: 45, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-              <Ionicons name="person-circle" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 8, }} />
-              <Text
+              <Ionicons name="list-outline" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} />
+              {/* <Ionicons name="person-circle" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 8, }} /> */}
+              {/* <Text
                 style={{
                   fontFamily: FONTS.VarelaRound,
                   fontWeight: '700',
@@ -75,7 +83,8 @@ const HomeHeader = ({ onSearch, display }) => {
                 }}
               >
                 {username || "Loading..."}
-              </Text>
+              </Text> */}
+
             </View>
           </TouchableOpacity>
 
