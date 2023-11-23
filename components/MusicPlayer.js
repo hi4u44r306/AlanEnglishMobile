@@ -1,23 +1,40 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, PanResponder } from 'react-native';
 import { COLORS } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 
 import { Audio } from 'expo-av';
+import { setCurrentMargin, setMusicPlayerDisplay } from './actions/actions';
+import BigScreen from '../screens/BigScreen';
 
 function MusicPlayer() {
   const { musicplayerdisplay, autoplay, playing } = useSelector(state => state.musicReducer);
+  const { duration } = useSelector(state => state.screenReducer);
   const [{ bookname, page, musicName }, setCurrTrack] = useState(playing);
   const animatedOpacity = useRef(new Animated.Value(0)).current;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     Animated.timing(animatedOpacity, {
       toValue: musicplayerdisplay === 'flex' ? 1 : 0,
-      duration: 500, // Adjust the duration as needed
-      useNativeDriver: false, // Ensure this is set to false for opacity animations
+      duration: duration,
+      useNativeDriver: false,
     }).start();
   }, [musicplayerdisplay]);
+
+  const closemusicplayer = async () => {
+
+    dispatch(setCurrentMargin(0));
+    // Add closing animation
+    Animated.timing(animatedOpacity, {
+      toValue: 0,
+      duration: duration,
+      useNativeDriver: false,
+    }).start();
+    dispatch(setMusicPlayerDisplay('none'));
+    await sound.pauseAsync();
+  };
 
   useEffect(() => {
     setCurrTrack(playing);
@@ -59,6 +76,31 @@ function MusicPlayer() {
     }
   };
 
+
+  const closeBigScreen = async () => {
+    // Add closing animation for the big screen
+    Animated.timing(animatedOpacity, {
+      toValue: 0,
+      duration: duration,
+      useNativeDriver: false,
+    }).start();
+
+    dispatch(setMusicPlayerDisplay('none'));
+    dispatch(setCurrentMargin(0));
+
+    await sound.pauseAsync();
+  };
+
+  const showBigScreen = () => {
+    // dispatch(setMusicPlayerDisplay('none'));
+    // // Add opening animation for the big screen
+    // Animated.timing(animatedOpacity, {
+    //   toValue: 1,
+    //   duration: duration,
+    //   useNativeDriver: false,
+    // }).start();
+  };
+
   // const playSound = async () => {
   //   const { sound } = await Audio.Sound.createAsync(
   //     require('../assets/music/習作本1/習作本1 P11.mp3')
@@ -75,56 +117,77 @@ function MusicPlayer() {
 
 
 
-  const handleClickNext = async () => {
-    console.log('Next Track')
+  // const handleClickNext = async () => {
+  //   console.log('Next Track')
 
-  };
+  // };
 
-  const handleClickPrevious = async () => {
-    console.log('Previous Track')
+  // const handleClickPrevious = async () => {
+  //   console.log('Previous Track')
 
-  };
+  // };
 
+
+  // const panResponder = useRef(
+  //   PanResponder.create({
+  //     onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy > 5, // Allow only downward swipe
+  //     onPanResponderRelease: (_, gestureState) => {
+  //       if (gestureState.dy > 50) {
+  //         // If swiped down more than 50 pixels, close the big screen
+  //         closeBigScreen();
+  //       }
+  //     },
+  //   })
+  // ).current;
 
   return (
-    <Animated.View style={{
-      display: musicplayerdisplay,
-      position: 'absolute',
-      bottom: 90,
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      opacity: animatedOpacity,
-    }}>
-      <View style={styles.container}>
-        {/* Image */}
-        <Image source={require('../assets/img/headphone.png')} style={styles.image} />
+    <TouchableOpacity onPress={showBigScreen}>
+      <Animated.View style={{
+        display: musicplayerdisplay,
+        position: 'absolute',
+        bottom: 80,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: animatedOpacity,
+        // ...panResponder.panHandlers,
+      }}>
+        <View style={styles.container}>
+          <View style={styles.controlsContainer}>
+            <TouchableOpacity onPress={closemusicplayer}>
+              <AntDesign name="close" size={24} color="black" style={styles.controlIcon} />
+            </TouchableOpacity>
+          </View>
+          {/* Image */}
+          <Image source={require('../assets/img/headphone.png')} style={styles.image} />
 
-        {/* Details */}
-        <View style={styles.detailsContainer}>
-          <Text style={styles.bookName}>{bookname}</Text>
-          <Text style={styles.page}>{`Page ${page}`}</Text>
-        </View>
+          {/* Details */}
+          <View style={styles.detailsContainer}>
+            <Text style={styles.bookName}>{bookname}</Text>
+            <Text style={styles.page}>{`Page ${page}`}</Text>
+          </View>
 
-        <View style={styles.controlsContainer}>
-          <TouchableOpacity onPress={handleClickPrevious}>
+          <View style={styles.controlsContainer}>
+            {/* <TouchableOpacity onPress={handleClickPrevious}>
             <AntDesign name="stepbackward" size={24} color="black" style={styles.controlIcon} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={playSound}>
-            {isPlaying ? (
-              <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} />
-            ) : (
-              <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
-            )}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+            <TouchableOpacity onPress={playSound}>
+              {isPlaying ? (
+                <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} />
+              ) : (
+                <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
+              )}
+            </TouchableOpacity>
 
 
-          <TouchableOpacity onPress={handleClickNext}  >
+            {/* <TouchableOpacity onPress={handleClickNext}  >
             <AntDesign name="stepforward" size={24} color="black" style={styles.controlIcon} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          </View>
         </View>
-      </View>
-    </Animated.View>
+      </Animated.View>
+
+    </TouchableOpacity>
   );
 };
 
@@ -132,7 +195,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.ricewhite,
+    backgroundColor: COLORS.main,
     padding: 10,
     width: '100%',
   },

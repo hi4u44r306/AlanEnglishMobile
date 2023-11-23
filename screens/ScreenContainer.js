@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 
 const ScreenContainer = ({ children }) => {
     const { screenmargin } = useSelector(state => state.musicReducer);
+    const { duration } = useSelector(state => state.screenReducer);
 
     // Create a useRef for the Animated.Value
     const animatedMarginBottom = useRef(new Animated.Value(screenmargin)).current;
@@ -29,7 +30,7 @@ const ScreenContainer = ({ children }) => {
         // Use timing function for a smooth animation
         Animated.timing(animatedMarginBottom, {
             toValue: screenmargin,
-            duration: 500, // Adjust the duration as needed
+            duration: duration, // Adjust the duration as needed
             useNativeDriver: false, // Ensure this is set to false for margin animations
         }).start();
     }, [screenmargin]);

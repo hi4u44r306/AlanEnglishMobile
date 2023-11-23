@@ -102,3 +102,10 @@ export const setSidebar = (sidebarshow) => {
         payload: sidebarshow
     };
 };
+
+export const setDuration = (duration) => {
+    return {
+        type: "ANIMATION_DURATION",
+        payload: duration
+    };
+};

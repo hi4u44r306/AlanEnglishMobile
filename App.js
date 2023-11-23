@@ -32,6 +32,8 @@ import { COLORS, FONTS } from "./constants";
 import { useDispatch } from "react-redux";
 import { setUsername, setTeacherschool, setUserID, setUserclass, setUsertotaltimeplayed } from "./components/actions/actions";
 import Sidebar from "./components/Sidebar";
+import BigScreen from "./screens/BigScreen";
+import Animated from "react-native-reanimated";
 const store = createStore(rootReducer);
 
 
@@ -61,14 +63,26 @@ const PlaylistStackScreen = () => (
 );
 
 function Root() {
-  const { playing } = useSelector(state => state.musicReducer);
+  const { playing, musicplayerdisplay } = useSelector(state => state.musicReducer);
   const [currMusic, setCurrMusic] = useState(null);
 
   useEffect(() => {
     setCurrMusic(playing)
   }, [playing]);
 
+  const closeBigScreen = async () => {
+    // Add closing animation for the big screen
+    Animated.timing(animatedOpacity, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
 
+    dispatch(setMusicPlayerDisplay('none'));
+    dispatch(setCurrentMargin(0));
+
+    await sound.pauseAsync();
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -116,7 +130,10 @@ function Root() {
         {currMusic
           &&
           (
-            <MusicPlayer music={currMusic} />
+            <>
+              <MusicPlayer music={currMusic} />
+              {/* <BigScreen music={currMusic} /> */}
+            </>
           )}
       </View>
       <Sidebar />

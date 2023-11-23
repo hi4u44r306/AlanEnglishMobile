@@ -27,7 +27,7 @@ export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
           style={{
             // fontFamily: FONTS.regular,
             fontWeight: '400',
-            fontSize: 11,
+            fontSize: 13,
             color: COLORS.primary,
           }}
         >

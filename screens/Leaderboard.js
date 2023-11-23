@@ -104,147 +104,78 @@ class Leaderboard extends Component {
     }
   }
 
-
-  render() {
+  renderClassContainer(classKey, students) {
     const columns = ["名次", "姓名", "上線日期", "播放次數"];
     return (
+      <View style={styles.container} key={classKey}>
+        <Text style={styles.heading}>{`${classKey}班`}</Text>
+        {this.state.loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : (
+          <>
+            <View style={styles.titleBar}>
+              {columns.map((column, index) => (
+                <Text key={index} style={styles.titleColumn}>
+                  {column}
+                </Text>
+              ))}
+            </View>
+            <FlatList
+              data={students}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item, index }) => (
+                <View style={styles.studentContainer}>
+                  <Text style={[styles.place, { textAlign: 'center' }]}>
+                    {index + 1}
+                  </Text>
+                  <Text style={styles.studentName}>{item.name}</Text>
+                  <Text style={styles.studentInfo}>{item.onlinetime}</Text>
+                  <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
+                </View>
+              )}
+              ListEmptyComponent={
+                <Text style={styles.noData}>No online students available</Text>
+              }
+            />
+          </>
+        )}
+      </View>
+    );
+  }
+
+
+  render() {
+    const { studentsA, studentsB, studentsC, studentsD } = this.state;
+    const classData = [
+      { key: 'A', students: studentsA },
+      { key: 'B', students: studentsB },
+      { key: 'C', students: studentsC },
+      { key: 'D', students: studentsD },
+    ];
+
+    return (
       <ScreenContainer>
-        <HomeHeader display='none' />
+        <HomeHeader display="none" />
         <ScrollView style={{ flex: 1, paddingBottom: 30 }}>
-          {/* A班 */}
-          <View style={styles.container}>
-            <Text style={styles.heading}>A班</Text>
-            {this.state.loading ? (
-              <ActivityIndicator size="large" color={COLORS.primary} />
-            ) : (
-              <>
-                <View style={styles.titleBar}>
-                  {columns.map((column, index) => (
-                    <Text key={index} style={styles.titleColumn}>
-                      {column}
-                    </Text>
-                  ))}
-                </View>
-                <FlatList
-                  data={this.state.studentsA}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) => (
-                    <View style={styles.studentContainer}>
-                      <Text style={[styles.place, { textAlign: 'center' }]}>
-                        {index + 1}
-                      </Text>
-                      <Text style={styles.studentName}>{item.name}</Text>
-                      <Text style={styles.studentInfo}>{item.onlinetime}</Text>
-                      <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
-                    </View>
-                  )}
-                  ListEmptyComponent={<Text style={styles.noData}>No online students available</Text>}
-                />
-              </>
-            )}
-          </View>
-          {/* B班 */}
-          <View style={styles.container}>
-            <Text style={styles.heading}>B班</Text>
-            {this.state.loading ? (
-              <ActivityIndicator size="large" color={COLORS.primary} />
-            ) : (
-              <>
-                <View style={styles.titleBar}>
-                  {columns.map((column, index) => (
-                    <Text key={index} style={styles.titleColumn}>
-                      {column}
-                    </Text>
-                  ))}
-                </View>
-                <FlatList
-                  data={this.state.studentsB}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) => (
-                    <View style={styles.studentContainer}>
-                      <Text style={[styles.place, { textAlign: 'center' }]}>
-                        {index + 1}
-                      </Text>
-                      <Text style={styles.studentName}>{item.name}</Text>
-                      <Text style={styles.studentInfo}>{item.onlinetime}</Text>
-                      <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
-                    </View>
-                  )}
-                  ListEmptyComponent={<Text style={styles.noData}>No online students available</Text>}
-                />
-              </>
-            )}
-          </View>
-          {/* C班 */}
-          <View style={styles.container}>
-            <Text style={styles.heading}>C班</Text>
-            {this.state.loading ? (
-              <ActivityIndicator size="large" color={COLORS.primary} />
-            ) : (
-              <>
-                <View style={styles.titleBar}>
-                  {columns.map((column, index) => (
-                    <Text key={index} style={styles.titleColumn}>
-                      {column}
-                    </Text>
-                  ))}
-                </View>
-                <FlatList
-                  data={this.state.studentsC}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) => (
-                    <View style={styles.studentContainer}>
-                      <Text style={[styles.place, { textAlign: 'center' }]}>
-                        {index + 1}
-                      </Text>
-                      <Text style={styles.studentName}>{item.name}</Text>
-                      <Text style={styles.studentInfo}>{item.onlinetime}</Text>
-                      <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
-                    </View>
-                  )}
-                  ListEmptyComponent={<Text style={styles.noData}>No online students available</Text>}
-                />
-              </>
-            )}
-          </View>
-          {/* D班 */}
-          <View style={styles.container}>
-            <Text style={styles.heading}>D班</Text>
-            {this.state.loading ? (
-              <ActivityIndicator size="large" color={COLORS.primary} />
-            ) : (
-              <>
-                <View style={styles.titleBar}>
-                  {columns.map((column, index) => (
-                    <Text key={index} style={styles.titleColumn}>
-                      {column}
-                    </Text>
-                  ))}
-                </View>
-                <FlatList
-                  data={this.state.studentsD}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) => (
-                    <View style={styles.studentContainer}>
-                      <Text style={[styles.place, { textAlign: 'center' }]}>
-                        {index + 1}
-                      </Text>
-                      <Text style={styles.studentName}>{item.name}</Text>
-                      <Text style={styles.studentInfo}>{item.onlinetime}</Text>
-                      <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
-                    </View>
-                  )}
-                  ListEmptyComponent={<Text style={styles.noData}>No online students available</Text>}
-                />
-              </>
-            )}
-          </View>
+          {classData.map(({ key, students }) =>
+            this.renderClassContainer(key, students)
+          )}
           <View style={styles.endOfList}>
-            <Ionicons name="checkmark-done-circle-outline" size={30} color="rgb(64, 98, 187)" style={{}} />
+            <Ionicons
+              name="checkmark-done-circle-outline"
+              size={30}
+              color="rgb(64, 98, 187)"
+              style={{}}
+            />
             <Text style={styles.endOfListText}>
               這是排行榜的末端了
             </Text>
-            <Ionicons name="checkmark-done-circle-outline" size={30} color="rgb(64, 98, 187)" style={{}} />
+            <Ionicons
+              name="checkmark-done-circle-outline"
+              size={30}
+              color="rgb(64, 98, 187)"
+              style={{}}
+            />
           </View>
         </ScrollView>
       </ScreenContainer>

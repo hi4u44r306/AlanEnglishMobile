@@ -1,5 +1,6 @@
 export const initialState = {
     sidebarshow: 'none',
+    duration: 150,
 
 };
 const screenReducer = (state = initialState, action) => {
@@ -8,6 +9,11 @@ const screenReducer = (state = initialState, action) => {
             return {
                 ...state,
                 sidebarshow: action.payload
+            }
+        case "ANIMATION_DURATION":
+            return {
+                ...state,
+                duration: action.payload
             }
         default:
             return state;

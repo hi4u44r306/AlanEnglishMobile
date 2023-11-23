@@ -6,7 +6,7 @@ import { Brand } from "./Brand";
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import FocusedStatusBar from "./FocusedStatusBar";
@@ -72,7 +72,8 @@ const HomeHeader = ({ onSearch, display }) => {
           <Brand fontSize={25} margin={0.7} />
           <TouchableOpacity onPress={handleProfilePress}>
             <View style={{ height: 45, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-              <Ionicons name="list-outline" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} />
+              <FontAwesome name="list-ul" size={25} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} />
+              {/* <Ionicons name="list-outline" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} /> */}
               {/* <Ionicons name="person-circle" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 8, }} /> */}
               {/* <Text
                 style={{
