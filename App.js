@@ -33,7 +33,6 @@ import { useDispatch } from "react-redux";
 import { setUsername, setTeacherschool, setUserID, setUserclass, setUsertotaltimeplayed } from "./components/actions/actions";
 import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
-import Animated from "react-native-reanimated";
 const store = createStore(rootReducer);
 
 
@@ -70,24 +69,12 @@ function Root() {
     setCurrMusic(playing)
   }, [playing]);
 
-  const closeBigScreen = async () => {
-    // Add closing animation for the big screen
-    Animated.timing(animatedOpacity, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
 
-    dispatch(setMusicPlayerDisplay('none'));
-    dispatch(setCurrentMargin(0));
-
-    await sound.pauseAsync();
-  };
 
   return (
     <View style={{ flex: 1 }}>
       <Tab.Navigator
-        initialRouteName="播放列表"
+        initialRouteName="首頁"
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color }) => {

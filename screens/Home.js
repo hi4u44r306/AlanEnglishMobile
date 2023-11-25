@@ -2,27 +2,42 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { HomeHeader, FocusedStatusBar } from "../components";
-import { COLORS } from "../constants";
+import { COLORS, FONTS } from "../constants";
 import ScreenContainer from "./ScreenContainer";
 
+import firebase from "firebase";
+import { useState } from "react";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FontAwesome } from "@expo/vector-icons";
+
 const Home = () => {
-  // const [musicData, setMusicData] = useState(musicDB);
+  const [userclass, setUserclass] = useState();
+  const [homeworkdata, setHomeworkdata] = useState({});
+  const db = firebase.firestore();
+  const currentDate = new Date().toJSON().slice(0, 10);
 
-  // const handleSearch = (value) => {
-  //   if (value.length === 0) {
-  //     setMusicData(musicData);
-  //   }
 
-  //   const filteredData = musicData.filter((item) =>
-  //     item.bookname.toLowerCase().includes(value.toLowerCase())
-  //   );
+  useEffect(() => {
+    const getUserdata = async () => {
+      setUserclass(await AsyncStorage.getItem("ae-class"));
+    };
+    getUserdata();
+  }, []);
 
-  //   if (filteredData.length === 0) {
-  //     setMusicData(musicData);
-  //   } else {
-  //     setMusicData(filteredData);
-  //   }
-  // };
+
+  useEffect(() => {
+    // db.collection('homework').where('A班', '==', userclass).get().then((querySnapshot) => {
+    db.collection('homework').doc('A 班').collection(currentDate).get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        setHomeworkdata(doc.data());
+        console.log(doc.data());
+      })
+    })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+  }, [])
 
   return (
     <ScreenContainer>
@@ -30,22 +45,52 @@ const Home = () => {
       <HomeHeader display="none" />
       <View style={styles.container}>
         {/* Header Section */}
-        <View style={styles.header}>
-          {/* <Image source={require('./assets/app_logo.png')} style={styles.logo} /> */}
-          <Text style={styles.appName}>English Listening App</Text>
+
+        <View style={styles.resultContainer}>
+          <View style={styles.resultItem}>
+
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+              <FontAwesome name="pencil-square" size={40} color="rgb(64, 98, 187)" />
+              <Text style={{ fontSize: 25, marginLeft: 25, fontFamily: FONTS.bold }}>
+                今日聯絡簿
+              </Text>
+            </View>
+          </View>
+          <View style={styles.resultItem}>
+            <View style={styles.inline}>
+              <Text style={styles.resultLabel}>班別: </Text>
+              <Text style={styles.resultText}>{homeworkdata.班別}</Text>
+            </View>
+          </View>
+
+          <View style={styles.resultItem}>
+            <View style={styles.inline}>
+              <Text style={styles.resultLabel}>聽力本:</Text>
+              <Text style={styles.resultText}>{homeworkdata.聽力本}</Text>
+            </View>
+            <View style={styles.inline}>
+              <Text style={styles.resultLabel}>聽力本頁數:</Text>
+              <Text style={styles.resultText}>{`${homeworkdata.聽力本頁數1}頁 ~ ${homeworkdata.聽力本頁數2}頁`}</Text>
+            </View>
+          </View>
+
+          <View style={styles.resultItem}>
+            <View style={styles.inline}>
+              <Text style={styles.resultLabel}>習作本:</Text>
+              <Text style={styles.resultText}>{homeworkdata.習作本}</Text>
+            </View>
+            <View style={styles.inline}>
+              <Text style={styles.resultLabel}>習作本頁數:</Text>
+              <Text style={styles.resultText}>{`${homeworkdata.習作本頁數1}頁 ~ ${homeworkdata.習作本頁數2}頁`}</Text>
+            </View>
+          </View>
         </View>
 
-        {/* App Features Section */}
-        <View style={styles.features}>
-          <Text style={styles.featureText}>Improve Your Listening Skills</Text>
-          <Text style={styles.featureText}>Diverse Content for Every Level</Text>
-          <Text style={styles.featureText}>Personalized Learning Paths</Text>
-        </View>
 
-        {/* Call-to-Action Button */}
-        <TouchableOpacity style={styles.ctaButton}>
-          <Text style={styles.ctaButtonText}>Start Listening Now</Text>
-        </TouchableOpacity>
+
 
         {/* Footer Section */}
         <View style={styles.footer}>
@@ -57,7 +102,7 @@ const Home = () => {
 };
 
 
-
+const fontFamily = FONTS.bold;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -102,6 +147,43 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 16,
     textAlign: 'center',
+  },
+
+
+  resultContainer: {
+    marginTop: 10,
+    padding: 15,
+    backgroundColor: COLORS.main,
+    borderRadius: 10,
+    fontFamily: fontFamily,
+  },
+  previewLabel: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontFamily: fontFamily,
+  },
+  inline: {
+    flexDirection: 'row',
+    alignItems: 'center', // Optional: Align items vertically in the center
+    justifyContent: 'space-between',
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+
+  },
+  resultItem: {
+    marginBottom: 15,
+    fontFamily: fontFamily,
+  },
+  resultLabel: {
+    fontSize: 17,
+    marginTop: 5, // You can reduce or remove this margin
+    color: 'gray',
+    fontFamily: fontFamily,
+  },
+  resultText: {
+    fontSize: 17,
+    marginTop: 5, // You can reduce or remove this margin
+    fontFamily: fontFamily,
   },
 });
 export default Home;
