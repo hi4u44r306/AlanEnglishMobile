@@ -110,22 +110,31 @@ class Leaderboard extends Component {
       <View style={styles.container} key={classKey}>
         <Text style={styles.heading}>{`${classKey}班`}</Text>
         {this.state.loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
+          <ActivityIndicator
+            size="large"
+            color={COLORS.primary}
+          />
         ) : (
           <>
             <View style={styles.titleBar}>
-              {columns.map((column, index) => (
-                <Text key={index} style={styles.titleColumn}>
-                  {column}
-                </Text>
-              ))}
+              {
+                columns.map((column, index) => (
+                  <Text key={index} style={styles.titleColumn}>
+                    {column}
+                  </Text>
+                ))}
             </View>
             <FlatList
               data={students}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index }) => (
                 <View style={styles.studentContainer}>
-                  <Text style={[styles.place, { textAlign: 'center' }]}>
+                  <Text style={
+                    [
+                      styles.place,
+                      { textAlign: 'center' }
+                    ]}
+                  >
                     {index + 1}
                   </Text>
                   <Text style={styles.studentName}>{item.name}</Text>
@@ -152,10 +161,24 @@ class Leaderboard extends Component {
       { key: 'C', students: studentsC },
       { key: 'D', students: studentsD },
     ];
-
+    // const currentDate = new Date();
+    // const currentMonthLastDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    // const currentMonthLastDateMs = currentMonthLastDate.getTime();
     return (
       <ScreenContainer>
         <HomeHeader display="none" />
+        <View style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          alignContent: 'center',
+        }}>
+          <Text style={{
+            fontSize: 45,
+            color: '#2d7dd2',
+            fontFamily: FONTS.VarelaRound,
+            fontWeight: '900',
+          }}>Leaderboard</Text>
+        </View>
         <ScrollView style={{ flex: 1, paddingBottom: 30 }}>
           {classData.map(({ key, students }) =>
             this.renderClassContainer(key, students)
@@ -188,17 +211,17 @@ const styles = StyleSheet.create({
     // padding: 10,
     paddingTop: 10,
     paddingBottom: 10,
-    backgroundColor: 'white',
     borderRadius: 8,
   },
   heading: {
     fontSize: 16,
-    fontWeight: '800',
-    fontFamily: FONTS.bold,
+    fontWeight: '900',
+    fontFamily: FONTS.VarelaRound,
     letterSpacing: 2,
     marginBottom: 10,
     textAlign: 'center',
-    backgroundColor: 'rgb(0, 91, 127)',
+    backgroundColor: '#2ba84a',
+    // backgroundColor: 'rgb(0, 91, 127)',
     color: 'white',
     paddingTop: 8,
     paddingBottom: 8,
@@ -212,32 +235,47 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: FONTS.VarelaRound,
+    fontWeight: '800',
+    borderBottomColor: 'gray',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
   },
   studentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+    borderBottomColor: 'gray',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
   },
   place: {
     flex: 1,
     textAlign: 'center',
+    fontFamily: FONTS.VarelaRound,
+    fontWeight: '800'
   },
   studentName: {
     flex: 1,
     fontSize: 14,
     textAlign: 'center',
+    fontFamily: FONTS.VarelaRound,
+    fontWeight: '800'
   },
   studentInfo: {
     flex: 1,
     fontSize: 14,
     color: '#555',
     textAlign: 'center',
+    fontFamily: FONTS.VarelaRound,
+    fontWeight: '800'
   },
   noData: {
     fontStyle: 'italic',
     color: '#777',
     textAlign: 'center',
+    fontFamily: FONTS.VarelaRound,
   },
   endOfList: {
     display: 'flex',

@@ -18,6 +18,7 @@
 import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, Animated } from 'react-native';
 import { useSelector } from 'react-redux';
+import { COLORS } from '../constants';
 
 const ScreenContainer = ({ children }) => {
     const { screenmargin } = useSelector(state => state.musicReducer);
@@ -36,7 +37,7 @@ const ScreenContainer = ({ children }) => {
     }, [screenmargin]);
 
     return (
-        <Animated.View style={{ flex: 1, backgroundColor: 'white', marginBottom: animatedMarginBottom }}>
+        <Animated.View style={{ flex: 1, backgroundColor: COLORS.main, marginBottom: animatedMarginBottom }}>
             {children}
         </Animated.View>
     );

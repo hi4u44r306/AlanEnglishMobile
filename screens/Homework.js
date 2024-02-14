@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, Text, TextInput, Button, Dimensions } from "react-native";
-import { CheckBoxComponent } from "@react-native-community/checkbox";
+import { View, SafeAreaView, Text, TextInput, Button, Dimensions, Alert, TouchableWithoutFeedback, Keyboard, FlatList } from "react-native";
 
-import { HomeHeader, FocusedStatusBar } from "../components";
+import { FocusedStatusBar } from "../components";
 import { COLORS, FONTS } from "../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ScreenContainer from "./ScreenContainer";
@@ -14,9 +13,10 @@ import { Ionicons } from "@expo/vector-icons";
 
 import firebase from "firebase";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import HomeworkData from "../components/HomeworkData";
+
 
 const Homework = () => {
-    const db = firebase.firestore();
     const [codeVisible, setCodeVisible] = useState(false);
     const [isTeacher, setIsTeacher] = useState(true);
     const [teachername, setTeachername] = useState()
@@ -27,7 +27,18 @@ const Homework = () => {
     const [exerciseBookPages, setExerciseBookPages] = useState({ start: "", end: "" });
     const [previewResult, setPreviewResult] = useState("");
     const currentDate = new Date().toJSON().slice(0, 10);
-    const [homeworkdata, setHomeworkdata] = useState({});
+    const currentMonth = new Date().toJSON().slice(0, 7);
+    const [currentDayOfWeek, setCurrentDayOfWeek] = useState('');
+
+    // CurrentDayofWeek
+    useEffect(() => {
+        const currentDate = new Date();
+        const dayOfWeek = currentDate.getDay();
+        const days = ['日', '一', '二', '三', '四', '五', '六'];
+        setCurrentDayOfWeek(days[dayOfWeek]);
+    }, []);
+
+    // Get Role
     useEffect(() => {
         const getRole = async () => {
             const role = await AsyncStorage.getItem("ae-class");
@@ -37,20 +48,6 @@ const Homework = () => {
 
         getRole();
     }, []);
-
-    useEffect(() => {
-        // db.collection('homework').where('A班', '==', userclass).get().then((querySnapshot) => {
-        db.collection('homework').doc('A 班').collection(currentDate).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                setHomeworkdata(doc.data());
-                console.log(doc.data());
-            })
-        })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
-    }, [])
-
 
     const books = [
         "習作本 1",
@@ -119,8 +116,31 @@ const Homework = () => {
         }
     };
 
+    const createTwoButtonAlert = () =>
+        Alert.alert('再次確認', '確定要上傳聯絡簿嗎', [
+            {
+                text: '取消',
+                onPress: () => {
+                    // Add your logic to cancel the data upload here
+                    console.log('Data upload cancelled');
+                },
+                style: 'cancel',
+            },
+            {
+                text: '確定上傳',
+                onPress: () => {
+                    // Add your logic to proceed with the data upload here
+                    console.log('OK Pressed - Uploading data');
+                },
+            },
+        ]);
+
+
     const handleSave = () => {
-        db.collection('homework').doc(selectedClassType).collection(currentDate).add({
+        const homeworkRef = firebase.database().ref(`homework/${selectedClassType}/${currentMonth}`);
+        const homeworkData = {
+            日期: currentDate,
+            星期幾: currentDayOfWeek,
             老師: teachername,
             班別: selectedClassType,
             聽力本: selectedListeningBook,
@@ -129,227 +149,245 @@ const Homework = () => {
             習作本: selectedExerciseBook,
             習作本頁數1: exerciseBookPages.start,
             習作本頁數2: exerciseBookPages.end
-        }).then((docRef) => {
-            db.collection('homework').doc(selectedClassType).collection(currentDate).doc(docRef.id).update({
-                homeworkID: docRef.id,
-            }, { merge: true })
-            console.log("Document written with ID: ", docRef.id);
-            alert("Document updated")
-        }).catch((error) => {
-            console.error("Error adding document: ", error);
-        });
+        };
+
+        // Use push to generate a unique key
+        const newHomeworkRef = homeworkRef.push();
+        const homeworkkey = newHomeworkRef.key;
+
+        newHomeworkRef.set({
+            ...homeworkData,
+            homeworkID: homeworkkey,
+        })
+            .then(() => {
+                // Code inside this block will run if the set operation is successful
+                console.log("Homework data set successfully!");
+                createTwoButtonAlert("Homework data set successfully!");
+            })
+            .catch((error) => {
+                // Code inside this block will run if there is an error in the set operation
+                console.error("Error setting homework data: ", error);
+                createTwoButtonAlert("Error setting homework data. Please try again.");
+            });
+
         const result = `班別: ${selectedClassType}\n聽力本: ${selectedListeningBook} (${listeningBookPages.start}頁~${listeningBookPages.end}頁)\n習作本: ${selectedExerciseBook} (${exerciseBookPages.start}頁~${exerciseBookPages.end}頁)`;
         setPreviewResult(result);
     };
 
     const renderContent = () => {
         return (
-            <View style={{
-                // width: '100%',
-                padding: 18,
-                margin: 15,
-                fontFamily: fontFamily,
-                backgroundColor: COLORS.main,
-                borderRadius: 20,
-            }}>
-                {/* 班別 */}
-                <View style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownLabel}>班別 :</Text>
-                    <SelectDropdown
-                        data={classtype}
-                        // defaultValueByIndex={0}
-                        // defaultValue={'Egypt'}
-                        onSelect={(selectedItem, index) => {
-                            handleDropdownSelection(selectedItem, 'classType');
-                            console.log(selectedItem, index);
-                        }}
-                        defaultButtonText={'選擇班別'}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            return selectedItem;
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            return item;
-                        }}
-                        buttonStyle={styles.dropdown1BtnStyle}
-                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                        renderDropdownIcon={isOpened => {
-                            return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
-                        }}
-                        dropdownIconPosition={'right'}
-                        dropdownStyle={styles.dropdown1DropdownStyle}
-                        rowStyle={styles.dropdown1RowStyle}
-                        rowTextStyle={styles.dropdown1RowTxtStyle}
-                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
-                    // search
-                    // searchInputStyle={styles.dropdown1searchInputStyleStyle}
-                    // searchPlaceHolder={'Search here'}
-                    // searchPlaceHolderColor={'darkgrey'}
-                    // renderSearchInputLeftIcon={() => {
-                    //     return <FontAwesome name={'search'} color={'#444'} size={18} />;
-                    // }}
-                    />
-                </View>
-
-                {/* 聽力本 */}
-                <View style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownLabel}>聽力本 :</Text>
-                    <SelectDropdown
-                        data={listeningbooks}
-                        // defaultValueByIndex={1}
-                        // defaultValue={'Egypt'}
-                        onSelect={(selectedItem, index) => {
-                            handleDropdownSelection(selectedItem, 'listeningBook');
-                            console.log(selectedItem, index);
-                        }}
-                        defaultButtonText={'選擇聽力本'}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            return selectedItem;
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            return item;
-                        }}
-                        buttonStyle={styles.dropdown1BtnStyle}
-                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                        renderDropdownIcon={isOpened => {
-                            return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
-                        }}
-                        dropdownIconPosition={'right'}
-                        dropdownStyle={styles.dropdown1DropdownStyle}
-                        rowStyle={styles.dropdown1RowStyle}
-                        rowTextStyle={styles.dropdown1RowTxtStyle}
-                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
-                    // search
-                    // searchInputStyle={styles.dropdown1searchInputStyleStyle}
-                    // searchPlaceHolder={'Search here'}
-                    // searchPlaceHolderColor={'darkgrey'}
-                    // renderSearchInputLeftIcon={() => {
-                    //     return <FontAwesome name={'search'} color={'#444'} size={18} />;
-                    // }}
-                    />
-                </View>
-
-                {/* 聽力本頁數 */}
-                <View style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownLabel}>聽力本頁數 :</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="頁數..."
-                        placeholderTextColor="black"
-                        onChangeText={(text) => handleInputChange(text, 'listeningBookStart')}
-                    />
-                    <Ionicons
-                        name="play-forward-circle-outline"
-                        size={25}
-                        color="rgb(64, 98, 187)"
-                        style={styles.icon}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="頁數..."
-                        placeholderTextColor="black"
-                        onChangeText={(text) => handleInputChange(text, 'listeningBookEnd')}
-                    />
-
-                </View>
-
-                {/* 習作本 */}
-                <View style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownLabel}>習作本 :</Text>
-                    <SelectDropdown
-                        data={books}
-                        // defaultValueByIndex={1}
-                        // defaultValue={'Egypt'}
-                        onSelect={(selectedItem, index) => {
-                            handleDropdownSelection(selectedItem, 'exerciseBook');
-                            console.log(selectedItem, index);
-                        }}
-                        defaultButtonText={'選擇習作本'}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            return selectedItem;
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            return item;
-                        }}
-                        buttonStyle={styles.dropdown1BtnStyle}
-                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                        renderDropdownIcon={isOpened => {
-                            return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
-                        }}
-                        dropdownIconPosition={'right'}
-                        dropdownStyle={styles.dropdown1DropdownStyle}
-                        rowStyle={styles.dropdown1RowStyle}
-                        rowTextStyle={styles.dropdown1RowTxtStyle}
-                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
-                    // search
-                    // searchInputStyle={styles.dropdown1searchInputStyleStyle}
-                    // searchPlaceHolder={'Search here'}
-                    // searchPlaceHolderColor={'darkgrey'}
-                    // renderSearchInputLeftIcon={() => {
-                    //     return <FontAwesome name={'search'} color={'#444'} size={18} />;
-                    // }}
-                    />
-
-                </View>
-
-                {/* 習作本頁數 */}
-                <View style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownLabel}>習作本頁數 :</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="頁數..."
-                        placeholderTextColor="black"
-                        onChangeText={(text) => handleInputChange(text, 'exerciseBookStart')}
-                    />
-                    <Ionicons
-                        name="play-forward-circle-outline"
-                        size={25}
-                        color="rgb(64, 98, 187)"
-                        style={styles.icon}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="頁數..."
-                        placeholderTextColor="black"
-                        onChangeText={(text) => handleInputChange(text, 'exerciseBookEnd')}
-                    />
-
-                </View>
-
-                {/* 預覽結果 */}
-                <View style={styles.resultContainer}>
-                    <Text style={styles.previewLabel}>聯絡簿預覽結果 : </Text>
-                    <View style={styles.resultItem}>
-                        <View style={styles.inline}>
-                            <Text style={styles.resultLabel}>班別: </Text>
-                            <Text style={styles.resultText}>{selectedClassType}</Text>
-                        </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={{
+                    // width: '100%',
+                    padding: 18,
+                    margin: 15,
+                    fontFamily: fontFamily,
+                    backgroundColor: COLORS.main,
+                    borderRadius: 20,
+                }}>
+                    {/* 班別 */}
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.dropdownLabel}>班別 :</Text>
+                        <SelectDropdown
+                            data={classtype}
+                            // defaultValueByIndex={0}
+                            // defaultValue={'Egypt'}
+                            onSelect={(selectedItem, index) => {
+                                handleDropdownSelection(selectedItem, 'classType');
+                                console.log(selectedItem, index);
+                            }}
+                            defaultButtonText={'選擇班別'}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                return selectedItem;
+                            }}
+                            rowTextForSelection={(item, index) => {
+                                return item;
+                            }}
+                            buttonStyle={styles.dropdown1BtnStyle}
+                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                            renderDropdownIcon={isOpened => {
+                                return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
+                            }}
+                            dropdownIconPosition={'right'}
+                            dropdownStyle={styles.dropdown1DropdownStyle}
+                            rowStyle={styles.dropdown1RowStyle}
+                            rowTextStyle={styles.dropdown1RowTxtStyle}
+                            selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                        // search
+                        // searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                        // searchPlaceHolder={'Search here'}
+                        // searchPlaceHolderColor={'darkgrey'}
+                        // renderSearchInputLeftIcon={() => {
+                        //     return <FontAwesome name={'search'} color={'#444'} size={18} />;
+                        // }}
+                        />
                     </View>
 
-                    <View style={styles.resultItem}>
-                        <View style={styles.inline}>
-                            <Text style={styles.resultLabel}>聽力本:</Text>
-                            <Text style={styles.resultText}>{selectedListeningBook}</Text>
-                        </View>
-                        <View style={styles.inline}>
-                            <Text style={styles.resultLabel}>聽力本頁數:</Text>
-                            <Text style={styles.resultText}>{`${listeningBookPages.start} 頁 ~ ${listeningBookPages.end} 頁`}</Text>
-                        </View>
+                    {/* 聽力本 */}
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.dropdownLabel}>聽力本 :</Text>
+                        <SelectDropdown
+                            data={listeningbooks}
+                            // defaultValueByIndex={1}
+                            // defaultValue={'Egypt'}
+                            onSelect={(selectedItem, index) => {
+                                handleDropdownSelection(selectedItem, 'listeningBook');
+                                console.log(selectedItem, index);
+                            }}
+                            defaultButtonText={'選擇聽力本'}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                return selectedItem;
+                            }}
+                            rowTextForSelection={(item, index) => {
+                                return item;
+                            }}
+                            buttonStyle={styles.dropdown1BtnStyle}
+                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                            renderDropdownIcon={isOpened => {
+                                return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
+                            }}
+                            dropdownIconPosition={'right'}
+                            dropdownStyle={styles.dropdown1DropdownStyle}
+                            rowStyle={styles.dropdown1RowStyle}
+                            rowTextStyle={styles.dropdown1RowTxtStyle}
+                            selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                        // search
+                        // searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                        // searchPlaceHolder={'Search here'}
+                        // searchPlaceHolderColor={'darkgrey'}
+                        // renderSearchInputLeftIcon={() => {
+                        //     return <FontAwesome name={'search'} color={'#444'} size={18} />;
+                        // }}
+                        />
                     </View>
 
-                    <View style={styles.resultItem}>
-                        <View style={styles.inline}>
-                            <Text style={styles.resultLabel}>習作本:</Text>
-                            <Text style={styles.resultText}>{selectedExerciseBook}</Text>
-                        </View>
-                        <View style={styles.inline}>
-                            <Text style={styles.resultLabel}>習作本頁數:</Text>
-                            <Text style={styles.resultText}>{`${exerciseBookPages.start} 頁 ~ ${exerciseBookPages.end} 頁`}</Text>
-                        </View>
+                    {/* 聽力本頁數 */}
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.dropdownLabel}>聽力本頁數 :</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="頁數..."
+                            placeholderTextColor="black"
+                            onChangeText={(text) => handleInputChange(text, 'listeningBookStart')}
+                            keyboardType="numeric"
+                        />
+                        <Ionicons
+                            name="play-forward-circle-outline"
+                            size={25}
+                            color="rgb(64, 98, 187)"
+                            style={styles.icon}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="頁數..."
+                            placeholderTextColor="black"
+                            onChangeText={(text) => handleInputChange(text, 'listeningBookEnd')}
+                            keyboardType="numeric"
+                        />
+
                     </View>
 
-                    <Button title="Save" onPress={handleSave} style={styles.saveButton} />
+                    {/* 習作本 */}
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.dropdownLabel}>習作本 :</Text>
+                        <SelectDropdown
+                            data={books}
+                            // defaultValueByIndex={1}
+                            // defaultValue={'Egypt'}
+                            onSelect={(selectedItem, index) => {
+                                handleDropdownSelection(selectedItem, 'exerciseBook');
+                                console.log(selectedItem, index);
+                            }}
+                            defaultButtonText={'選擇習作本'}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                return selectedItem;
+                            }}
+                            rowTextForSelection={(item, index) => {
+                                return item;
+                            }}
+                            buttonStyle={styles.dropdown1BtnStyle}
+                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                            renderDropdownIcon={isOpened => {
+                                return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
+                            }}
+                            dropdownIconPosition={'right'}
+                            dropdownStyle={styles.dropdown1DropdownStyle}
+                            rowStyle={styles.dropdown1RowStyle}
+                            rowTextStyle={styles.dropdown1RowTxtStyle}
+                            selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                        // search
+                        // searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                        // searchPlaceHolder={'Search here'}
+                        // searchPlaceHolderColor={'darkgrey'}
+                        // renderSearchInputLeftIcon={() => {
+                        //     return <FontAwesome name={'search'} color={'#444'} size={18} />;
+                        // }}
+                        />
+
+                    </View>
+
+                    {/* 習作本頁數 */}
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.dropdownLabel}>習作本頁數 :</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="頁數..."
+                            placeholderTextColor="black"
+                            onChangeText={(text) => handleInputChange(text, 'exerciseBookStart')}
+                            keyboardType="numeric"
+                        />
+                        <Ionicons
+                            name="play-forward-circle-outline"
+                            size={25}
+                            color="rgb(64, 98, 187)"
+                            style={styles.icon}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="頁數..."
+                            placeholderTextColor="black"
+                            onChangeText={(text) => handleInputChange(text, 'exerciseBookEnd')}
+                            keyboardType="numeric"
+                        />
+
+                    </View>
+
+                    {/* 預覽結果 */}
+                    <View style={styles.resultContainer}>
+                        <Text style={styles.previewLabel}>聯絡簿預覽結果 : </Text>
+                        <View style={styles.resultItem}>
+                            <View style={styles.inline}>
+                                <Text style={styles.resultLabel}>班別: </Text>
+                                <Text style={styles.resultText}>{selectedClassType}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.resultItem}>
+                            <View style={styles.inline}>
+                                <Text style={styles.resultLabel}>聽力本:</Text>
+                                <Text style={styles.resultText}>{selectedListeningBook}</Text>
+                            </View>
+                            <View style={styles.inline}>
+                                <Text style={styles.resultLabel}>聽力本頁數:</Text>
+                                <Text style={styles.resultText}>{`${listeningBookPages.start} 頁 ~ ${listeningBookPages.end} 頁`}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.resultItem}>
+                            <View style={styles.inline}>
+                                <Text style={styles.resultLabel}>習作本:</Text>
+                                <Text style={styles.resultText}>{selectedExerciseBook}</Text>
+                            </View>
+                            <View style={styles.inline}>
+                                <Text style={styles.resultLabel}>習作本頁數:</Text>
+                                <Text style={styles.resultText}>{`${exerciseBookPages.start} 頁 ~ ${exerciseBookPages.end} 頁`}</Text>
+                            </View>
+                        </View>
+
+                        <Button title="Save" onPress={handleSave} style={styles.saveButton} />
+                    </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         );
     };
 
@@ -392,50 +430,7 @@ const Homework = () => {
                 {codeVisible && renderContent()}
                 {
                     codeVisible === false ?
-                        <View style={styles.sectionContainer}>
-                            <View style={styles.resultContainer}>
-                                <View style={styles.resultItem}>
-
-                                    <View style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                    }}>
-                                        <FontAwesome name="pencil-square" size={40} color="rgb(64, 98, 187)" />
-                                        <Text style={{ fontSize: 25, marginLeft: 25, fontFamily: FONTS.bold }}>
-                                            今日聯絡簿
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={styles.resultItem}>
-                                    <View style={styles.inline}>
-                                        <Text style={styles.resultLabel}>班別: </Text>
-                                        <Text style={styles.resultText}>{homeworkdata.班別}</Text>
-                                    </View>
-                                </View>
-
-                                <View style={styles.resultItem}>
-                                    <View style={styles.inline}>
-                                        <Text style={styles.resultLabel}>聽力本:</Text>
-                                        <Text style={styles.resultText}>{homeworkdata.聽力本}</Text>
-                                    </View>
-                                    <View style={styles.inline}>
-                                        <Text style={styles.resultLabel}>聽力本頁數:</Text>
-                                        <Text style={styles.resultText}>{`${homeworkdata.聽力本頁數1}頁 ~ ${homeworkdata.聽力本頁數2}頁`}</Text>
-                                    </View>
-                                </View>
-
-                                <View style={styles.resultItem}>
-                                    <View style={styles.inline}>
-                                        <Text style={styles.resultLabel}>習作本:</Text>
-                                        <Text style={styles.resultText}>{homeworkdata.習作本}</Text>
-                                    </View>
-                                    <View style={styles.inline}>
-                                        <Text style={styles.resultLabel}>習作本頁數:</Text>
-                                        <Text style={styles.resultText}>{`${homeworkdata.習作本頁數1}頁 ~ ${homeworkdata.習作本頁數2}頁`}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                        <HomeworkData />
                         :
                         ""
                 }
@@ -466,6 +461,9 @@ const styles = {
         padding: 20,
         fontFamily: fontFamily,
     },
+    targetDateStyle: {
+        backgroundColor: COLORS.main, // Example: Change the background color
+    },
     label: {
         fontSize: 18,
         marginBottom: 10,
@@ -492,7 +490,7 @@ const styles = {
     resultContainer: {
         marginTop: 10,
         padding: 15,
-        backgroundColor: COLORS.main,
+        backgroundColor: COLORS.lightgray,
         borderRadius: 10,
         fontFamily: fontFamily,
     },
@@ -509,18 +507,16 @@ const styles = {
         borderBottomWidth: 1,
     },
     resultItem: {
-        marginBottom: 15,
+        marginTop: 5,
         fontFamily: fontFamily,
     },
     resultLabel: {
         fontSize: 17,
-        marginTop: 5, // You can reduce or remove this margin
         color: 'gray',
         fontFamily: fontFamily,
     },
     resultText: {
         fontSize: 17,
-        marginTop: 5, // You can reduce or remove this margin
         fontFamily: fontFamily,
     },
     saveButton: {

@@ -36,6 +36,7 @@ const Playlist = () => {
         width: 150,
         padding: 15,
         backgroundColor: COLORS.white,
+
         borderRadius: SIZES.font,
         marginBottom: SIZES.extraLarge,
         margin: SIZES.base,

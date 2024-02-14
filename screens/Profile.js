@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, Text, StyleSheet, Alert, Image } from "react-native";
+import { View, SafeAreaView, Text, StyleSheet, Alert, Image, RefreshControl, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
@@ -8,45 +8,24 @@ import firebase from "./firebase";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 
+import { MMKV } from 'react-native-mmkv'
+export const storage = new MMKV()
+
 const Profile = () => {
   const navigation = useNavigation();
   const db = firebase.firestore();
-  const [username, setUsername] = useState();
-  const [useruid, setUserUID] = useState();
-  const [usertimeplayed, setUsertimeplayed] = useState(0);
-  const [dailytimeplayed, setDailyTimeplayed] = useState(0);
-  const [userclass, setUserclass] = useState('');
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
   const Month = new Date().toJSON().slice(5, 7);
-  const [percentage, setPercentage] = useState(0);
+
+  const userclass = storage.getString('ae-class');
+  const username = storage.getString('ae-username');
+  const useruid = storage.getString('ae-useruid');
+  const usertimeplayed = storage.getString('ae-totaltimeplayed');
+  const dailytimeplayed = storage.getString('ae-dailyplayed');
+  const percentage = dailytimeplayed / 30;
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      try {
-        setUsername(await AsyncStorage.getItem('ae-username'));
-        setUserUID(await AsyncStorage.getItem('ae-useruid'));
-        setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
-        setUserclass(await AsyncStorage.getItem('ae-class'));
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    };
-
-    getUserInfo();
-  }, []);
-
-  useEffect(() => {
-    db.collection('student').doc(useruid).collection('Logfile').doc(currentMonth).collection(currentMonth).doc(currentDate).get().then((doc) => {
-      // dispatch(setUsertodaytimeplayed(doc.data().todaytotaltimeplayed))
-      setDailyTimeplayed(doc.data().todaytotaltimeplayed);
-      setPercentage(todaytotaltimeplayed / 30)
-
-    }).catch(() => {
-      // dispatch(setUsertodaytimeplayed(doc.data().todaytotaltimeplayed))
-      setDailyTimeplayed("0");
-    });
-
     firebase.auth().onAuthStateChanged(user => {
       if (!user) return error();
     });
@@ -89,11 +68,27 @@ const Profile = () => {
       });
   };
 
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = () => {
+    setRefreshing(true);
+    getUserInfo();
+    setRefreshing(false);
+  }
+
+
   return (
     <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <HomeHeader display='none' />
-      <View style={styles.Upper}>
+      <ScrollView
+        contentContainerStyle={styles.Upper}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         <View style={styles.titleContainer}>
           <View style={{
             backgroundColor: 'white',
@@ -127,55 +122,40 @@ const Profile = () => {
               <Text style={styles.secondtitleText}>{dailytimeplayed}</Text>
             </View>
           </View>
-
         </View>
-      </View>
-      <View>
-        <View style={styles.listeningCountContainer}>
-          <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-            <Text style={styles.userInfoText}>
-              今日目標聽力次數 : 30 次
-            </Text>
-            <Text style={styles.userSecondInfoText}>
-              今天已經聽了 {dailytimeplayed} 次了，加油!!!
-            </Text>
-          </View>
-          <View style={{ width: '90%', margin: 20, }}>
-            {
-              percentage ?
-                <ProgressBar
-                  progress={0} theme={{
-                    colors: {
-                      primary: '#ffffff',
-                      surfaceVariant: '#89a9f0'
-                    },
-                  }} style={{
-                    height: 8,
-                    borderRadius: 30
-                  }}
-                />
-                :
-                <ProgressBar progress={percentage} theme={{
-                  colors: {
-                    primary: '#ffffff',
-                    surfaceVariant: '#89a9f0'
-                  },
-                }} style={{
-                  height: 8,
-                  borderRadius: 30
-                }} />
-            }
-            <View style={{ marginTop: 10, alignItems: 'stretch', justifyContent: 'space-between', flexDirection: 'row' }}>
-              <Text style={{ color: 'white', fontWeight: '700' }}>0次</Text>
-              <Text style={{ color: 'white', fontWeight: '700' }}>30次</Text>
+        <View>
+          <View style={styles.listeningCountContainer}>
+            <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+              <Text style={styles.userInfoText}>
+                今日目標聽力次數 : 30 次
+              </Text>
+              <Text style={styles.userSecondInfoText}>
+                今天已經聽了 {dailytimeplayed} 次了，加油!!!
+              </Text>
+            </View>
+            <View style={{ width: '90%', margin: 20, }}>
+              <ProgressBar progress={percentage} theme={{
+                colors: {
+                  primary: 'red',
+                  surfaceVariant: '#89a9f0'
+                },
+              }} style={{
+                height: 8,
+                borderRadius: 30,
+              }} />
+              <View style={{ marginTop: 10, alignItems: 'stretch', justifyContent: 'space-between', flexDirection: 'row' }}>
+                <Text style={{ color: 'white', fontWeight: '700' }}>0次</Text>
+                <Text style={{ color: 'white', fontWeight: '700' }}>30次</Text>
+              </View>
             </View>
           </View>
+          <LogoutButton
+            fontSize={20}
+            handlePress={Logout}
+          />
         </View>
-        <LogoutButton
-          fontSize={20}
-          handlePress={Logout}
-        />
-      </View>
+      </ScrollView>
+
     </ScreenContainer>
   );
 };

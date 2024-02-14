@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 
-import { HomeHeader, FocusedStatusBar } from "../components";
+import { HomeHeader, FocusedStatusBar, MusicCard } from "../components";
 import { COLORS, FONTS } from "../constants";
 import ScreenContainer from "./ScreenContainer";
 
@@ -9,109 +9,203 @@ import firebase from "firebase";
 import { useState } from "react";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FontAwesome } from "@expo/vector-icons";
+import { ProgressBar } from 'react-native-paper';
+import { Feather, FontAwesome, Fontisto } from "@expo/vector-icons";
+
+import { MMKV } from 'react-native-mmkv'
+export const storage = new MMKV()
 
 const Home = () => {
-  const [userclass, setUserclass] = useState();
-  const [homeworkdata, setHomeworkdata] = useState({});
-  const db = firebase.firestore();
+  const [refreshing, setRefreshing] = useState(false);
+  const [homeworkdata, setHomeworkData] = useState([]);
+  const currentMonth = new Date().toJSON().slice(0, 7);
   const currentDate = new Date().toJSON().slice(0, 10);
+  const username = storage.getString('ae-username');
+  const dailyplayed = storage.getString('ae-dailyplayed');
+  const percentage = dailyplayed / 30;
 
+  // setUsername(storage.getString('ae-username'));
+
+  // const getUserdata = async () => {
+  // const useruid = storage.getString('ae-useruid');
+  // db.collection('student').doc(useruid).get().then((doc) => {
+  //   setDailyplayed(doc.data().currdatetimeplayed);
+  //   AsyncStorage.setItem('ae-dailyplayed', JSON.stringify(doc.data().currdatetimeplayed));
+  // })
+  // };
+
+  // useEffect(() => {
+  //   getUserdata();
+  // }, []);
 
   useEffect(() => {
-    const getUserdata = async () => {
-      setUserclass(await AsyncStorage.getItem("ae-class"));
-    };
-    getUserdata();
+    fetchDatafromRealtimeDB();
   }, []);
 
+  const fetchDatafromRealtimeDB = () => {
+    const PostRef = firebase.database().ref(`homework/${'B 班'}/${currentMonth}`).orderByChild('日期').equalTo(currentDate);
 
-  useEffect(() => {
-    // db.collection('homework').where('A班', '==', userclass).get().then((querySnapshot) => {
-    db.collection('homework').doc('A 班').collection(currentDate).get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        setHomeworkdata(doc.data());
-        console.log(doc.data());
-      })
-    })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
-  }, [])
+    PostRef.on('value', (snapshot) => {
+      const data = snapshot.val();
 
+      if (data) {
+        const dataArray = Object.entries(data).map(([date, details]) => ({
+          date,
+          ...details,
+        }));
+        setHomeworkData(dataArray);
+      } else {
+        setHomeworkData([]);
+      }
+    });
+  }
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchDatafromRealtimeDB();
+    getUserdata();
+    setRefreshing(false);
+  }
+
+  const fontcolor = COLORS.lightgray;;
   return (
     <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
-      <HomeHeader display="none" />
-      <View style={styles.container}>
+      {/* <Image blurRadius={50} source={require('../assets/img/background.png')} style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+      }} /> */}
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         {/* Header Section */}
+        <View style={styles.header}>
+          <View style={{
+            borderRadius: 100,
+            backgroundColor: 'red',
+            width: 30,
+            height: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <Text style={{ fontSize: 30, color: 'white', textAlign: 'center', textAlignVertical: 'center', marginBottom: 5 }}>
+              {username.charAt(0) || ''}
+            </Text>
+          </View>
 
-        <View style={styles.resultContainer}>
-          <View style={styles.resultItem}>
-
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
+          <View>
+            <Text style={{
+              fontSize: 23,
+              fontWeight: '700',
+              fontFamily: FONTS.bold,
             }}>
-              <FontAwesome name="pencil-square" size={40} color="rgb(64, 98, 187)" />
-              <Text style={{ fontSize: 25, marginLeft: 25, fontFamily: FONTS.bold }}>
-                今日聯絡簿
-              </Text>
-            </View>
-          </View>
-          <View style={styles.resultItem}>
-            <View style={styles.inline}>
-              <Text style={styles.resultLabel}>班別: </Text>
-              <Text style={styles.resultText}>{homeworkdata.班別}</Text>
-            </View>
+              Welcome {username}
+            </Text>
           </View>
 
-          <View style={styles.resultItem}>
-            <View style={styles.inline}>
-              <Text style={styles.resultLabel}>聽力本:</Text>
-              <Text style={styles.resultText}>{homeworkdata.聽力本}</Text>
-            </View>
-            <View style={styles.inline}>
-              <Text style={styles.resultLabel}>聽力本頁數:</Text>
-              <Text style={styles.resultText}>{`${homeworkdata.聽力本頁數1}頁 ~ ${homeworkdata.聽力本頁數2}頁`}</Text>
-            </View>
-          </View>
-
-          <View style={styles.resultItem}>
-            <View style={styles.inline}>
-              <Text style={styles.resultLabel}>習作本:</Text>
-              <Text style={styles.resultText}>{homeworkdata.習作本}</Text>
-            </View>
-            <View style={styles.inline}>
-              <Text style={styles.resultLabel}>習作本頁數:</Text>
-              <Text style={styles.resultText}>{`${homeworkdata.習作本頁數1}頁 ~ ${homeworkdata.習作本頁數2}頁`}</Text>
-            </View>
+          <View>
+            <TouchableOpacity>
+              <Fontisto name="bell" size={25} />
+            </TouchableOpacity>
           </View>
         </View>
 
-
-
+        <View style={styles.missionContainer}>
+          <Text style={{ fontSize: 20, fontFamily: FONTS.bold, fontWeight: '700', color: fontcolor }}>每日任務</Text>
+          <View style={styles.userinfo}>
+            <Text style={styles.userInfoText}>聽力 30 / {dailyplayed} 次</Text>
+            {/* <Text style={styles.userinfolabel}>目前聽力 {dailyplayed} 次</Text> */}
+            <View style={styles.progressBarContainer}>
+              <ProgressBar progress={percentage} theme={{
+                colors: {
+                  primary: 'red',
+                  surfaceVariant: fontcolor
+                },
+              }} style={{
+                height: 8,
+                borderRadius: 30,
+              }} />
+            </View>
+            {
+              percentage === 1
+                ?
+                <FontAwesome name="check-square-o" size={25} color={fontcolor} />
+                :
+                <Feather name="square" size={25} color={fontcolor} />
+            }
+          </View>
+          {/* <View style={styles.userinfo}>
+            <Text style={styles.userInfoText}>
+              {
+                homeworkdata.length > 0
+                  ?
+                  `${homeworkdata[0].習作本} P.${homeworkdata[0].習作本頁數1} ~ P.${homeworkdata[0].習作本頁數2}`
+                  :
+                  "今日無習作本"
+              }
+            </Text>
+          </View>
+          <View style={styles.userinfo}>
+            <Text style={styles.userInfoText}>
+              {
+                homeworkdata.length > 0
+                  ?
+                  `${homeworkdata[0].聽力本} P.${homeworkdata[0].聽力本頁數1} ~ P.${homeworkdata[0].聽力本頁數2}`
+                  :
+                  "今日無聽力本"
+              }
+            </Text>
+          </View> */}
+        </View>
 
         {/* Footer Section */}
-        <View style={styles.footer}>
+        {/* <View style={styles.footer}>
           <Text style={styles.footerText}>Download the app now and enhance your English listening skills!</Text>
-        </View>
-      </View>
+        </View> */}
+      </ScrollView>
     </ScreenContainer>
   );
 };
-
-
+const fontcolor = COLORS.lightgray;
 const fontFamily = FONTS.bold;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
     justifyContent: 'space-between',
   },
-  header: {
+  missionContainer: {
+    backgroundColor: COLORS.blue,
+    padding: 15,
+  },
+  userInfoText: {
+    color: fontcolor,
+    fontSize: 15,
+    fontWeight: '700',
+    marginTop: 5,
+    marginBottom: 5,
+    justifyContent: 'flex-start',
+  },
+  userinfo: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 30,
+    justifyContent: 'space-between',
+    margin: 10,
+  },
+  progressBarContainer: {
+    width: '60%'
+  },
+
+  header: {
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   logo: {
     width: 100,
@@ -150,40 +244,5 @@ const styles = StyleSheet.create({
   },
 
 
-  resultContainer: {
-    marginTop: 10,
-    padding: 15,
-    backgroundColor: COLORS.main,
-    borderRadius: 10,
-    fontFamily: fontFamily,
-  },
-  previewLabel: {
-    fontSize: 18,
-    marginBottom: 10,
-    fontFamily: fontFamily,
-  },
-  inline: {
-    flexDirection: 'row',
-    alignItems: 'center', // Optional: Align items vertically in the center
-    justifyContent: 'space-between',
-    borderBottomColor: 'gray',
-    borderBottomWidth: 1,
-
-  },
-  resultItem: {
-    marginBottom: 15,
-    fontFamily: fontFamily,
-  },
-  resultLabel: {
-    fontSize: 17,
-    marginTop: 5, // You can reduce or remove this margin
-    color: 'gray',
-    fontFamily: fontFamily,
-  },
-  resultText: {
-    fontSize: 17,
-    marginTop: 5, // You can reduce or remove this margin
-    fontFamily: fontFamily,
-  },
 });
 export default Home;

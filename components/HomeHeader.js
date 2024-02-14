@@ -43,18 +43,18 @@ const HomeHeader = ({ onSearch, display }) => {
   }, []);
 
   const dispatch = useDispatch();
-  const handleProfilePress = () => {
-    dispatch(setSidebar('flex'))
-    console.log('sidebar open')
+  // const handleProfilePress = () => {
+  //   dispatch(setSidebar('flex'))
+  //   console.log('sidebar open')
 
-    // navigation.navigate('用戶'); 
-  };
+  //   // navigation.navigate('用戶'); 
+  // };
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.main, }}>
       <View
         style={{
-          backgroundColor: COLORS.main,
+          backgroundColor: 'white',
           paddingTop: 5,
           paddingBottom: 5,
           paddingLeft: 10,
@@ -70,24 +70,11 @@ const HomeHeader = ({ onSearch, display }) => {
           }}
         >
           <Brand fontSize={25} margin={0.7} />
-          <TouchableOpacity onPress={handleProfilePress}>
+          {/* <TouchableOpacity onPress={handleProfilePress}>
             <View style={{ height: 45, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
               <FontAwesome name="list-ul" size={25} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} />
-              {/* <Ionicons name="list-outline" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} /> */}
-              {/* <Ionicons name="person-circle" size={30} color="rgb(64, 98, 187)" style={{ marginRight: 8, }} /> */}
-              {/* <Text
-                style={{
-                  fontFamily: FONTS.VarelaRound,
-                  fontWeight: '700',
-                  fontSize: 15,
-                  color: COLORS.primary,
-                }}
-              >
-                {username || "Loading..."}
-              </Text> */}
-
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
         </View>
 

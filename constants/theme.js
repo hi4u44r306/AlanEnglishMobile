@@ -1,4 +1,5 @@
 export const COLORS = {
+  blue: '#5784e9',
   main: '#fbf0ea',
   primary: "#001F2D",
   secondary: "#4D626C",
@@ -8,6 +9,7 @@ export const COLORS = {
   // ricewhite: "#fcf8ec",//這是原本的
   ricewhite: "#e5cabf",
   inputfieldgreen: "#2e9421",
+  lightgray: '#e8e3e3'
 };
 
 export const SIZES = {

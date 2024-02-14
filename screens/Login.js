@@ -71,8 +71,11 @@ const Login = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const db = firebase.firestore();
+    const currentDate = new Date().toJSON().slice(0, 10);
+    const currentMonth = new Date().toJSON().slice(0, 7);
 
-    const login = () => {
+    const login = async () => {
 
         const success = () => {
             Toast.show({
@@ -90,13 +93,51 @@ const Login = () => {
             });
         }
 
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(() => {
-                success();
-                setTimeout(() => { navigation.navigate("Root") }, 1000)
-            }).catch(() => {
+        try {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const userDoc = await db.collection('student').doc(userCredential.user.uid).get();
+            const userName = userDoc.data().name.toUpperCase();
+            const userRef = db.collection('student').doc(userCredential.user.uid);
+
+            userRef.get().then((doc) => {
+                const onlinetime = doc.data().onlinetime;
+                if (onlinetime !== currentDate) {
+                    userRef.update({
+                        onlinemonth: currentMonth,
+                        onlinetime: currentDate,
+                        currdatetimeplayed: 0,
+                    });
+                }
+            });
+
+            userRef.get().then((doc) => {
+                if (doc.data().Resetallmusic === 'notupdated' || doc.data().Resetallmusic !== currentMonth + 'alreadyupdated') {
+                    userRef.set({
+                        totaltimeplayed: 0,
+                        Resetallmusic: currentMonth + 'alreadyupdated',
+                    }, { merge: true })
+                    firebase.database().ref().child("student").child(userCredential.user.uid).child("totaltimeplayed").update({
+                        totaltimeplayed: 0,
+                    });
+                } else {
+                }
+            }).catch((error) => {
                 error();
             })
+
+            success();
+            setTimeout(() => { navigation.navigate("Root") }, 1000)
+
+        } catch (error) {
+            error();
+        }
+        // firebase.auth().signInWithEmailAndPassword(email, password)
+        //     .then(() => {
+        //         success();
+        //         setTimeout(() => { navigation.navigate("Root") }, 1000)
+        //     }).catch(() => {
+        //         error();
+        //     })
     }
 
 
@@ -151,24 +192,6 @@ const Login = () => {
                             style={styles.input}
                             secureTextEntry={true}
                         />
-
-                        {/* <Text style={styles.inputtitle}>帳號</Text>
-                        <TextInput
-                            type="text"
-                            placeholder="Email..."
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            style={styles.input}
-                        />
-
-                        <Text style={styles.inputtitle}>密碼</Text>
-                        <TextInput
-                            type="password"
-                            placeholder="Password..."
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            style={styles.input}
-                        /> */}
 
                         <LoginButton
                             margin={10}

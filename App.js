@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack"
-import { NavigationContainer, DefaultTheme, useNavigation } from "@react-navigation/native"
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import { useFonts } from "expo-font"
 import { Text } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,11 +28,13 @@ import { useEffect } from "react";
 import MusicPlayer from "./components/MusicPlayer";
 import { View } from "react-native";
 import { COLORS, FONTS } from "./constants";
+import { useNavigation } from "@react-navigation/native";
 
-import { useDispatch } from "react-redux";
-import { setUsername, setTeacherschool, setUserID, setUserclass, setUsertotaltimeplayed } from "./components/actions/actions";
 import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
+
+import { MMKV } from 'react-native-mmkv'
+export const storage = new MMKV()
 const store = createStore(rootReducer);
 
 
@@ -81,10 +83,10 @@ function Root() {
             let iconName;
             let rn = route.name;
 
-            if (rn === homepage) {
-              iconName = focused ? 'home' : 'home-outline';
-            }
-            else if (rn === playlistpage) {
+            // if (rn === homepage) {
+            //   iconName = focused ? 'home' : 'home-outline';
+            // }
+            if (rn === playlistpage) {
               iconName = focused ? 'musical-notes' : 'musical-notes-outline';
             }
             else if (rn === profilepage) {
@@ -106,10 +108,9 @@ function Root() {
           tabBarInactiveTintColor: 'black'
         })}
       >
-        <Tab.Screen name="首頁" component={Home} />
+        {/* <Tab.Screen name="首頁" component={Home} /> */}
         <Tab.Screen name="排行榜" component={Leaderboard} />
         <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
-        {/* {role === 'Teacher' && <Tab.Screen name="聯絡簿" component={Homework} />} */}
         <Tab.Screen name="聯絡簿" component={Homework} />
         <Tab.Screen name="用戶" component={Profile} />
       </Tab.Navigator>
@@ -124,7 +125,7 @@ function Root() {
           )}
       </View>
       <Sidebar />
-    </View>
+    </View >
   );
 }
 
@@ -142,69 +143,94 @@ const App = () => {
     Nunito: require("./assets/fonts/Nunito-VariableFont_wght.ttf"),
   })
 
-  // const dispatch = useDispatch();
-  const db = firebase.firestore();
+  // const currentDate = new Date().toJSON().slice(0, 10);
+  // const currentMonth = new Date().toJSON().slice(0, 7);
+  useEffect(() => {
 
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      // dispatch(setUserID(user.uid));
-      await AsyncStorage.setItem('ae-useruid', user.uid);
-      try {
-        const studentDoc = await db.collection('student').doc(user.uid).get();
-        // dispatch(setUsername(studentDoc.data()?.name))
-        // dispatch(setUserclass(studentDoc.data()?.class))
-        // dispatch(setUsertotaltimeplayed(JSON.stringify(studentDoc.data()?.totaltimeplayed)))
-        await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
-        await AsyncStorage.setItem('ae-username', studentDoc.data()?.name);
-        await AsyncStorage.setItem('ae-totaltimeplayed', JSON.stringify(studentDoc.data()?.totaltimeplayed));
-      } catch (error) {
-        console.error('Error while setting student data:', error);
+  }, [])
+
+  // const db = firebase.firestore();
+  // firebase.auth().onAuthStateChanged(async (user) => {
+  //   if (user) {
+  //     await AsyncStorage.setItem('ae-useruid', user.uid);
+  //     try {
+  //       const studentDoc = await db.collection('student').doc(user.uid).get();
+  //       await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
+  //       await AsyncStorage.setItem('ae-username', studentDoc.data()?.name);
+  //       await AsyncStorage.setItem('ae-totaltimeplayed', JSON.stringify(studentDoc.data()?.totaltimeplayed));
+  //       await AsyncStorage.setItem('ae-dailyplayed', JSON.stringify(studentDoc.data()?.currdatetimeplayed));
+  //     } catch (error) {
+  //       console.error('Error while setting student data:', error);
+  //     }
+
+  //     try {
+  //       const teacherDoc = await db.collection('teacher').doc(user.uid).get();
+  //       await AsyncStorage.setItem('ae-teacherschool', teacherDoc.data()?.school || '');
+  //     } catch (error) {
+  //       console.error('Error while setting teacher data:', error);
+  //     }
+
+  //   } else {
+  //     await AsyncStorage.setItem('ae-class', '');
+  //     await AsyncStorage.setItem('ae-useruid', '');
+  //     await AsyncStorage.setItem('ae-username', '');
+  //     await AsyncStorage.setItem('ae-totaltimeplayed', '');
+  //     await AsyncStorage.setItem('ae-teacherschool', '');
+  //   }
+  // });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = firebase.auth().currentUser;
+
+      if (user) {
+        try {
+          storage.set('ae-useruid', user.uid)
+          // await AsyncStorage.setItem('ae-useruid', user.uid);
+
+          const studentDoc = await firebase.firestore().collection('student').doc(user.uid).get();
+          storage.set('ae-class', studentDoc.data().class);
+          storage.set('ae-username', studentDoc.data().name);
+          storage.set('ae-totaltimeplayed', JSON.stringify(studentDoc.data().totaltimeplayed));
+          storage.set('ae-dailyplayed', JSON.stringify(studentDoc.data().currdatetimeplayed));
+          // await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
+          // await AsyncStorage.setItem('ae-username', studentDoc.data()?.name);
+          // await AsyncStorage.setItem('ae-totaltimeplayed', JSON.stringify(studentDoc.data()?.totaltimeplayed));
+          // await AsyncStorage.setItem('ae-dailyplayed', JSON.stringify(studentDoc.data()?.currdatetimeplayed));
+        } catch (error) {
+          console.error('Error while setting student data:', error);
+        }
+
+        try {
+          const teacherDoc = await firebase.firestore().collection('teacher').doc(user.uid).get();
+          storage.set('ae-teacherschool', teacherDoc.data().school);
+          // await AsyncStorage.setItem('ae-teacherschool', teacherDoc.data()?.school || '');
+        } catch (error) {
+          console.error('Error while setting teacher data:', error);
+        }
+      } else {
+        storage.set('ae-class', '');
+        storage.set('ae-useruid', '');
+        storage.set('ae-username', '');
+        storage.set('ae-dailyplayed', '');
+        storage.set('ae-totaltimeplayed', '');
+        storage.set('ae-teacherschool', '');
+        // await AsyncStorage.setItem('ae-class', '');
+        // await AsyncStorage.setItem('ae-useruid', '');
+        // await AsyncStorage.setItem('ae-username', '');
+        // await AsyncStorage.setItem('ae-totaltimeplayed', '');
+        // await AsyncStorage.setItem('ae-teacherschool', '');
       }
+    };
 
-      try {
-        const teacherDoc = await db.collection('teacher').doc(user.uid).get();
-        // dispatch(setTeacherschool(teacherDoc.data()?.school))
+    const unsubscribe = firebase.auth().onAuthStateChanged(async () => {
+      // Use onAuthStateChanged just to trigger the fetchUserData function
+      await fetchUserData();
+    });
 
-        await AsyncStorage.setItem('ae-teacherschool', teacherDoc.data()?.school || '');
-      } catch (error) {
-        console.error('Error while setting teacher data:', error);
-      }
-
-      // try {
-      //   const snapshot = await firebase.database().ref('TeachingResources/').once('value');
-      //   const data = snapshot.val();
-
-      //   if (data) {
-      //     const dataArray = Object.entries(data).map(([date, details]) => ({
-      //       date,
-      //       ...details,
-      //     }));
-
-      //     await AsyncStorage.setItem('teachingResourcesData', JSON.stringify(dataArray));
-      //   } else {
-      //     const placeholderData = {
-      //       description: 'This is a placeholder node.',
-      //       timestamp: '2023-10-19 12:00:00',
-      //     };
-
-      //     await AsyncStorage.setItem('teachingResourcesData', JSON.stringify(placeholderData));
-      //   }
-      // } catch (error) {
-      //   console.error('Error while setting teaching resources data:', error);
-      // }
-    } else {
-      // dispatch(setUserID(''));
-      // dispatch(setUsername(''))
-      // dispatch(setUserclass(''))
-      // dispatch(setUsertotaltimeplayed(''))
-      // dispatch(setTeacherschool(''))
-      await AsyncStorage.setItem('ae-class', '');
-      await AsyncStorage.setItem('ae-useruid', '');
-      await AsyncStorage.setItem('ae-username', '');
-      await AsyncStorage.setItem('ae-totaltimeplayed', '');
-      await AsyncStorage.setItem('ae-teacherschool', '');
-    }
-  });
+    // Cleanup the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
 
 
   if (!loaded) return null;
@@ -223,7 +249,7 @@ const App = () => {
               },
             }),
           }}
-          mode="modal"
+          presentation='modal'
         >
           <Stack.Screen name="Root" component={Root} />
           <Stack.Screen name="Login" component={Login} />
