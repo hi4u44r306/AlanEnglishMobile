@@ -42,6 +42,7 @@
     "react-native-simple-audio-player": "^1.0.3",
     "react-native-sound": "^0.11.2",
     "react-native-splash-screen": "^3.3.0",
+    "react-native-table-component": "^1.2.2",
     "react-native-toast-message": "^2.1.7",
     "react-native-track-player": "^4.0.1",
     "react-native-vector-icons": "^9.2.0",

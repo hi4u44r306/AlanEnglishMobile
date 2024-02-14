@@ -58,7 +58,7 @@ const PlaylistStackScreen = () => (
     <Stack.Screen name="Playlist" component={Playlist} />
     <Stack.Screen name="PlaylistDetail" component={PlaylistDetail}
       options={{
-        headerShown: true, title: '', headerStyle: { height: 90, backgroundColor: 'white' }, headerTitleStyle: { fontFamily: FONTS.VarelaRound, fontSize: 16 }
+        headerShown: true, title: '', headerStyle: { height: 50, backgroundColor: 'white' }, headerTitleStyle: { fontFamily: FONTS.VarelaRound, fontSize: 16 }
       }} />
   </Stack.Navigator>
 );
@@ -102,7 +102,7 @@ function Root() {
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          tabBarStyle: { height: 80, backgroundColor: 'white' },
+          tabBarStyle: { height: 70, backgroundColor: 'white' },
           tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 14 },
           tabBarActiveTintColor: 'rgb(64, 98, 187)',
           tabBarInactiveTintColor: 'black'
@@ -111,7 +111,7 @@ function Root() {
         {/* <Tab.Screen name="首頁" component={Home} /> */}
         <Tab.Screen name="排行榜" component={Leaderboard} />
         <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
-        <Tab.Screen name="聯絡簿" component={Homework} />
+        {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
         <Tab.Screen name="用戶" component={Profile} />
       </Tab.Navigator>
       <View>
@@ -125,7 +125,7 @@ function Root() {
           )}
       </View>
       <Sidebar />
-    </View >
+    </View>
   );
 }
 

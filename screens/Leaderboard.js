@@ -7,7 +7,9 @@ import first from '../assets/img/firstplace.png'
 import second from '../assets/img/secondplace.png'
 import third from '../assets/img/thirdplace.png'
 import ScreenContainer from "./ScreenContainer";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+
+
 
 class Leaderboard extends Component {
   state = {
@@ -105,7 +107,14 @@ class Leaderboard extends Component {
   }
 
   renderClassContainer(classKey, students) {
-    const columns = ["名次", "姓名", "上線日期", "播放次數"];
+    const columns = [
+      { label: "名次", icon: "Trophy" },
+      { label: "姓名", icon: "smileo" },
+      { label: "上線日期", icon: "calendar" },
+      { label: "播放次數", icon: "playcircleo" }
+    ];
+
+    // const columns = ["名次", "姓名", "上線日期", "播放次數"];
     return (
       <View style={styles.container} key={classKey}>
         <Text style={styles.heading}>{`${classKey}班`}</Text>
@@ -120,10 +129,12 @@ class Leaderboard extends Component {
               {
                 columns.map((column, index) => (
                   <Text key={index} style={styles.titleColumn}>
-                    {column}
+                    <AntDesign name={column.icon} size={20} color={COLORS.primary} style={{ paddingRight: '5px' }} />
+                    {column.label}
                   </Text>
                 ))}
             </View>
+
             <FlatList
               data={students}
               keyExtractor={(item, index) => index.toString()}
@@ -137,7 +148,7 @@ class Leaderboard extends Component {
                   >
                     {index + 1}
                   </Text>
-                  <Text style={styles.studentName}>{item.name}</Text>
+                  <Text style={styles.studentInfo}>{item.name}</Text>
                   <Text style={styles.studentInfo}>{item.onlinetime}</Text>
                   <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
                 </View>
@@ -177,6 +188,9 @@ class Leaderboard extends Component {
             color: '#2d7dd2',
             fontFamily: FONTS.VarelaRound,
             fontWeight: '900',
+            textShadowColor: 'black', // set the color of the outline
+            textShadowOffset: { width: 1, height: 1 }, // set the offset of the shadow
+            textShadowRadius: 2, // set the radius of the shadow
           }}>Leaderboard</Text>
         </View>
         <ScrollView style={{ flex: 1, paddingBottom: 30 }}>
@@ -228,45 +242,41 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   titleBar: {
+    marginBottom: 10,
     flexDirection: 'row',
     marginBottom: 10,
   },
   titleColumn: {
     flex: 1,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: FONTS.VarelaRound,
     fontWeight: '800',
-    borderBottomColor: 'gray',
-    borderStyle: 'solid',
-    borderBottomWidth: 1,
+    // borderBottomColor: 'gray',
+    // borderStyle: 'solid',
+    // borderBottomWidth: 1,
   },
   studentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
-    borderBottomColor: 'gray',
-    borderStyle: 'solid',
-    borderBottomWidth: 1,
+    // borderBottomColor: 'gray',
+    // borderStyle: 'solid',
+    // borderBottomWidth: 1,
   },
   place: {
     flex: 1,
-    textAlign: 'center',
-    fontFamily: FONTS.VarelaRound,
-    fontWeight: '800'
-  },
-  studentName: {
-    flex: 1,
-    fontSize: 14,
+    fontSize: 16,
     textAlign: 'center',
     fontFamily: FONTS.VarelaRound,
     fontWeight: '800'
   },
   studentInfo: {
     flex: 1,
-    fontSize: 14,
-    color: '#555',
+    fontSize: 16,
+    color: 'black',
     textAlign: 'center',
     fontFamily: FONTS.VarelaRound,
     fontWeight: '800'
@@ -295,4 +305,9 @@ const styles = StyleSheet.create({
 })
 
 export default Leaderboard;
+
+
+
+
+
 
