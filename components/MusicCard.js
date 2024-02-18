@@ -1,70 +1,28 @@
-import React, { useState } from "react";
-// import {useDispatch} from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import { StyleSheet, View } from "react-native";
-
-import { COLORS, SIZES, SHADOWS } from "../constants";
-import { Timeplayed, MusicTitle, GameScore } from "./SubInfo";
-import { PlayButton, GameButton } from "./Button";
-import firebase from 'firebase/app';
-
-import { useDispatch } from "react-redux";
+import { COLORS, SIZES } from "../constants";
+import { MusicTitle } from "./SubInfo";
+import { PlayButton } from "./Button";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
 
-
 const MusicCard = React.memo((props) => {
+
   const { music } = props;
+  // const { playing } = useSelector(state => state.musicReducer);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
-
-
-
-  const db = firebase.firestore();
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      db.collection('student').onSnapshot(() => {
-        getUserInfo(user);
-      });
-    } else {
-      getUserInfo();
-    }
-  })
-
-  const getUserInfo = (user) => {
-    if (user) {
-      // const convertmusicid = "'" + data.id + "'";
-      // db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc) => {
-      //   setTimesplayed(doc.data().timeplayed);
-      // })
-      // db.collection('student').doc(user.uid).collection('Musics').doc(convertmusicid).get().then((doc)=>{
-      //     setGamescore(doc.data().gamescore);
-      // })
-
-      // .catch((err)=>{
-      //     console.log("There no data for some ID", err)
-      // })
-    } else {
-      // console.log('no data');
-    }
-  }
-
   function handlePlay() {
-    console.log('Play button pressed');
+    console.log(props.music)
     dispatch(setMusicPlayerDisplay('flex'))
-    dispatch(setCurrentPlaying(music));
-    dispatch(setCurrentMargin(75))
-    // props.onclickmusic(music);
+    dispatch(setCurrentPlaying(props.music));
+    dispatch(setCurrentMargin(65))
   }
-  function handleStop() {
-    dispatch(setCurrentPlaying());
-  }
+
 
   return (
     <View
       style={{
         backgroundColor: COLORS.white,
-        // ...SHADOWS.medium,
       }}
     >
       <View style={styles.musiclist}>
@@ -81,22 +39,8 @@ const MusicCard = React.memo((props) => {
             subTitleSize={SIZES.small}
           />
           <PlayButton handlePress={handlePlay} />
-          {/* <PlayButton handlePress={() => onclickmusic(data)} /> */}
         </View>
-        {/* <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            alignContent: 'center',
-          }}
-        >
-          <GameButton
-            minWidth={10}
-            fontSize={SIZES.font}
-            handlePress={() => navigation.navigate("Details", { data })}
-          />
-        </View> */}
+
       </View>
     </View>
   );

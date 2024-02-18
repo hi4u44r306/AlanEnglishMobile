@@ -54,7 +54,7 @@ export const PlayButton = ({ minWidth, fontSize, handlePress, ...props }) => {
           textAlign: "center",
         }}
       >
-        <Ionicons name="ios-play-circle" style={{ fontSize: 35, fontWeight: 600, color: 'red', }} />
+        <Ionicons name="play-circle" style={{ fontSize: 35, fontWeight: 600, color: 'red', }} />
       </Text>
     </TouchableOpacity>
   );

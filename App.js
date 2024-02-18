@@ -102,7 +102,7 @@ function Root() {
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          tabBarStyle: { height: 70, backgroundColor: 'white' },
+          tabBarStyle: { height: 90, backgroundColor: 'white' },
           tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 14 },
           tabBarActiveTintColor: 'rgb(64, 98, 187)',
           tabBarInactiveTintColor: 'black'
