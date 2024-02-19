@@ -7,7 +7,7 @@ export const initialState = {
     search: null,
     language: null,
     screenmargin: 0,
-    autoplay: true,
+    autoplay: false,
     musicplayerdisplay: 'none',
 };
 const musicReducer = (state = initialState, action) => {

@@ -4,15 +4,12 @@ import { COLORS, SIZES } from "../constants";
 import { MusicTitle } from "./SubInfo";
 import { PlayButton } from "./Button";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
+import { setAutoPlay, setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
 
-const MusicCard = React.memo((props) => {
+const MusicCard = ((props) => {
 
-  const { music } = props;
-  // const { playing } = useSelector(state => state.musicReducer);
   const dispatch = useDispatch();
   function handlePlay() {
-    console.log(props.music)
     dispatch(setMusicPlayerDisplay('flex'))
     dispatch(setCurrentPlaying(props.music));
     dispatch(setCurrentMargin(65))
@@ -20,11 +17,7 @@ const MusicCard = React.memo((props) => {
 
 
   return (
-    <View
-      style={{
-        backgroundColor: COLORS.white,
-      }}
-    >
+    <View style={{ backgroundColor: COLORS.white, }}>
       <View style={styles.musiclist}>
         <View style={{
           flexDirection: "row",
@@ -33,14 +26,13 @@ const MusicCard = React.memo((props) => {
           alignContent: 'center',
         }}>
           <MusicTitle
-            title={music.bookname}
-            subTitle={music.page}
+            title={props.music.bookname}
+            subTitle={props.music.page}
             titleSize={SIZES.large}
             subTitleSize={SIZES.small}
           />
           <PlayButton handlePress={handlePlay} />
         </View>
-
       </View>
     </View>
   );
