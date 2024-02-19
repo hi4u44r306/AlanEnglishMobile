@@ -1,6 +1,7 @@
 import { musicDB } from '../constants'
 
 export const initialState = {
+    // isPlaying: false,
     playlists: musicDB,
     playing: null,
     bannerOpen: false,
@@ -12,6 +13,11 @@ export const initialState = {
 };
 const musicReducer = (state = initialState, action) => {
     switch (action.type) {
+        // case "SET_ISPLAYING":
+        //     return {
+        //         ...state,
+        //         isplaying: action.payload
+        //     }
         case "SET_PLAYLIST":
             return {
                 ...state,

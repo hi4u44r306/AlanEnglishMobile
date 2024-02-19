@@ -110,3 +110,10 @@ export const setDuration = (duration) => {
         payload: duration
     };
 };
+
+// export const setIsPlaying = (isplaying) => {
+//     return {
+//         type: "SET_ISPLAYING",
+//         payload: isplaying
+//     };
+// };

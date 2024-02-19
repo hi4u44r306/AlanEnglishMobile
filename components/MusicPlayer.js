@@ -21,7 +21,11 @@ export default function MusicPlayer({ music }) {
 
   useEffect(() => {
     setCurrTrack(music);
-  }, [music]);
+    if (music) {
+      const musicid = music.index;
+      playSound(musicid);
+    }
+  }, [music])
 
   useEffect(() => {
     Animated.timing(animatedOpacity, {
@@ -45,35 +49,17 @@ export default function MusicPlayer({ music }) {
 
   const pauseSound = async () => {
     if (sound) {
-      await sound.pauseAsync();
+      await sound.current.pauseAsync();
       setIsPlaying(false);
     }
   };
 
   const resumeSound = async () => {
     if (sound) {
-      await sound.playAsync();
+      await sound.current.playAsync();
       setIsPlaying(true);
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-  useEffect(() => {
-    if (music) {
-      const musicid = music.index;
-      playSound(musicid);
-    }
-  }, [music])
 
   // 可以用的
   async function playSound(musicid) {
@@ -86,13 +72,8 @@ export default function MusicPlayer({ music }) {
     sound.current = newSound;
     setCurrentTrackIndex(musicid); // Update the current track index here
     await sound.current.playAsync();
+    setIsPlaying(true);
   }
-
-
-
-
-
-
 
   return (
     <Animated.View style={{
