@@ -16,18 +16,20 @@ export default function MusicPlayer({ music }) {
   const animatedOpacity = useRef(new Animated.Value(0)).current;
   const [isPlaying, setIsPlaying] = useState(false);
   const dispatch = useDispatch();
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
+  const sound = useRef(new Audio.Sound());
 
   useEffect(() => {
     setCurrTrack(music);
+  }, [music]);
 
+  useEffect(() => {
     Animated.timing(animatedOpacity, {
       toValue: musicplayerdisplay === 'flex' ? 1 : 0,
       duration: duration,
       useNativeDriver: false,
     }).start();
-  }, [music, musicplayerdisplay]);
-
-
+  }, [musicplayerdisplay]);
 
   const closemusicplayer = async () => {
     dispatch(setCurrentMargin(0));
@@ -48,12 +50,12 @@ export default function MusicPlayer({ music }) {
     }
   };
 
-  // const resumeSound = async () => {
-  //   if (sound) {
-  //     await sound.playAsync();
-  //     setIsPlaying(true);
-  //   }
-  // };
+  const resumeSound = async () => {
+    if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    }
+  };
 
 
 
@@ -68,30 +70,22 @@ export default function MusicPlayer({ music }) {
 
   useEffect(() => {
     if (music) {
-      playSound();
+      const musicid = music.index;
+      playSound(musicid);
     }
   }, [music])
 
-
-
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
-  const sound = useRef(new Audio.Sound());
-
-  async function playSound() {
+  // 可以用的
+  async function playSound(musicid) {
+    console.log(musicName)
     if (currentTrackIndex !== null) {
       await sound.current.stopAsync(); // Stop the currently playing sound
       await sound.current.unloadAsync(); // Unload the sound
-    } else {
-
     }
-    console.log('Loading Sound');
-    const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/${musicName}`));
+    const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/${music.musicName}`));
     sound.current = newSound;
-    console.log('Playing Sound');
+    setCurrentTrackIndex(musicid); // Update the current track index here
     await sound.current.playAsync();
-    // 找出目前曲目序號
-    const currentTrack = playlists.findIndex(obj => obj.musicName === musicName)
-    setCurrentTrackIndex(currentTrack);
   }
 
 

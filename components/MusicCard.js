@@ -4,14 +4,16 @@ import { COLORS, SIZES } from "../constants";
 import { MusicTitle } from "./SubInfo";
 import { PlayButton } from "./Button";
 import { useDispatch, useSelector } from "react-redux";
-import { setAutoPlay, setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
+import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
 
 const MusicCard = ((props) => {
 
   const dispatch = useDispatch();
+  const { playlists } = useSelector(state => state.musicReducer);
+  const currentTrackID = playlists.findIndex(obj => obj.musicName === props.music.musicName);
   function handlePlay() {
     dispatch(setMusicPlayerDisplay('flex'))
-    dispatch(setCurrentPlaying(props.music));
+    dispatch(setCurrentPlaying({ ...props.music, index: currentTrackID }));
     dispatch(setCurrentMargin(65))
   }
 

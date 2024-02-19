@@ -64,7 +64,7 @@ const PlaylistStackScreen = () => (
 );
 
 function Root() {
-  const { playing, musicplayerdisplay } = useSelector(state => state.musicReducer);
+  const { playing } = useSelector(state => state.musicReducer);
   const [currMusic, setCurrMusic] = useState(null);
 
   useEffect(() => {
