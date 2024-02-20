@@ -34,6 +34,32 @@ export const CircleButton = ({ imgUrl, handlePress, text, ...props }) => {
   );
 };
 
+export const PlayingButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        // backgroundColor: '#759fbc',
+        padding: SIZES.small,
+        borderRadius: SIZES.extraLarge,
+        minWidth: minWidth,
+        ...props,
+      }}
+      onPress={handlePress}
+    >
+      <Text
+        style={{
+          fontFamily: FONTS.semiBold,
+          fontSize: fontSize,
+          color: COLORS.white,
+          textAlign: "center",
+        }}
+      >
+        <Ionicons name="volume-medium-outline" style={{ fontSize: 35, fontWeight: 600, color: 'red', }} />
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
 export const PlayButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity
@@ -59,6 +85,7 @@ export const PlayButton = ({ minWidth, fontSize, handlePress, ...props }) => {
     </TouchableOpacity>
   );
 };
+
 export const GameButton = ({ minWidth, fontSize, handlePress, ...props }) => {
   return (
     <TouchableOpacity

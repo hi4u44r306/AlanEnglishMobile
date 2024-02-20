@@ -193,7 +193,7 @@ class Leaderboard extends Component {
             textShadowRadius: 2, // set the radius of the shadow
           }}>Leaderboard</Text>
         </View>
-        <ScrollView style={{ flex: 1, paddingBottom: 30 }}>
+        <ScrollView style={{ flex: 1, paddingBottom: 10 }}>
           {classData.map(({ key, students }) =>
             this.renderClassContainer(key, students)
           )}
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     marginTop: 10, // Add margin or adjust as needed
-    marginBottom: 30,
+    marginBottom: 10,
     gap: 5,
   },
   endOfListText: {

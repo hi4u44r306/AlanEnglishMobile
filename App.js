@@ -57,6 +57,8 @@ const PlaylistStackScreen = () => (
   <Stack.Navigator initialRouteName="Playlist" screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Playlist" component={Playlist} />
     <Stack.Screen name="PlaylistDetail" component={PlaylistDetail}
+
+      // PlaylistDetail 的最上面返回鍵
       options={{
         headerShown: true, title: '', headerStyle: { height: 50, backgroundColor: 'white' }, headerTitleStyle: { fontFamily: FONTS.VarelaRound, fontSize: 16 }
       }} />
@@ -74,7 +76,7 @@ function Root() {
 
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, overflow: 'hidden' }}>
       <Tab.Navigator
         initialRouteName="首頁"
         screenOptions={({ route }) => ({
@@ -102,7 +104,7 @@ function Root() {
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          tabBarStyle: { height: 90, backgroundColor: 'white' },
+          tabBarStyle: { height: 70, backgroundColor: 'white' },
           tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 14 },
           tabBarActiveTintColor: 'rgb(64, 98, 187)',
           tabBarInactiveTintColor: 'black'

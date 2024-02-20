@@ -3,21 +3,20 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react
 import { COLORS } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
-
 import { Audio } from 'expo-av';
-import { setAutoPlay, setCurrentMargin, setMusicPlayerDisplay } from './actions/actions';
+import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from './actions/actions';
 
 
 export default function MusicPlayer({ music }) {
   const { musicplayerdisplay } = useSelector(state => state.musicReducer);
-  const [{ bookname, page, musicName }, setCurrTrack] = useState(music);
+  const [{ bookname, page }, setCurrTrack] = useState(music);
   const { duration } = useSelector(state => state.screenReducer);
-  const { playlists, autoplay } = useSelector(state => state.musicReducer);
   const animatedOpacity = useRef(new Animated.Value(0)).current;
   const [isPlaying, setIsPlaying] = useState(false);
   const dispatch = useDispatch();
   const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
   const sound = useRef(new Audio.Sound());
+  // const { playlists } = useSelector(state => state.musicReducer);
 
   useEffect(() => {
     setCurrTrack(music);
@@ -44,7 +43,7 @@ export default function MusicPlayer({ music }) {
       useNativeDriver: false,
     }).start();
     dispatch(setMusicPlayerDisplay('none'));
-    setSound();
+    sound.current.stopAsync();
   };
 
   const pauseSound = async () => {
@@ -61,11 +60,19 @@ export default function MusicPlayer({ music }) {
     }
   };
 
-  // 可以用的
+  // const handleClickNext = () => {
+  //   console.log('Next Track')
+  //   let abc = music.index + 1;
+  //   if ((music.index + 1) >= playlists.length) {
+  //     abc = 0;
+  //   }
+  //   dispatch(setCurrentPlaying(playlists[abc]));
+  // };
+
   async function playSound(musicid) {
-    console.log(musicName)
-    if (currentTrackIndex !== null) {
+    if (currentTrackIndex !== null || currentTrackIndex === musicid) {
       await sound.current.stopAsync(); // Stop the currently playing sound
+      console.log('stop sound')
       await sound.current.unloadAsync(); // Unload the sound
     }
     const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/${music.musicName}`));
@@ -79,7 +86,7 @@ export default function MusicPlayer({ music }) {
     <Animated.View style={{
       display: musicplayerdisplay,
       position: 'absolute',
-      bottom: 80,
+      bottom: 70,
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
@@ -114,11 +121,14 @@ export default function MusicPlayer({ music }) {
             }
           }}>
             {isPlaying ? (
-              <AntDesign name="pause" size={24} color="black" style={styles.controlIcon} />
+              <AntDesign name="pause" size={30} color="black" style={styles.controlIcon} />
             ) : (
-              <AntDesign name="play" size={24} color="black" style={styles.controlIcon} />
+              <AntDesign name="play" size={30} color="black" style={styles.controlIcon} />
             )}
           </TouchableOpacity>
+          {/* <TouchableOpacity onPress={handleClickNext}>
+            <AntDesign name="stepforward" size={30} color="black" style={styles.controlIcon} />
+          </TouchableOpacity> */}
         </View>
 
       </View>
@@ -134,6 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.main,
     padding: 10,
+    paddingRight: 33,
     width: '100%',
   },
   image: {
@@ -154,10 +165,9 @@ const styles = StyleSheet.create({
   controlsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   controlIcon: {
-    width: 30,
-    height: 30,
     marginHorizontal: 10,
   },
 });

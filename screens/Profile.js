@@ -124,7 +124,7 @@ const Profile = () => {
           </View>
         </View>
         <View>
-          <View style={styles.listeningCountContainer}>
+          {/* <View style={styles.listeningCountContainer}>
             <View style={{ paddingLeft: 20, paddingRight: 20 }}>
               <Text style={styles.userInfoText}>
                 今日目標聽力次數 : 30 次
@@ -148,7 +148,7 @@ const Profile = () => {
                 <Text style={{ color: 'white', fontWeight: '700' }}>30次</Text>
               </View>
             </View>
-          </View>
+          </View> */}
           <LogoutButton
             fontSize={20}
             handlePress={Logout}

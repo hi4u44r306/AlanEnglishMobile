@@ -55,8 +55,8 @@ const HomeHeader = ({ onSearch, display }) => {
       <View
         style={{
           backgroundColor: 'white',
-          paddingTop: 5,
-          paddingBottom: 5,
+          // paddingTop: 5,
+          // paddingBottom: 5,
           paddingLeft: 10,
           paddingRight: 10,
         }}

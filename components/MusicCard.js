@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import { MusicTitle } from "./SubInfo";
-import { PlayButton } from "./Button";
+import { PlayButton, PlayingButton } from "./Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
 
 const MusicCard = ((props) => {
 
   const dispatch = useDispatch();
-  const { playlists } = useSelector(state => state.musicReducer);
+  const { playlists, curr_music } = useSelector(state => state.musicReducer);
   const currentTrackID = playlists.findIndex(obj => obj.musicName === props.music.musicName);
+
   function handlePlay() {
     dispatch(setMusicPlayerDisplay('flex'))
     dispatch(setCurrentPlaying({ ...props.music, index: currentTrackID }));
@@ -34,6 +35,12 @@ const MusicCard = ((props) => {
             subTitleSize={SIZES.small}
           />
           <PlayButton handlePress={handlePlay} />
+
+          {/* {props.music === curr_music ? (
+            <PlayingButton />
+          ) : (
+            <PlayButton handlePress={handlePlay} />
+          )} */}
         </View>
       </View>
     </View>
