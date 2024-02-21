@@ -3,7 +3,6 @@ import { View, SafeAreaView, Text, TextInput, Button, Dimensions, Alert, Touchab
 
 import { FocusedStatusBar } from "../components";
 import { COLORS, FONTS } from "../constants";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ScreenContainer from "./ScreenContainer";
 
 import SelectDropdown from 'react-native-select-dropdown'
@@ -41,8 +40,6 @@ const Homework = () => {
     // Get Role
     useEffect(() => {
         const getRole = async () => {
-            const role = await AsyncStorage.getItem("ae-class");
-            setTeachername(await AsyncStorage.getItem("ae-username"))
             setIsTeacher(role === "Teacher");
         };
 

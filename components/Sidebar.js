@@ -10,7 +10,6 @@ import { COLORS } from '../constants';
 import HomeHeader from './HomeHeader';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from 'firebase';
 
 const Sidebar = ({ navigation }) => {
@@ -27,9 +26,6 @@ const Sidebar = ({ navigation }) => {
     useEffect(() => {
         const getUserInfo = async () => {
             try {
-                setUsername(await AsyncStorage.getItem('ae-username'));
-                setUserUID(await AsyncStorage.getItem('ae-useruid'));
-                setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }

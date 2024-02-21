@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, SafeAreaView, Text, StyleSheet, Alert, Image, RefreshControl, ScrollView } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
@@ -8,8 +7,6 @@ import firebase from "./firebase";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 
-import { MMKV } from 'react-native-mmkv'
-export const storage = new MMKV()
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -18,18 +15,18 @@ const Profile = () => {
   const currentMonth = new Date().toJSON().slice(0, 7);
   const Month = new Date().toJSON().slice(5, 7);
 
-  const userclass = storage.getString('ae-class');
-  const username = storage.getString('ae-username');
-  const useruid = storage.getString('ae-useruid');
-  const usertimeplayed = storage.getString('ae-totaltimeplayed');
-  const dailytimeplayed = storage.getString('ae-dailyplayed');
-  const percentage = dailytimeplayed / 30;
+  // const userclass = storage.getString('ae-class');
+  // const username = storage.getString('ae-username');
+  // const useruid = storage.getString('ae-useruid');
+  // const usertimeplayed = storage.getString('ae-totaltimeplayed');
+  // const dailytimeplayed = storage.getString('ae-dailyplayed');
+  // const percentage = dailytimeplayed / 30;
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) return error();
-    });
-  }, [currentDate, currentMonth, db, useruid]);
+  // useEffect(() => {
+  //   firebase.auth().onAuthStateChanged(user => {
+  //     if (!user) return error();
+  //   });
+  // }, [currentDate, currentMonth, db, useruid]);
 
   // const Logout = () => {
   //   Alert.alert(
@@ -105,21 +102,26 @@ const Profile = () => {
             }} />
           </View>
         </View>
-        <Text style={styles.titleText}>{username}</Text>
+        {/* <Text style={styles.titleText}>{username}</Text> */}
+        <Text style={styles.titleText}>Username</Text>
         <View style={styles.userInfoContainer}>
           <View style={{ padding: 20 }}>
             <Text style={{ fontSize: 20, fontFamily: FONTS.bold }}>Account</Text>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>班級</Text>
-              <Text style={styles.secondtitleText}>{userclass}</Text>
+              <Text style={styles.secondtitleText}>Teacher</Text>
+              {/* <Text style={styles.secondtitleText}>{userclass}</Text> */}
             </View>
             <View style={styles.userinfo}>
-              <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
-              <Text style={styles.secondtitleText}>{usertimeplayed}</Text>
+              {/* <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text> */}
+              <Text style={styles.userinfolabel}>2 月聽力次數 </Text>
+              <Text style={styles.secondtitleText}>聽力次數</Text>
+              {/* <Text style={styles.secondtitleText}>{usertimeplayed}</Text> */}
             </View>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>今日聽力次數 </Text>
-              <Text style={styles.secondtitleText}>{dailytimeplayed}</Text>
+              <Text style={styles.secondtitleText}>聽力次數</Text>
+              {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
             </View>
           </View>
         </View>

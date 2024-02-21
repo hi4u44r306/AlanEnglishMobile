@@ -8,35 +8,20 @@ import ScreenContainer from "./ScreenContainer";
 import firebase from "firebase";
 import { useState } from "react";
 import { useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProgressBar } from 'react-native-paper';
 import { Feather, FontAwesome, Fontisto } from "@expo/vector-icons";
 
-import { MMKV } from 'react-native-mmkv'
-export const storage = new MMKV()
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [homeworkdata, setHomeworkData] = useState([]);
   const currentMonth = new Date().toJSON().slice(0, 7);
   const currentDate = new Date().toJSON().slice(0, 10);
-  const username = storage.getString('ae-username');
-  const dailyplayed = storage.getString('ae-dailyplayed');
+  // const username = storage.getString('ae-username');
+  // const dailyplayed = storage.getString('ae-dailyplayed');
   const percentage = dailyplayed / 30;
 
-  // setUsername(storage.getString('ae-username'));
 
-  // const getUserdata = async () => {
-  // const useruid = storage.getString('ae-useruid');
-  // db.collection('student').doc(useruid).get().then((doc) => {
-  //   setDailyplayed(doc.data().currdatetimeplayed);
-  //   AsyncStorage.setItem('ae-dailyplayed', JSON.stringify(doc.data().currdatetimeplayed));
-  // })
-  // };
-
-  // useEffect(() => {
-  //   getUserdata();
-  // }, []);
 
   useEffect(() => {
     fetchDatafromRealtimeDB();

@@ -7,7 +7,6 @@ import { Brand } from "./Brand";
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import FocusedStatusBar from "./FocusedStatusBar";
 import { useEffect } from "react";
@@ -29,7 +28,6 @@ const HomeHeader = ({ onSearch, display }) => {
 
   const getUsername = async () => {
     try {
-      setUsername(await AsyncStorage.getItem('ae-username'));
     } catch (error) {
       console.error('Error fetching username:', error);
       // Handle the error as needed

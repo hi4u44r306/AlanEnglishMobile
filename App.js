@@ -2,10 +2,9 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import { useFonts } from "expo-font"
 import { Text } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import Home from "./screens/Home";
+// import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Profile from "./screens/Profile";
 import Playlist from "./screens/Playlist";
@@ -33,8 +32,6 @@ import { useNavigation } from "@react-navigation/native";
 import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
 
-import { MMKV } from 'react-native-mmkv'
-export const storage = new MMKV()
 const store = createStore(rootReducer);
 
 
@@ -151,35 +148,7 @@ const App = () => {
 
   }, [])
 
-  // const db = firebase.firestore();
-  // firebase.auth().onAuthStateChanged(async (user) => {
-  //   if (user) {
-  //     await AsyncStorage.setItem('ae-useruid', user.uid);
-  //     try {
-  //       const studentDoc = await db.collection('student').doc(user.uid).get();
-  //       await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
-  //       await AsyncStorage.setItem('ae-username', studentDoc.data()?.name);
-  //       await AsyncStorage.setItem('ae-totaltimeplayed', JSON.stringify(studentDoc.data()?.totaltimeplayed));
-  //       await AsyncStorage.setItem('ae-dailyplayed', JSON.stringify(studentDoc.data()?.currdatetimeplayed));
-  //     } catch (error) {
-  //       console.error('Error while setting student data:', error);
-  //     }
 
-  //     try {
-  //       const teacherDoc = await db.collection('teacher').doc(user.uid).get();
-  //       await AsyncStorage.setItem('ae-teacherschool', teacherDoc.data()?.school || '');
-  //     } catch (error) {
-  //       console.error('Error while setting teacher data:', error);
-  //     }
-
-  //   } else {
-  //     await AsyncStorage.setItem('ae-class', '');
-  //     await AsyncStorage.setItem('ae-useruid', '');
-  //     await AsyncStorage.setItem('ae-username', '');
-  //     await AsyncStorage.setItem('ae-totaltimeplayed', '');
-  //     await AsyncStorage.setItem('ae-teacherschool', '');
-  //   }
-  // });
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -187,41 +156,18 @@ const App = () => {
 
       if (user) {
         try {
-          storage.set('ae-useruid', user.uid)
-          // await AsyncStorage.setItem('ae-useruid', user.uid);
 
           const studentDoc = await firebase.firestore().collection('student').doc(user.uid).get();
-          storage.set('ae-class', studentDoc.data().class);
-          storage.set('ae-username', studentDoc.data().name);
-          storage.set('ae-totaltimeplayed', JSON.stringify(studentDoc.data().totaltimeplayed));
-          storage.set('ae-dailyplayed', JSON.stringify(studentDoc.data().currdatetimeplayed));
-          // await AsyncStorage.setItem('ae-class', studentDoc.data()?.class || '');
-          // await AsyncStorage.setItem('ae-username', studentDoc.data()?.name);
-          // await AsyncStorage.setItem('ae-totaltimeplayed', JSON.stringify(studentDoc.data()?.totaltimeplayed));
-          // await AsyncStorage.setItem('ae-dailyplayed', JSON.stringify(studentDoc.data()?.currdatetimeplayed));
         } catch (error) {
           console.error('Error while setting student data:', error);
         }
 
         try {
           const teacherDoc = await firebase.firestore().collection('teacher').doc(user.uid).get();
-          storage.set('ae-teacherschool', teacherDoc.data().school);
-          // await AsyncStorage.setItem('ae-teacherschool', teacherDoc.data()?.school || '');
         } catch (error) {
           console.error('Error while setting teacher data:', error);
         }
       } else {
-        storage.set('ae-class', '');
-        storage.set('ae-useruid', '');
-        storage.set('ae-username', '');
-        storage.set('ae-dailyplayed', '');
-        storage.set('ae-totaltimeplayed', '');
-        storage.set('ae-teacherschool', '');
-        // await AsyncStorage.setItem('ae-class', '');
-        // await AsyncStorage.setItem('ae-useruid', '');
-        // await AsyncStorage.setItem('ae-username', '');
-        // await AsyncStorage.setItem('ae-totaltimeplayed', '');
-        // await AsyncStorage.setItem('ae-teacherschool', '');
       }
     };
 

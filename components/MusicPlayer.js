@@ -75,7 +75,8 @@ export default function MusicPlayer({ music }) {
       console.log('stop sound')
       await sound.current.unloadAsync(); // Unload the sound
     }
-    const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/${music.musicName}`));
+    const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/習作本1/習作本1 P11.mp3`));
+    // const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/${music.musicName}`));
     sound.current = newSound;
     setCurrentTrackIndex(musicid); // Update the current track index here
     await sound.current.playAsync();
@@ -169,6 +170,8 @@ const styles = StyleSheet.create({
   },
   controlIcon: {
     marginHorizontal: 10,
+    fontWeight: 600,
+    color: 'red'
   },
 });
 
