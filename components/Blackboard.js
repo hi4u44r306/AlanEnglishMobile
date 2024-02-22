@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   text: {
     color: COLORS.white,
     fontSize: 15,
-    fontFamily: FONTS.VarelaRound,
+    fontFamily: FONTS.mainFont,
     fontWeight: '700',
     margin: 3,
   },

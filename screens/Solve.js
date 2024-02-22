@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FONTS } from '../constants';
+import { useNavigation } from "@react-navigation/native";
 
 const SolvePage = () => {
+    const navigation = useNavigation();
     return (
         <View style={styles.solvePageContainer}>
 
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f2f2f2',
-        fontFamily: FONTS.VarelaRound,
+        fontFamily: FONTS.mainFont,
     },
     solvePage: {
         width: 400,

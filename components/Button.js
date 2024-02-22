@@ -129,7 +129,7 @@ export const LoginButton = ({ minWidth, padding, fontSize, handlePress, margin, 
     >
       <Text
         style={{
-          fontFamily: FONTS.VarelaRound,
+          fontFamily: FONTS.mainFont,
           fontSize: fontSize,
           fontWeight: 900,
           color: COLORS.primary,
@@ -214,7 +214,7 @@ export const LeaderBoardButton = ({ minWidth, fontSize, handlePress, ...props })
       <Ionicons name="medal" size={25} color="red"></Ionicons>
       <Text
         style={{
-          fontFamily: FONTS.VarelaRound,
+          fontFamily: FONTS.mainFont,
           fontWeight: 900,
           fontSize: fontSize,
           color: COLORS.primary,
@@ -242,7 +242,7 @@ export const MusicButton = ({ minWidth, fontSize, handlePress, ...props }) => {
       <Ionicons name="musical-notes" size={25} color="green" />
       <Text
         style={{
-          fontFamily: FONTS.VarelaRound,
+          fontFamily: FONTS.mainFont,
           fontSize: fontSize,
           fontWeight: 900,
           color: COLORS.primary,
@@ -269,7 +269,7 @@ export const ProfileButton = ({ minWidth, fontSize, handlePress, ...props }) => 
       <Ionicons name="person-circle" size={25} color="blue" />
       <Text
         style={{
-          fontFamily: FONTS.VarelaRound,
+          fontFamily: FONTS.mainFont,
           fontSize: fontSize,
           fontWeight: 900,
           color: COLORS.primary,

@@ -9,8 +9,8 @@ const textStyle = (color, fontSize, margin) => ({
   // textShadowRadius: 0,
   color,
   fontSize,
-  fontFamily: FONTS.VarelaRound,
-  fontWeight: '900'
+  fontFamily: FONTS.mainFont,
+  // fontWeight: '900'
   // letterSpacing: 0.6,
 });
 

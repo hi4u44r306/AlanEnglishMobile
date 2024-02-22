@@ -68,7 +68,7 @@ const Playlist = () => {
           <View>
             <View style={styles.typetitle}>
               <Text style={{
-                fontFamily: FONTS.VarelaRound,
+                fontFamily: FONTS.mainFont,
                 fontWeight: '700',
                 height: 20,
                 color: 'white',

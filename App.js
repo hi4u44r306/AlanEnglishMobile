@@ -2,8 +2,9 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import { useFonts } from "expo-font"
 import { Text } from "react-native";
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { authentication } from "./screens/firebase-config";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "./screens/firebase-config";
 // import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Profile from "./screens/Profile";
@@ -14,6 +15,7 @@ import Solve from "./screens/Solve";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from "@expo/vector-icons";
 import PlaylistDetail from "./screens/PlaylistDetail";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import TrackPlayer from 'react-native-track-player';
 // TrackPlayer.registerPlaybackService(() => require('./service.js'));
@@ -22,14 +24,14 @@ import { Provider, useSelector } from "react-redux";
 import { createStore } from 'redux';
 import rootReducer from './reducer/reducer'; // Assuming you have a rootReducer
 import { useState } from "react";
-import Homework from "./screens/Homework";
+// import Homework from "./screens/Homework";
 import { useEffect } from "react";
 import MusicPlayer from "./components/MusicPlayer";
 import { View } from "react-native";
 import { COLORS, FONTS } from "./constants";
 import { useNavigation } from "@react-navigation/native";
 
-import Sidebar from "./components/Sidebar";
+// import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
 
 const store = createStore(rootReducer);
@@ -57,7 +59,7 @@ const PlaylistStackScreen = () => (
 
       // PlaylistDetail 的最上面返回鍵
       options={{
-        headerShown: true, title: '', headerStyle: { height: 50, backgroundColor: 'white' }, headerTitleStyle: { fontFamily: FONTS.VarelaRound, fontSize: 16 }
+        headerShown: true, title: '', headerStyle: { height: 90, backgroundColor: 'white' }, headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
       }} />
   </Stack.Navigator>
 );
@@ -75,7 +77,7 @@ function Root() {
   return (
     <View style={{ flex: 1, overflow: 'hidden' }}>
       <Tab.Navigator
-        initialRouteName="首頁"
+        initialRouteName="播放列表"
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color }) => {
@@ -101,7 +103,7 @@ function Root() {
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          tabBarStyle: { height: 70, backgroundColor: 'white' },
+          tabBarStyle: { height: 90, backgroundColor: 'white' },
           tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 14 },
           tabBarActiveTintColor: 'rgb(64, 98, 187)',
           tabBarInactiveTintColor: 'black'
@@ -123,7 +125,7 @@ function Root() {
             </>
           )}
       </View>
-      <Sidebar />
+      {/* <Sidebar /> */}
     </View>
   );
 }
@@ -140,43 +142,33 @@ const App = () => {
     LibreBold: require("./assets/fonts/LibreBaskerville-Regular.ttf"),
     VarelaRound: require("./assets/fonts/VarelaRound-Regular.ttf"),
     Nunito: require("./assets/fonts/Nunito-VariableFont_wght.ttf"),
+    AbhayaLibre: require("./assets/fonts/AbhayaLibre-Bold.ttf"),
   })
 
-  // const currentDate = new Date().toJSON().slice(0, 10);
-  // const currentMonth = new Date().toJSON().slice(0, 7);
-  useEffect(() => {
-
-  }, [])
-
-
+  const currentDate = new Date().toJSON().slice(0, 10);
+  const currentMonth = new Date().toJSON().slice(0, 7);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const user = firebase.auth().currentUser;
-
+      const user = authentication.currentUser;
+      await AsyncStorage.setItem('ae-useruid', user.uid);
       if (user) {
         try {
+          const studentDoc = getDoc(doc(db, 'student', user.uid));
 
-          const studentDoc = await firebase.firestore().collection('student').doc(user.uid).get();
         } catch (error) {
           console.error('Error while setting student data:', error);
         }
-
         try {
-          const teacherDoc = await firebase.firestore().collection('teacher').doc(user.uid).get();
+          const teacherDoc = getDoc(doc(db, 'teacher', user.uid));
         } catch (error) {
           console.error('Error while setting teacher data:', error);
         }
-      } else {
       }
     };
-
-    const unsubscribe = firebase.auth().onAuthStateChanged(async () => {
-      // Use onAuthStateChanged just to trigger the fetchUserData function
+    const unsubscribe = authentication.onAuthStateChanged(async () => {
       await fetchUserData();
     });
-
-    // Cleanup the subscription when the component unmounts
     return () => unsubscribe();
   }, []);
 
@@ -186,7 +178,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator
-          initialRouteName="Root"
+          initialRouteName="Login"
           screenOptions={{
             headerShown: false,
             cardStyle: { backgroundColor: 'transparent' },

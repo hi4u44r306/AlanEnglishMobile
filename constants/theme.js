@@ -22,12 +22,13 @@ export const SIZES = {
 };
 
 export const FONTS = {
+  mainFont: "AbhayaLibre",
   bold: "InterBold",
   semiBold: "InterSemiBold",
   medium: "InterMedium",
   regular: "InterRegular",
   light: "InterLight",
-  VarelaRound: "VarelaRound",
+  // VarelaRound: "VarelaRound",
   LibreRegular: "LibreRegular",
   LibreBold: "LibreBold",
 };

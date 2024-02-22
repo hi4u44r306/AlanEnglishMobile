@@ -87,7 +87,7 @@ export default function MusicPlayer({ music }) {
     <Animated.View style={{
       display: musicplayerdisplay,
       position: 'absolute',
-      bottom: 70,
+      bottom: 90,
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.main,
     padding: 10,
-    paddingRight: 33,
+    paddingRight: 15,
     width: '100%',
   },
   image: {

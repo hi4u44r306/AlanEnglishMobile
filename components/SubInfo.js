@@ -12,22 +12,23 @@ export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
         height: 50,
         marginRight: 10,
       }} />
-      <View>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
         <Text
           style={{
-            // fontFamily: FONTS.semiBold,
-            fontWeight: '700',
-            fontSize: 15,
-            color: COLORS.primary,
+            fontFamily: FONTS.semiBold,
+            // fontWeight: '700',
+            fontSize: 14,
+            color: COLORS.gray,
           }}
         >
           {title}
         </Text>
+        <Text>-</Text>
         <Text
           style={{
-            // fontFamily: FONTS.regular,
-            fontWeight: '400',
-            fontSize: 13,
+            fontFamily: FONTS.bold,
+            fontWeight: '900',
+            fontSize: 17,
             color: COLORS.primary,
           }}
         >

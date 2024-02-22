@@ -5,7 +5,9 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView, Text, Image, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, assets, FONTS } from "../constants";
-import firebase from "./firebase";
+import { db, authentication } from './firebase-config';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import Toast from 'react-native-toast-message';
 
 
@@ -38,7 +40,7 @@ const toastConfig = {
                 color: 'red',
                 fontWeight: '700',
                 fontSize: '20px',
-                fontFamily: 'VarelaRound',
+                fontFamily: 'mainFont',
             }}>
                 {text1}
             </Text>
@@ -59,7 +61,7 @@ const toastConfig = {
                 color: 'white',
                 fontWeight: '700',
                 fontSize: '20px',
-                fontFamily: 'VarelaRound',
+                fontFamily: 'mainFont',
             }}>
                 {text1}
             </Text>
@@ -71,7 +73,7 @@ const Login = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const db = firebase.firestore();
+    const [username, setUsername] = useState("");
     const currentDate = new Date().toJSON().slice(0, 10);
     const currentMonth = new Date().toJSON().slice(0, 7);
 
@@ -94,50 +96,44 @@ const Login = () => {
         }
 
         try {
-            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-            const userDoc = await db.collection('student').doc(userCredential.user.uid).get();
+            const userCredential = await signInWithEmailAndPassword(authentication, email, password);
+            const userDoc = await getDoc(doc(db, 'student', userCredential.user.uid));
             const userName = userDoc.data().name.toUpperCase();
-            const userRef = db.collection('student').doc(userCredential.user.uid);
+            setUsername(userName);
+            const userRef = doc(db, 'student', userCredential.user.uid);
 
-            userRef.get().then((doc) => {
-                const onlinetime = doc.data().onlinetime;
-                if (onlinetime !== currentDate) {
-                    userRef.update({
-                        onlinemonth: currentMonth,
-                        onlinetime: currentDate,
-                        currdatetimeplayed: 0,
-                    });
-                }
-            });
+            const currentDate = new Date().toISOString().slice(0, 10);
+            const currentMonth = new Date().toISOString().slice(0, 7);
 
-            userRef.get().then((doc) => {
-                if (doc.data().Resetallmusic === 'notupdated' || doc.data().Resetallmusic !== currentMonth + 'alreadyupdated') {
-                    userRef.set({
-                        totaltimeplayed: 0,
-                        Resetallmusic: currentMonth + 'alreadyupdated',
-                    }, { merge: true })
-                    firebase.database().ref().child("student").child(userCredential.user.uid).child("totaltimeplayed").update({
-                        totaltimeplayed: 0,
-                    });
-                } else {
-                }
-            }).catch((error) => {
-                error();
-            })
+            const docSnapshot = await getDoc(userRef);
+            const onlinetime = docSnapshot.data().onlinetime;
+            if (onlinetime !== currentDate) {
+                await updateDoc(userRef, {
+                    onlinemonth: currentMonth,
+                    onlinetime: currentDate,
+                    currdatetimeplayed: 0,
+                });
+            }
+
+            const resetAllMusic = docSnapshot.data().Resetallmusic;
+            if (resetAllMusic === 'notupdated' || resetAllMusic !== currentMonth + 'alreadyupdated') {
+                await setDoc(userRef, {
+                    totaltimeplayed: 0,
+                    Resetallmusic: currentMonth + 'alreadyupdated',
+                }, { merge: true });
+
+                const firebaseRef = firebase.database().ref();
+                firebaseRef.child("student").child(userCredential.user.uid).child("totaltimeplayed").update({
+                    totaltimeplayed: 0,
+                });
+            }
 
             success();
-            setTimeout(() => { navigation.navigate("Root") }, 1000)
+            setTimeout(() => { navigation.navigate("Root") }, 1000);
 
         } catch (error) {
             error();
         }
-        // firebase.auth().signInWithEmailAndPassword(email, password)
-        //     .then(() => {
-        //         success();
-        //         setTimeout(() => { navigation.navigate("Root") }, 1000)
-        //     }).catch(() => {
-        //         error();
-        //     })
     }
 
 
@@ -160,9 +156,10 @@ const Login = () => {
                     <Blackboard />
                     <Brand fontSize={40} margin={2} />
                     <SubBrand />
+                    <Text>{username}</Text>
                     <View
                         style={{
-                            fontFamily: FONTS.VarelaRound,
+                            fontFamily: FONTS.mainFont,
                             width: "90%",
                             borderRadius: SIZES.font,
                             flexDirection: "column",
@@ -183,6 +180,7 @@ const Login = () => {
                             onChange={(event) => { setEmail(event.target.value) }}
                             style={styles.input}
                         />
+                        <Text>{email}</Text>
 
                         <Text style={styles.inputtitle}>密碼</Text>
                         <TextInput
@@ -217,7 +215,7 @@ const styles = StyleSheet.create({
         paddingTop: 40,
     },
     inputtitle: {
-        fontFamily: FONTS.VarelaRound,
+        fontFamily: FONTS.mainFont,
         fontWeight: "900",
         fontSize: 19,
         textAlign: 'center',
@@ -228,7 +226,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     input: {
-        fontFamily: FONTS.VarelaRound,
+        fontFamily: FONTS.mainFont,
         fontWeight: "900",
         fontSize: 15,
         textAlign: 'center',

@@ -4,8 +4,7 @@ import { View, Text, Image, TextInput, TouchableOpacity, SafeAreaView } from "re
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { Brand } from "./Brand";
 
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { db } from "../screens/firebase-config";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import FocusedStatusBar from "./FocusedStatusBar";
@@ -18,7 +17,6 @@ import { setSidebar } from "./actions/actions";
 const HomeHeader = ({ onSearch, display }) => {
   // const { username } = useSelector(state => state.userReducer);
   const navigation = useNavigation();
-  const db = firebase.firestore();
   const [username, setUsername] = useState();
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
@@ -26,19 +24,18 @@ const HomeHeader = ({ onSearch, display }) => {
   const percentage = dailytimeplayed * 100 / 20;
   const custompathColor = `#89aae6`
 
-  const getUsername = async () => {
-    try {
-    } catch (error) {
-      console.error('Error fetching username:', error);
-      // Handle the error as needed
-    }
-  };
+  // const getUsername = async () => {
+  //   try {
+  //   } catch (error) {
+  //     console.error('Error fetching username:', error);
+  //     // Handle the error as needed
+  //   }
+  // };
 
-  getUsername();
 
-  useEffect(() => {
-    getUsername();
-  }, []);
+  // useEffect(() => {
+  //   getUsername();
+  // }, []);
 
   const dispatch = useDispatch();
   // const handleProfilePress = () => {
@@ -50,15 +47,7 @@ const HomeHeader = ({ onSearch, display }) => {
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.main, }}>
-      <View
-        style={{
-          backgroundColor: 'white',
-          // paddingTop: 5,
-          // paddingBottom: 5,
-          paddingLeft: 10,
-          paddingRight: 10,
-        }}
-      >
+      <View>
         <View
           style={{
             flexDirection: "row",
@@ -67,7 +56,7 @@ const HomeHeader = ({ onSearch, display }) => {
             alignItems: "center",
           }}
         >
-          <Brand fontSize={25} margin={0.7} />
+          <Brand fontSize={30} />
           {/* <TouchableOpacity onPress={handleProfilePress}>
             <View style={{ height: 45, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
               <FontAwesome name="list-ul" size={25} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} />

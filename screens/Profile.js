@@ -3,21 +3,21 @@ import { View, SafeAreaView, Text, StyleSheet, Alert, Image, RefreshControl, Scr
 import { useNavigation } from '@react-navigation/native';
 import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
-import firebase from "./firebase";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
-
+import { signOut } from "@firebase/auth";
+import { authentication } from "./firebase-config";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const navigation = useNavigation();
-  const db = firebase.firestore();
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
   const Month = new Date().toJSON().slice(5, 7);
 
   // const userclass = storage.getString('ae-class');
   // const username = storage.getString('ae-username');
-  // const useruid = storage.getString('ae-useruid');
+  const useruid = AsyncStorage.getItem('ae-useruid');
   // const usertimeplayed = storage.getString('ae-totaltimeplayed');
   // const dailytimeplayed = storage.getString('ae-dailyplayed');
   // const percentage = dailytimeplayed / 30;
@@ -57,7 +57,7 @@ const Profile = () => {
   // };
 
   const Logout = () => {
-    firebase.auth().signOut()
+    signOut(authentication)
       .then(() => {
         navigation.navigate("Login");
       }).catch((error) => {
@@ -103,7 +103,7 @@ const Profile = () => {
           </View>
         </View>
         {/* <Text style={styles.titleText}>{username}</Text> */}
-        <Text style={styles.titleText}>Username</Text>
+        <Text style={styles.titleText}>Username {useruid || ''}</Text>
         <View style={styles.userInfoContainer}>
           <View style={{ padding: 20 }}>
             <Text style={{ fontSize: 20, fontFamily: FONTS.bold }}>Account</Text>

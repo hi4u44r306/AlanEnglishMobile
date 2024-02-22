@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StatusBar, Text, View, FlatList, StyleSheet } from 'react-native';
 import { CircleButton, FocusedStatusBar, HomeHeader, MusicCard } from '../components';
-import { COLORS, assets, musicDB } from '../constants';
+import { COLORS, FONTS, assets, musicDB } from '../constants';
 import { useState } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -41,7 +41,7 @@ const PlaylistDetail = () => {
                 <Text style={styles.titletext}>{musicType}</Text>
             </View>
             <FlatList
-                style={{ paddingTop: 10, paddingBottom: 10 }}
+                style={{ paddingBottom: 10 }}
                 data={filterMusicByType(musicType)}
                 renderItem={({ item }) => (
                     <MusicCard music={item} onclickmusic={handleCardClick} />
@@ -72,7 +72,9 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     titletext: {
-        fontSize: 18,
+        fontSize: 25,
+        letterSpacing: 1,
+        fontFamily: FONTS.mainFont,
         fontWeight: '600',
         color: '#fff4d5',
     },

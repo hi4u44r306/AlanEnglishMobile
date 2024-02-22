@@ -8,7 +8,7 @@ const SubBrand = () => {
       <Text style=
         {{
           fontSize: '17px',
-          fontFamily: FONTS.VarelaRound,
+          fontFamily: FONTS.mainFont,
           fontWeight: 900,
           color: COLORS.inputfieldgreen,
           padding: 10,

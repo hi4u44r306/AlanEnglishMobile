@@ -2,10 +2,8 @@ import { View, SafeAreaView, Text, FlatList, Image, StyleSheet, ActivityIndicato
 import React, { Component } from 'react';
 import { HomeHeader, FocusedStatusBar } from "../components";
 import { COLORS, FONTS } from "../constants";
-import firebase from "firebase";
-import first from '../assets/img/firstplace.png'
-import second from '../assets/img/secondplace.png'
-import third from '../assets/img/thirdplace.png'
+import { db } from "./firebase-config";
+import { collection, getDoc, query, where, orderBy } from "@firebase/firestore/lite";
 import ScreenContainer from "./ScreenContainer";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
@@ -33,25 +31,38 @@ class Leaderboard extends Component {
 
   componentDidMount() {
     try {
-      const getStudents = (classParam, orderByParam, monthParam, setStateFunc) => {
-        const db = firebase.firestore();
-        db.collection("student")
-          .where('class', '==', classParam)
-          .where('onlinemonth', '==', monthParam)
-          .where('totaltimeplayed', '>', 0)
-          .orderBy(orderByParam, 'desc')
-          .get()
-          .then((snapshot) => {
-            const students = [];
-            snapshot.forEach((doc) => {
-              const data = doc.data();
-              students.push(data);
-            })
-            setStateFunc(students);
-          })
-          .catch((err) => {
-            console.log(err)
-          });
+      async function getStudents(classParam, orderByParam, monthParam, setStateFunc) {
+        // collection(db, "student")
+        //   .where('class', '==', classParam)
+        //   .where('onlinemonth', '==', monthParam)
+        //   .where('totaltimeplayed', '>', 0)
+        //   .orderBy(orderByParam, 'desc')
+        //   .get()
+        //   .then((snapshot) => {
+        //     const students = [];
+        //     snapshot.forEach((doc) => {
+        //       const data = doc.data();
+        //       students.push(data);
+        //     })
+        //     setStateFunc(students);
+        //   })
+        //   .catch((err) => {
+        //     console.log(err)
+        //   });
+        const q = query(collection(db, 'student'),
+          where('class', '==', classParam),
+          where('onlinemonth', '==', monthParam),
+          where('totaltimeplayed', '>', 0),
+          orderBy(orderByParam, 'desc')
+        );
+        const snapshot = await getDocs(q);
+        const students = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          students.push(data);
+        });
+
+        setStateFunc(students);
       }
       // const getOfflineStudents = (classParam, setStateFunc) => {
       //   const db = firebase.firestore();
@@ -186,7 +197,7 @@ class Leaderboard extends Component {
           <Text style={{
             fontSize: 45,
             color: '#2d7dd2',
-            fontFamily: FONTS.VarelaRound,
+            fontFamily: FONTS.mainFont,
             fontWeight: '900',
             textShadowColor: 'black', // set the color of the outline
             textShadowOffset: { width: 1, height: 1 }, // set the offset of the shadow
@@ -230,7 +241,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 16,
     fontWeight: '900',
-    fontFamily: FONTS.VarelaRound,
+    fontFamily: FONTS.mainFont,
     letterSpacing: 2,
     marginBottom: 10,
     textAlign: 'center',
@@ -251,7 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: FONTS.VarelaRound,
+    fontFamily: FONTS.mainFont,
     fontWeight: '800',
     // borderBottomColor: 'gray',
     // borderStyle: 'solid',
@@ -270,7 +281,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     textAlign: 'center',
-    fontFamily: FONTS.VarelaRound,
+    fontFamily: FONTS.mainFont,
     fontWeight: '800'
   },
   studentInfo: {
@@ -278,14 +289,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
     textAlign: 'center',
-    fontFamily: FONTS.VarelaRound,
+    fontFamily: FONTS.mainFont,
     fontWeight: '800'
   },
   noData: {
     fontStyle: 'italic',
     color: '#777',
     textAlign: 'center',
-    fontFamily: FONTS.VarelaRound,
+    fontFamily: FONTS.mainFont,
   },
   endOfList: {
     display: 'flex',
