@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { COLORS } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +18,19 @@ export default function MusicPlayer({ music }) {
   const sound = useRef(new Audio.Sound());
   // const { playlists } = useSelector(state => state.musicReducer);
 
+  const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setDimesions({ window });
+    });
+    return () => subscription?.remove();
+  })
+
+  const { window } = dimensions;
+  const windowWidth = window.width;
+  const windowHeight = window.height;
+
   useEffect(() => {
     setCurrTrack(music);
     if (music) {
@@ -35,15 +48,15 @@ export default function MusicPlayer({ music }) {
   }, [musicplayerdisplay]);
 
   const closemusicplayer = async () => {
-    dispatch(setCurrentMargin(0));
-    // Add closing animation
     Animated.timing(animatedOpacity, {
       toValue: 0,
       duration: duration,
       useNativeDriver: false,
     }).start();
-    dispatch(setMusicPlayerDisplay('none'));
     sound.current.stopAsync();
+    dispatch(setCurrentMargin(0));
+    // Add closing animation
+    dispatch(setMusicPlayerDisplay('none'));
   };
 
   const pauseSound = async () => {
@@ -87,7 +100,7 @@ export default function MusicPlayer({ music }) {
     <Animated.View style={{
       display: musicplayerdisplay,
       position: 'absolute',
-      bottom: 90,
+      bottom: windowHeight < 800 ? 60 : 90,
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StatusBar, Text, View, FlatList, StyleSheet } from 'react-native';
+import { SafeAreaView, StatusBar, Text, View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { CircleButton, FocusedStatusBar, HomeHeader, MusicCard } from '../components';
 import { COLORS, FONTS, assets, musicDB } from '../constants';
 import { useState } from 'react';
@@ -17,6 +17,19 @@ const PlaylistDetail = () => {
     const [selectedMusic, setSelectedMusic] = useState();
     const { playing, screenmargin } = useSelector(state => state.musicReducer);
     const [currMusic, setCurrMusic] = useState(null);
+
+    const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
+
+    useEffect(() => {
+        const subscription = Dimensions.addEventListener("change", ({ window }) => {
+            setDimesions({ window });
+        });
+        return () => subscription?.remove();
+    })
+
+    const { window } = dimensions;
+    const windowWidth = window.width;
+    const windowHeight = window.height;
 
     useEffect(() => {
         setCurrMusic(playing)
@@ -41,7 +54,7 @@ const PlaylistDetail = () => {
                 <Text style={styles.titletext}>{musicType}</Text>
             </View>
             <FlatList
-                style={{ paddingBottom: 10 }}
+                style={{ paddingBottom: windowHeight < 800 ? 10 : 30 }}
                 data={filterMusicByType(musicType)}
                 renderItem={({ item }) => (
                     <MusicCard music={item} onclickmusic={handleCardClick} />

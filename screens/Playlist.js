@@ -32,11 +32,12 @@ const Playlist = () => {
       style={{
         display: 'flex',
         alignItems: 'center',
+        alignContent: 'center',
+        alignSelf: 'center',
         justifyContent: 'center',
         width: 150,
         padding: 15,
         backgroundColor: COLORS.white,
-
         borderRadius: SIZES.font,
         marginBottom: SIZES.extraLarge,
         margin: SIZES.base,
@@ -55,24 +56,24 @@ const Playlist = () => {
       <FlatList
         style={{ paddingTop: 10, paddingBottom: 20 }}
         data={[
-          { title: '習作本', data: playlists.習作本 },
+          { title: 'WorkBook (習作本)', data: playlists.習作本 },
           { title: 'Super Easy Reading', data: playlists.SuperEasyReading },
           { title: 'Steam Reading', data: playlists.STEAM },
-          { title: 'ShortArticalReading', data: playlists.ShortArticalReading },
-          { title: 'ReadingLamp', data: playlists.ReadingLamp },
+          { title: 'Short Artical Reading', data: playlists.ShortArticalReading },
+          { title: 'Reading Lamp', data: playlists.ReadingLamp },
           { title: 'Skyline', data: playlists.Skyline },
-          { title: 'ReadingTable', data: playlists.ReadingTable },
+          { title: 'Reading Table', data: playlists.ReadingTable },
         ]}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View>
             <View style={styles.typetitle}>
               <Text style={{
-                fontFamily: FONTS.mainFont,
+                // fontFamily: FONTS.mainFont,
                 fontWeight: '700',
                 height: 20,
                 color: 'white',
-                fontSize: 17,
+                fontSize: 16,
                 letterSpacing: 1,
               }}>{item.title}</Text>
             </View>

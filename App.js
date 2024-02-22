@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import { useFonts } from "expo-font"
-import { Text } from "react-native";
+import { Text, Dimensions } from "react-native";
 import { authentication } from "./screens/firebase-config";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "./screens/firebase-config";
@@ -34,9 +34,8 @@ import { useNavigation } from "@react-navigation/native";
 // import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
 
+
 const store = createStore(rootReducer);
-
-
 const theme = {
   ...DefaultTheme,
   colors: {
@@ -52,14 +51,16 @@ const profilepage = '用戶';
 const leaderboardpage = '排行榜';
 const homework = '聯絡簿';
 
+
 const PlaylistStackScreen = () => (
+
   <Stack.Navigator initialRouteName="Playlist" screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Playlist" component={Playlist} />
     <Stack.Screen name="PlaylistDetail" component={PlaylistDetail}
 
       // PlaylistDetail 的最上面返回鍵
       options={{
-        headerShown: true, title: '', headerStyle: { height: 90, backgroundColor: 'white' }, headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
+        headerShown: true, title: '', headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: COLORS.main }, headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
       }} />
   </Stack.Navigator>
 );
@@ -67,6 +68,18 @@ const PlaylistStackScreen = () => (
 function Root() {
   const { playing } = useSelector(state => state.musicReducer);
   const [currMusic, setCurrMusic] = useState(null);
+  const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setDimesions({ window });
+    });
+    return () => subscription?.remove();
+  })
+
+  const { window } = dimensions;
+  const windowWidth = window.width;
+  const windowHeight = window.height;
 
   useEffect(() => {
     setCurrMusic(playing)
@@ -103,9 +116,10 @@ function Root() {
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          tabBarStyle: { height: 90, backgroundColor: 'white' },
-          tabBarLabelStyle: { fontWeight: 'bold', fontFamily: 'Nunito', fontSize: 14 },
-          tabBarActiveTintColor: 'rgb(64, 98, 187)',
+          tabBarStyle: { height: windowHeight < 800 ? 65 : 90, backgroundColor: COLORS.main, },
+          tabBarLabelStyle: { fontFamily: FONTS.mainFont, fontSize: 14, },
+          // tabBarActiveTintColor: 'rgb(64, 98, 187)',
+          tabBarActiveTintColor: COLORS.blue,
           tabBarInactiveTintColor: 'black'
         })}
       >
@@ -178,7 +192,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Root"
           screenOptions={{
             headerShown: false,
             cardStyle: { backgroundColor: 'transparent' },

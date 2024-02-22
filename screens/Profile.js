@@ -7,7 +7,6 @@ import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 import { signOut } from "@firebase/auth";
 import { authentication } from "./firebase-config";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -17,7 +16,6 @@ const Profile = () => {
 
   // const userclass = storage.getString('ae-class');
   // const username = storage.getString('ae-username');
-  const useruid = AsyncStorage.getItem('ae-useruid');
   // const usertimeplayed = storage.getString('ae-totaltimeplayed');
   // const dailytimeplayed = storage.getString('ae-dailyplayed');
   // const percentage = dailytimeplayed / 30;
@@ -103,7 +101,7 @@ const Profile = () => {
           </View>
         </View>
         {/* <Text style={styles.titleText}>{username}</Text> */}
-        <Text style={styles.titleText}>Username {useruid || ''}</Text>
+        <Text style={styles.titleText}>Username</Text>
         <View style={styles.userInfoContainer}>
           <View style={{ padding: 20 }}>
             <Text style={{ fontSize: 20, fontFamily: FONTS.bold }}>Account</Text>
