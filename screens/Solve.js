@@ -58,17 +58,14 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     linkText: {
-        display: 'block',
+        // display: 'block',
         marginBottom: 20,
         color: '#0077cc',
         textDecorationLine: 'none',
         fontSize: 16,
         fontWeight: 900,
-        transition: 'all 0.2s ease-in-out',
     },
-    linkTextHover: {
-        textDecorationLine: 'underline',
-    },
+
     headerText: {
         marginBottom: 10,
         fontSize: 24,

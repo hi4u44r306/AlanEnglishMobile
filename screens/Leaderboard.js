@@ -1,13 +1,15 @@
-import { View, SafeAreaView, Text, FlatList, Image, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
-import React, { Component } from 'react';
+import { View, SafeAreaView, Text, FlatList, Image, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView, Dimensions } from "react-native";
+import React, { Component, useEffect, useState } from 'react';
 import { HomeHeader, FocusedStatusBar } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { db } from "./firebase-config";
-import { collection, getDoc, query, where, orderBy } from "@firebase/firestore/lite";
+import { collection, getDocs, query, where, orderBy } from "@firebase/firestore";
 import ScreenContainer from "./ScreenContainer";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 
+const fontfamily = FONTS.bold;
+const fontSize = Dimensions.get('window').height < 800 ? 13 : 15;
 
 class Leaderboard extends Component {
   state = {
@@ -140,8 +142,12 @@ class Leaderboard extends Component {
               {
                 columns.map((column, index) => (
                   <Text key={index} style={styles.titleColumn}>
-                    <AntDesign name={column.icon} size={20} color={COLORS.primary} style={{ paddingRight: '5px' }} />
-                    {column.label}
+                    {/* <Text>
+                      <AntDesign name={column.icon} size={fontSize} color={COLORS.primary} />
+                    </Text> */}
+                    <Text>
+                      {column.label}
+                    </Text>
                   </Text>
                 ))}
             </View>
@@ -177,6 +183,12 @@ class Leaderboard extends Component {
 
   render() {
     const { studentsA, studentsB, studentsC, studentsD } = this.state;
+    // const allStudents = [
+    //   { key: 'A', students: studentsA },
+    //   { key: 'B', students: studentsB },
+    //   { key: 'C', students: studentsC },
+    //   { key: 'D', students: studentsD },
+    // ].flatMap(({ key, students }) => students ? students.map(student => ({ ...student, class: key })) : []);
     const classData = [
       { key: 'A', students: studentsA },
       { key: 'B', students: studentsB },
@@ -193,15 +205,16 @@ class Leaderboard extends Component {
           alignItems: 'center',
           justifyContent: 'center',
           alignContent: 'center',
+          marginTop: 10,
         }}>
           <Text style={{
-            fontSize: 45,
+            fontSize: 40,
+            letterSpacing: 1,
             color: '#2d7dd2',
             fontFamily: FONTS.mainFont,
-            fontWeight: '900',
-            textShadowColor: 'black', // set the color of the outline
-            textShadowOffset: { width: 1, height: 1 }, // set the offset of the shadow
-            textShadowRadius: 2, // set the radius of the shadow
+            textShadowColor: '#2d7dd2', // set the color of the outline
+            textShadowOffset: { width: 0.6, height: 0 }, // set the offset of the shadow
+            textShadowRadius: 0, // set the radius of the shadow
           }}>Leaderboard</Text>
         </View>
         <ScrollView style={{ flex: 1, paddingBottom: 10 }}>
@@ -226,10 +239,64 @@ class Leaderboard extends Component {
             />
           </View>
         </ScrollView>
+        {/* <FlatList
+          style={{ flex: 1, paddingBottom: 10 }}
+          data={allStudents}
+          keyExtractor={(item, index) => `${item.name}-${index}`}
+          renderItem={({ item }) => (
+            <View style={styles.container}>
+              <Text style={styles.heading}>{`${item.class}班`}</Text>
+              {this.state.loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color={COLORS.primary}
+                />
+              ) : (
+                <>
+                  <View style={styles.titleBar}>
+                    {columns.map((column, index) => (
+                      <Text key={index} style={styles.titleColumn}>
+                        {column.label}
+                      </Text>
+                    ))}
+                  </View>
+
+                  <View style={styles.studentContainer}>
+                    <Text style={[styles.place, { textAlign: 'center' }]}>
+                      {item.name}
+                    </Text>
+                    <Text style={styles.studentInfo}>{item.onlinetime}</Text>
+                    <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
+                  </View>
+                </>
+              )}
+            </View>
+          )}
+          ListFooterComponent={
+            <View style={styles.endOfList}>
+              <Ionicons
+                name="checkmark-done-circle-outline"
+                size={30}
+                color="rgb(64, 98, 187)"
+                style={{}}
+              />
+              <Text style={styles.endOfListText}>
+                這是排行榜的末端了
+              </Text>
+              <Ionicons
+                name="checkmark-done-circle-outline"
+                size={30}
+                color="rgb(64, 98, 187)"
+                style={{}}
+              />
+            </View>
+          }
+        /> */}
       </ScreenContainer>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -239,9 +306,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   heading: {
-    fontSize: 16,
-    fontWeight: '900',
-    fontFamily: FONTS.mainFont,
+    fontSize: 15,
+    fontFamily: fontfamily,
     letterSpacing: 2,
     marginBottom: 10,
     textAlign: 'center',
@@ -259,11 +325,10 @@ const styles = StyleSheet.create({
   },
   titleColumn: {
     flex: 1,
-    fontSize: 16,
+    fontSize: fontSize,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: FONTS.mainFont,
-    fontWeight: '800',
+    fontFamily: fontfamily,
     // borderBottomColor: 'gray',
     // borderStyle: 'solid',
     // borderBottomWidth: 1,
@@ -279,24 +344,22 @@ const styles = StyleSheet.create({
   },
   place: {
     flex: 1,
-    fontSize: 16,
+    fontSize: fontSize,
     textAlign: 'center',
-    fontFamily: FONTS.mainFont,
-    fontWeight: '800'
+    fontFamily: fontfamily,
   },
   studentInfo: {
     flex: 1,
-    fontSize: 16,
+    fontSize: fontSize,
     color: 'black',
     textAlign: 'center',
-    fontFamily: FONTS.mainFont,
-    fontWeight: '800'
+    fontFamily: fontfamily,
   },
   noData: {
     fontStyle: 'italic',
     color: '#777',
     textAlign: 'center',
-    fontFamily: FONTS.mainFont,
+    fontFamily: fontfamily,
   },
   endOfList: {
     display: 'flex',

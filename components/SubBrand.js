@@ -2,16 +2,15 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { COLORS, FONTS } from '../constants'
 
-const SubBrand = () => {
+const SubBrand = ({ fontSize }) => {
   return (
     <View>
       <Text style=
         {{
-          fontSize: '17px',
+          fontSize: fontSize,
           fontFamily: FONTS.mainFont,
           fontWeight: 900,
           color: COLORS.inputfieldgreen,
-          padding: 10,
         }}>
         系統化  |  口語化  |  聽力導向
       </Text>

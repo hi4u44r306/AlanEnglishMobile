@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS, SIZES } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { Audio } from 'expo-av';
@@ -107,11 +107,11 @@ export default function MusicPlayer({ music }) {
       opacity: animatedOpacity,
     }}>
       <View style={styles.container}>
-        <View style={styles.controlsContainer}>
+        {/* <View style={styles.controlsContainer}>
           <TouchableOpacity onPress={closemusicplayer}>
-            <AntDesign name="close" size={24} color="black" style={styles.controlIcon} />
+            <AntDesign name="close" size={24} style={styles.controlIcon} />
           </TouchableOpacity>
-        </View>
+        </View> */}
         {/* Image */}
         <Image source={require('../assets/img/headphone.png')} style={styles.image} />
 
@@ -156,25 +156,29 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.main,
+    backgroundColor: COLORS.musicplayer,
     padding: 10,
     paddingRight: 15,
     width: '100%',
   },
   image: {
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
     width: 50,
     height: 50,
-    marginRight: 10,
+    marginRight: 18,
   },
   detailsContainer: {
     flex: 1,
   },
   bookName: {
-    fontSize: 16,
+    color: COLORS.black,
+    fontSize: SIZES.medium,
     fontWeight: 'bold',
   },
   page: {
-    fontSize: 14,
+    color: COLORS.black,
+    fontSize: SIZES.font,
   },
   controlsContainer: {
     flexDirection: 'row',
@@ -184,7 +188,7 @@ const styles = StyleSheet.create({
   controlIcon: {
     marginHorizontal: 10,
     fontWeight: 600,
-    color: 'red'
+    color: COLORS.black
   },
 });
 

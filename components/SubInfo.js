@@ -6,27 +6,31 @@ import { SIZES, FONTS, COLORS, SHADOWS, assets } from "../constants";
 
 export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
   return (
-    <View style={{ gap: 5, flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
       <Image source={require('../assets/img/headphone.png')} style={{
         width: 50,
         height: 50,
-        marginRight: 10,
+        marginRight: 18,
       }} />
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '5px' }}>
+        {/* BookName */}
         <Text
           style={{
-            fontFamily: FONTS.semiBold,
-            fontSize: 15,
-            color: COLORS.gray,
+            // fontFamily: FONTS.semiBold,
+            fontWeight: 'bold',
+            fontSize: SIZES.medium,
+            color: COLORS.primary,
           }}
         >
           {title}
         </Text>
         <Text>-</Text>
+
+        {/* Page */}
         <Text
           style={{
-            fontFamily: FONTS.bold,
-            fontSize: 15,
+            // fontFamily: FONTS.bold,
+            fontSize: SIZES.font,
             color: COLORS.primary,
           }}
         >

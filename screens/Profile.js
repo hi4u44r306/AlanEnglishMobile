@@ -7,66 +7,68 @@ import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 import { signOut } from "@firebase/auth";
 import { authentication } from "./firebase-config";
+import { onAuthStateChanged } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = () => {
   const navigation = useNavigation();
+  const [username, setUsername] = useState();
+  const [classname, setClassName] = useState();
+  const [useruid, setUserUID] = useState();
+  const [usertimeplayed, setUsertimeplayed] = useState();
+  const [currdatetimeplayed, setCurrdatetimeplayed] = useState();
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
   const Month = new Date().toJSON().slice(5, 7);
 
-  // const userclass = storage.getString('ae-class');
-  // const username = storage.getString('ae-username');
-  // const usertimeplayed = storage.getString('ae-totaltimeplayed');
-  // const dailytimeplayed = storage.getString('ae-dailyplayed');
-  // const percentage = dailytimeplayed / 30;
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        setUsername(await AsyncStorage.getItem('ae-username'));
+        setClassName(await AsyncStorage.getItem('ae-useuserclassrname'));
+        setUserUID(await AsyncStorage.getItem('ae-useruid'));
+        setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
+        setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
 
-  // useEffect(() => {
-  //   firebase.auth().onAuthStateChanged(user => {
-  //     if (!user) return error();
-  //   });
-  // }, [currentDate, currentMonth, db, useruid]);
-
-  // const Logout = () => {
-  //   Alert.alert(
-  //     'Confirmation',
-  //     'Are you sure you want to proceed?',
-  //     [
-  //       {
-  //         text: 'Cancel',
-  //         style: 'cancel',
-  //       },
-  //       {
-  //         text: 'OK',
-  //         onPress: () => {
-  //           // Handle the confirmation action
-  //           console.log('User confirmed');
-  //           firebase.auth().signOut()
-  //             .then(() => {
-  //               navigation.navigate("Login");
-
-  //             }).catch((err) => {
-  //               console.log(err);
-  //             });
-  //         },
-  //       },
-  //     ],
-  //     { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
-  //   );
-  // };
+    getUserInfo();
+  }, []);
 
   const Logout = () => {
-    signOut(authentication)
-      .then(() => {
-        navigation.navigate("Login");
-      }).catch((error) => {
-        console.log(error);
-      });
+    Alert.alert(
+      '登出',
+      '確定要登出嗎 ?',
+      [
+        {
+          text: '取消',
+          style: 'cancel',
+        },
+        {
+          text: '確定',
+          onPress: () => {
+            // Handle the confirmation action
+            alert('User confirmed');
+            signOut(authentication)
+              .then(() => {
+                navigation.navigate("Login");
+              }).catch((error) => {
+                alert(error);
+              });
+          },
+        },
+      ],
+      { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
+    );
   };
+
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = () => {
     setRefreshing(true);
-    getUserInfo();
+    // getUserInfo();
     setRefreshing(false);
   }
 
@@ -101,24 +103,21 @@ const Profile = () => {
           </View>
         </View>
         {/* <Text style={styles.titleText}>{username}</Text> */}
-        <Text style={styles.titleText}>Username</Text>
+        <Text style={styles.titleText}>{username || 'NONE'}</Text>
         <View style={styles.userInfoContainer}>
           <View style={{ padding: 20 }}>
             <Text style={{ fontSize: 20, fontFamily: FONTS.bold }}>Account</Text>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>班級</Text>
-              <Text style={styles.secondtitleText}>Teacher</Text>
-              {/* <Text style={styles.secondtitleText}>{userclass}</Text> */}
+              <Text style={styles.secondtitleText}>{classname || '0'}</Text>
             </View>
             <View style={styles.userinfo}>
-              {/* <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text> */}
-              <Text style={styles.userinfolabel}>2 月聽力次數 </Text>
-              <Text style={styles.secondtitleText}>聽力次數</Text>
-              {/* <Text style={styles.secondtitleText}>{usertimeplayed}</Text> */}
+              <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
+              <Text style={styles.secondtitleText}>{usertimeplayed || '0'}</Text>
             </View>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>今日聽力次數 </Text>
-              <Text style={styles.secondtitleText}>聽力次數</Text>
+              <Text style={styles.secondtitleText}>{currdatetimeplayed || '0'}</Text>
               {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
             </View>
           </View>

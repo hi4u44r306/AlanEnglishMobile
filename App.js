@@ -33,6 +33,7 @@ import { useNavigation } from "@react-navigation/native";
 
 // import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
+import { onAuthStateChanged } from "firebase/auth";
 
 
 const store = createStore(rootReducer);
@@ -91,6 +92,7 @@ function Root() {
     <View style={{ flex: 1, overflow: 'hidden' }}>
       <Tab.Navigator
         initialRouteName="播放列表"
+        tabBarShowLabel
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color }) => {
@@ -165,19 +167,35 @@ const App = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const user = authentication.currentUser;
-      await AsyncStorage.setItem('ae-useruid', user.uid);
       if (user) {
         try {
-          const studentDoc = getDoc(doc(db, 'student', user.uid));
+          getDoc(doc(db, 'student', user.uid))
+            .then(async (docSnapshot) => {
+              const username = docSnapshot.data().name;
+              const userclass = docSnapshot.data().class;
+              const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
+              const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
 
+              await AsyncStorage.setItem('ae-username', username);
+              await AsyncStorage.setItem('ae-useuserclassrname', userclass);
+              await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
+              await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
+
+            })
+          getDoc(doc(db, 'teacher', user.uid)).then(async (docSnapshot) => {
+            const teacherschool = docSnapshot.data().school;
+
+            await AsyncStorage.setItem('ae-teacherschool', teacherschool);
+          })
         } catch (error) {
           console.error('Error while setting student data:', error);
         }
-        try {
-          const teacherDoc = getDoc(doc(db, 'teacher', user.uid));
-        } catch (error) {
-          console.error('Error while setting teacher data:', error);
-        }
+      } else {
+        await AsyncStorage.setItem('ae-username', '');
+        await AsyncStorage.setItem('ae-useuserclassrname', '');
+        await AsyncStorage.setItem('ae-totaltimeplayed', '');
+        await AsyncStorage.setItem('ae-currdatetimeplayed', '');
+        await AsyncStorage.setItem('ae-teacherschool', '');
       }
     };
     const unsubscribe = authentication.onAuthStateChanged(async () => {
@@ -192,7 +210,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator
-          initialRouteName="Root"
+          initialRouteName="Login"
           screenOptions={{
             headerShown: false,
             cardStyle: { backgroundColor: 'transparent' },

@@ -1,6 +1,8 @@
 export const COLORS = {
   blue: '#5784e9',
-  main: '#fbf0ea',
+  main: 'white',
+  musicplayer: '#ebd5d5',
+  // main: '#fbf0ea',
   primary: "#001F2D",
   secondary: "#4D626C",
   black: 'black',
@@ -28,7 +30,7 @@ export const FONTS = {
   medium: "InterMedium",
   regular: "InterRegular",
   light: "InterLight",
-  // VarelaRound: "VarelaRound",
+  VarelaRound: "VarelaRound",
   LibreRegular: "LibreRegular",
   LibreBold: "LibreBold",
 };

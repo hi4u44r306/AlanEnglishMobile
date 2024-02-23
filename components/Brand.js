@@ -4,14 +4,14 @@ import { FONTS } from '../constants';
 
 const textStyle = (color, fontSize, margin) => ({
   margin: 0,
-  // textShadowColor: color,
-  // textShadowOffset: { width: 1.5, height: 0 },
-  // textShadowRadius: 0,
+  textShadowColor: color,
+  textShadowOffset: { width: 0.6, height: 0 },
+  textShadowRadius: 0,
   color,
   fontSize,
   fontFamily: FONTS.mainFont,
-  // fontWeight: '900'
-  // letterSpacing: 0.6,
+  // fontWeight: '900',
+  letterSpacing: 1.2,
 });
 
 export const Brand = ({ fontSize, margin }) => {
@@ -19,12 +19,7 @@ export const Brand = ({ fontSize, margin }) => {
     <View style={{
       flexDirection: 'row',
       alignItems: 'center',
-      // backgroundColor: 'white',
-      paddingTop: 5,
-      paddingBottom: 5,
       paddingLeft: 15,
-      paddingRight: 15,
-      borderRadius: 10
     }}>
       {/* <Image source={require('../assets/A-logo.png')} style={{
         width: 35,
