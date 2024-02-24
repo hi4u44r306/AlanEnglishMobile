@@ -98,7 +98,7 @@ const Login = () => {
         setIsLoading(!isLoading);
         setTimeout(() => {
             setIsLoading(isLoading);
-        }, 1000);
+        }, 5000);
     };
 
     useEffect(() => {

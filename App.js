@@ -163,11 +163,13 @@ const App = () => {
               const userclass = docSnapshot.data().class;
               const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
               const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
+              const userimage = docSnapshot.data().userimage;
 
               await AsyncStorage.setItem('ae-username', username);
               await AsyncStorage.setItem('ae-useuserclassrname', userclass);
               await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
               await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
+              await AsyncStorage.setItem('ae-userimage', userimage);
 
             })
           getDoc(doc(db, 'teacher', user.uid)).then(async (docSnapshot) => {

@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, Text, StyleSheet, Alert, Image, RefreshControl, ScrollView } from "react-native";
+import { View, SafeAreaView, Text, StyleSheet, Alert, Image, RefreshControl, ScrollView, TouchableOpacity, Button } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 import { signOut } from "@firebase/auth";
-import { authentication } from "./firebase-config";
+import { authentication, db } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from 'expo-image-picker';
+// import * as FileSystem from 'expo-file-system';
+import { getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
+import { ref } from "firebase/storage";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -17,9 +22,14 @@ const Profile = () => {
   const [useruid, setUserUID] = useState();
   const [usertimeplayed, setUsertimeplayed] = useState();
   const [currdatetimeplayed, setCurrdatetimeplayed] = useState();
+  // const [userimage, setUserImage] = useState();
+  const [image, setImage] = useState();
+  const [uploading, setUploading] = useState(false);
+
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
   const Month = new Date().toJSON().slice(5, 7);
+
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -29,13 +39,19 @@ const Profile = () => {
         setUserUID(await AsyncStorage.getItem('ae-useruid'));
         setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
         setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
+        // setUserImage(await AsyncStorage.getItem('ae-userimage'));
+
+        const storage = getStorage();
+        const storageRef = ref(storage, `UserimageFile/${await AsyncStorage.getItem('ae-userimage')}`);
+        const downloadURL = await getDownloadURL(storageRef);
+        setImage(downloadURL);
       } catch (error) {
-        console.error('Error fetching user info:', error);
+        alert('Error fetching user info:', error);
       }
     };
-
     getUserInfo();
   }, []);
+
 
   const Logout = () => {
     Alert.alert(
@@ -69,8 +85,62 @@ const Profile = () => {
   const onRefresh = () => {
     setRefreshing(true);
     // getUserInfo();
+    // fetchUserdata();
     setRefreshing(false);
   }
+
+
+  // Function to handle choosing an image
+  const handleChooseImage = async () => {
+    try {
+      // Open image picker
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      // Check if image was picked
+      if (!result.canceled) {
+        // Image URI
+        const imageUri = result.assets[0].uri;
+
+        // Upload the image to Firebase Storage
+        await handleImageUpload(imageUri);
+      }
+    } catch (error) {
+      console.error('Error choosing image:', error);
+    }
+  };
+
+
+  // Function to handle image upload
+  const handleImageUpload = async (imageUri) => {
+    setUploading(true);
+    try {
+      const storage = getStorage();
+      const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1); // Corrected
+      const storageRef = ref(storage, `UserimageFile/${filename}`);
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+
+      const userRef = doc(db, 'student', useruid);
+      await updateDoc(userRef, {
+        userimage: filename,
+      })
+
+      await uploadBytes(storageRef, blob);
+      Alert.alert('Success', 'Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Alert.alert('Error', 'Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+
 
 
   return (
@@ -90,34 +160,43 @@ const Profile = () => {
           <View style={{
             backgroundColor: 'white',
             borderRadius: 100,
-            padding: 20,
-            position: 'absolute',
             top: 20,
-            borderWidth: 2,
+            borderWidth: 10,
             borderColor: '#5784e9',
           }}>
-            <Image source={require('../assets/img/headphone.png')} style={{
-              width: 100,
-              height: 100,
-            }} />
+            {
+              image ?
+                (
+                  <Image source={{ uri: image }} style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 100,
+                  }} />
+                ) : (
+                  <Text>Loading...</Text>
+                )
+            }
+
           </View>
+          {uploading && <Text style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 50 }}>上傳中...</Text>}
         </View>
-        {/* <Text style={styles.titleText}>{username}</Text> */}
+        <Button title="選擇照片" onPress={handleChooseImage} disabled={uploading} />
+
         <Text style={styles.titleText}>{username || 'NONE'}</Text>
         <View style={styles.userInfoContainer}>
-          <View style={{ padding: 20 }}>
+          <View>
             <Text style={{ fontSize: 20, fontFamily: FONTS.bold }}>Account</Text>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>班級</Text>
-              <Text style={styles.secondtitleText}>{classname || '0'}</Text>
+              <Text style={styles.secondtitleText}>{classname || '0'} 班</Text>
             </View>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
-              <Text style={styles.secondtitleText}>{usertimeplayed || '0'}</Text>
+              <Text style={styles.secondtitleText}>{usertimeplayed || '0'} 次</Text>
             </View>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>今日聽力次數 </Text>
-              <Text style={styles.secondtitleText}>{currdatetimeplayed || '0'}</Text>
+              <Text style={styles.secondtitleText}>{currdatetimeplayed || '0'} 次</Text>
               {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
             </View>
           </View>
@@ -169,21 +248,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titleContainer: {
-    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 50,
-    paddingBottom: 50,
-    marginBottom: 50,
-    backgroundColor: COLORS.main,
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-    elevation: 3,
+    paddingTop: 10,
+    marginBottom: 20,
     position: 'relative', // Make the container relative to position the absolute image
   },
 
   titleText: {
-    marginTop: 25,
+    marginTop: 5,
     fontSize: 26,
     fontWeight: '900',
     fontFamily: FONTS.bold,
@@ -209,11 +282,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     padding: SIZES.base, // You can adjust this padding as needed
     borderRadius: SIZES.base,
-    // elevation: 3,
-    // shadowColor: COLORS.black,
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 2,
   },
   listeningCountContainer: {
     backgroundColor: '#5784e9',//blue background
