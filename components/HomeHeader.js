@@ -47,7 +47,9 @@ const HomeHeader = ({ onSearch, display }) => {
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.main, }}>
-      <View>
+      <View style={{
+        paddingTop: 15,
+      }}>
         <View
           style={{
             flexDirection: "row",

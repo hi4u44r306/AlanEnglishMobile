@@ -54,7 +54,7 @@ const Playlist = () => {
       <FocusedStatusBar backgroundColor={COLORS.black} />
       <HomeHeader display="none" />
       <FlatList
-        style={{ paddingTop: 10, paddingBottom: 20 }}
+        style={{ paddingBottom: 20 }}
         data={[
           { title: 'WorkBook (習作本)', data: playlists.習作本 },
           { title: 'Super Easy Reading', data: playlists.SuperEasyReading },

@@ -183,12 +183,7 @@ class Leaderboard extends Component {
 
   render() {
     const { studentsA, studentsB, studentsC, studentsD } = this.state;
-    // const allStudents = [
-    //   { key: 'A', students: studentsA },
-    //   { key: 'B', students: studentsB },
-    //   { key: 'C', students: studentsC },
-    //   { key: 'D', students: studentsD },
-    // ].flatMap(({ key, students }) => students ? students.map(student => ({ ...student, class: key })) : []);
+
     const classData = [
       { key: 'A', students: studentsA },
       { key: 'B', students: studentsB },
@@ -198,6 +193,7 @@ class Leaderboard extends Component {
     // const currentDate = new Date();
     // const currentMonthLastDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     // const currentMonthLastDateMs = currentMonthLastDate.getTime();
+
     return (
       <ScreenContainer>
         <HomeHeader display="none" />
@@ -217,60 +213,15 @@ class Leaderboard extends Component {
             textShadowRadius: 0, // set the radius of the shadow
           }}>Leaderboard</Text>
         </View>
-        <ScrollView style={{ flex: 1, paddingBottom: 10 }}>
-          {classData.map(({ key, students }) =>
-            this.renderClassContainer(key, students)
-          )}
-          <View style={styles.endOfList}>
-            <Ionicons
-              name="checkmark-done-circle-outline"
-              size={30}
-              color="rgb(64, 98, 187)"
-              style={{}}
-            />
-            <Text style={styles.endOfListText}>
-              這是排行榜的末端了
-            </Text>
-            <Ionicons
-              name="checkmark-done-circle-outline"
-              size={30}
-              color="rgb(64, 98, 187)"
-              style={{}}
-            />
-          </View>
-        </ScrollView>
-        {/* <FlatList
-          style={{ flex: 1, paddingBottom: 10 }}
-          data={allStudents}
-          keyExtractor={(item, index) => `${item.name}-${index}`}
-          renderItem={({ item }) => (
-            <View style={styles.container}>
-              <Text style={styles.heading}>{`${item.class}班`}</Text>
-              {this.state.loading ? (
-                <ActivityIndicator
-                  size="large"
-                  color={COLORS.primary}
-                />
-              ) : (
-                <>
-                  <View style={styles.titleBar}>
-                    {columns.map((column, index) => (
-                      <Text key={index} style={styles.titleColumn}>
-                        {column.label}
-                      </Text>
-                    ))}
-                  </View>
 
-                  <View style={styles.studentContainer}>
-                    <Text style={[styles.place, { textAlign: 'center' }]}>
-                      {item.name}
-                    </Text>
-                    <Text style={styles.studentInfo}>{item.onlinetime}</Text>
-                    <Text style={styles.studentInfo}>{item.totaltimeplayed}</Text>
-                  </View>
-                </>
-              )}
-            </View>
+        <FlatList
+          style={{ flex: 1, paddingBottom: 10 }}
+          data={classData}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <>
+              {this.renderClassContainer(item.key, item.students)}
+            </>
           )}
           ListFooterComponent={
             <View style={styles.endOfList}>
@@ -291,7 +242,9 @@ class Leaderboard extends Component {
               />
             </View>
           }
-        /> */}
+        />
+
+
       </ScreenContainer>
     );
   }
@@ -314,9 +267,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2ba84a',
     // backgroundColor: 'rgb(0, 91, 127)',
     color: 'white',
-    paddingTop: 8,
-    paddingBottom: 8,
-    borderRadius: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   titleBar: {
     marginBottom: 10,
@@ -357,7 +309,7 @@ const styles = StyleSheet.create({
   },
   noData: {
     fontStyle: 'italic',
-    color: '#777',
+    color: 'red',
     textAlign: 'center',
     fontFamily: fontfamily,
   },

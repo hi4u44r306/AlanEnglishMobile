@@ -1,6 +1,6 @@
 // import { View, Text } from 'react-native'
 // import { View, SafeAreaView, FlatList } from "react-native";
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView, Text, Image, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, Alert, ActivityIndicator, Dimensions } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
@@ -10,6 +10,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { AntDesign, FontAwesome5, Octicons } from '@expo/vector-icons';
+import { setTabBarHeight } from '../components/actions/actions';
+import { useDispatch } from 'react-redux';
 
 
 
@@ -76,14 +78,36 @@ const Login = () => {
     const currentDate = new Date().toJSON().slice(0, 10);
     const currentMonth = new Date().toJSON().slice(0, 7);
     const [isLoading, setIsLoading] = useState(false);
+    const toastRef = useRef();
+    const dispatch = useDispatch();
+    const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
+
+    useEffect(() => {
+        const subscription = Dimensions.addEventListener("change", ({ window }) => {
+            setDimesions({ window });
+        });
+        return () => subscription?.remove();
+    })
+
+    const { window } = dimensions;
+    const windowWidth = window.width;
+    const windowHeight = window.height;
 
     // This function will be triggered when the button is pressed
     const toggleLoading = () => {
         setIsLoading(!isLoading);
         setTimeout(() => {
             setIsLoading(isLoading);
-        }, 1500);
+        }, 1000);
     };
+
+    useEffect(() => {
+        if (windowHeight < 900) {
+            dispatch(setTabBarHeight(65));
+        } else {
+            dispatch(setTabBarHeight(90));
+        }
+    }, []);
 
     const success = (username) => {
         Toast.show({
@@ -147,29 +171,16 @@ const Login = () => {
                         success(username);
                         setTimeout(() => {
                             navigation.navigate("Root")
-                        }, 2000);
+                        }, 1000);
                     })
-                    .catch((error) => {
-                        alert(error);
+                    .catch(() => {
+                        error();
                     });
             })
-            .catch((error) => {
-                alert("Error signing in:", error);
+            .catch(() => {
+                error();
             });
     }
-
-    const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
-
-    useEffect(() => {
-        const subscription = Dimensions.addEventListener("change", ({ window }) => {
-            setDimesions({ window });
-        });
-        return () => subscription?.remove();
-    })
-
-    const { window } = dimensions;
-    const windowWidth = window.width;
-    const windowHeight = window.height;
 
 
     return (
@@ -178,12 +189,7 @@ const Login = () => {
             style={[styles.container, { paddingTop: windowHeight < 800 ? 20 : 40 }]}
         >
             <View style={{ zIndex: 999 }}>
-                {/* <Toast
-                    position='center'
-                    topOffset={50}
-                    config={toastConfig}
-                /> */}
-                <Toast config={toastConfig} ref={(ref) => { Toast.setRef(ref) }} />
+                <Toast config={toastConfig} ref={toastRef} topOffset={50} />
             </View>
             <FocusedStatusBar />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -251,6 +257,7 @@ const Login = () => {
                             <Text style={styles.solevbtntext}>無法登入嗎?</Text>
                         </TouchableOpacity>
                         <Copyright />
+
                     </View>
                 </View>
             </TouchableWithoutFeedback>

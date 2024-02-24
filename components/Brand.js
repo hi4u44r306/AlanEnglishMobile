@@ -19,14 +19,15 @@ export const Brand = ({ fontSize, margin }) => {
     <View style={{
       flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'center',
       paddingLeft: 15,
     }}>
       {/* <Image source={require('../assets/A-logo.png')} style={{
         width: 35,
         height: 35,
         marginRight: 3,
-      }} />
-      <Text style={textStyle('black', 25, margin)}>English</Text> */}
+      }} /> */}
+      {/* <Text style={textStyle('black', 25, margin)}>English</Text> */}
       <Text style={textStyle('red', fontSize, margin)}>A</Text>
       <Text style={textStyle('#f45d01', fontSize, margin)}>L</Text>
       <Text style={textStyle('#eeb902', fontSize, margin)}>A</Text>

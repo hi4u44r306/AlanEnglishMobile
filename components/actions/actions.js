@@ -111,9 +111,18 @@ export const setDuration = (duration) => {
     };
 };
 
-// export const setIsPlaying = (isplaying) => {
-//     return {
-//         type: "SET_ISPLAYING",
-//         payload: isplaying
-//     };
-// };
+export const setTabBarHeight = (tabbarheight) => {
+    return {
+        type: "TAB_BAR_HEIGHT",
+        payload: tabbarheight
+    };
+};
+
+export const setMusicPlayerHeight = (musicplayerheight) => {
+    return {
+        type: "TAB_BAR_HEIGHT",
+        payload: musicplayerheight
+    };
+};
+
+

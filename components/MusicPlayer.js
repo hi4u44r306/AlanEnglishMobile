@@ -6,11 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Audio } from 'expo-av';
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from './actions/actions';
 
-
 export default function MusicPlayer({ music }) {
   const { musicplayerdisplay } = useSelector(state => state.musicReducer);
   const [{ bookname, page }, setCurrTrack] = useState(music);
-  const { duration } = useSelector(state => state.screenReducer);
+  const { duration, tabbarheight, musicplayerheight } = useSelector(state => state.screenReducer);
   const animatedOpacity = useRef(new Animated.Value(0)).current;
   const [isPlaying, setIsPlaying] = useState(false);
   const dispatch = useDispatch();
@@ -100,18 +99,18 @@ export default function MusicPlayer({ music }) {
     <Animated.View style={{
       display: musicplayerdisplay,
       position: 'absolute',
-      bottom: windowHeight < 800 ? 60 : 90,
+      bottom: tabbarheight,
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
       opacity: animatedOpacity,
     }}>
-      <View style={styles.container}>
-        {/* <View style={styles.controlsContainer}>
+      <View style={[styles.container, { height: musicplayerheight }]}>
+        <View style={styles.controlsContainer}>
           <TouchableOpacity onPress={closemusicplayer}>
             <AntDesign name="close" size={24} style={styles.controlIcon} />
           </TouchableOpacity>
-        </View> */}
+        </View>
         {/* Image */}
         <Image source={require('../assets/img/headphone.png')} style={styles.image} />
 

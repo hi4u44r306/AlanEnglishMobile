@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import TrackPlayer from 'react-native-track-player';
 // TrackPlayer.registerPlaybackService(() => require('./service.js'));
 
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { createStore } from 'redux';
 import rootReducer from './reducer/reducer'; // Assuming you have a rootReducer
 import { useState } from "react";
@@ -34,6 +34,7 @@ import { useNavigation } from "@react-navigation/native";
 // import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
 import { onAuthStateChanged } from "firebase/auth";
+import { setTabBarHeight } from "./components/actions/actions";
 
 
 const store = createStore(rootReducer);
@@ -69,23 +70,10 @@ const PlaylistStackScreen = () => (
 function Root() {
   const { playing } = useSelector(state => state.musicReducer);
   const [currMusic, setCurrMusic] = useState(null);
-  const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
-
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener("change", ({ window }) => {
-      setDimesions({ window });
-    });
-    return () => subscription?.remove();
-  })
-
-  const { window } = dimensions;
-  const windowWidth = window.width;
-  const windowHeight = window.height;
 
   useEffect(() => {
     setCurrMusic(playing)
   }, [playing]);
-
 
 
   return (
@@ -118,7 +106,7 @@ function Root() {
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          tabBarStyle: { height: windowHeight < 800 ? 65 : 90, backgroundColor: COLORS.main, },
+          tabBarStyle: { height: Dimensions.get('window').height < 800 ? 65 : 90, backgroundColor: COLORS.main, },
           tabBarLabelStyle: { fontFamily: FONTS.mainFont, fontSize: 14, },
           // tabBarActiveTintColor: 'rgb(64, 98, 187)',
           tabBarActiveTintColor: COLORS.blue,
