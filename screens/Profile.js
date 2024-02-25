@@ -6,14 +6,15 @@ import { COLORS, FONTS, SIZES } from "../constants";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 import { signOut } from "@firebase/auth";
-import { authentication, db } from "./firebase-config";
+import { authentication, db, rtdb } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 // import * as FileSystem from 'expo-file-system';
 import { getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
-import { ref } from "firebase/storage";
+import { ref as storageref } from "firebase/storage";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { get, getDatabase, onValue, ref, set, update } from 'firebase/database';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -31,24 +32,35 @@ const Profile = () => {
   const Month = new Date().toJSON().slice(5, 7);
 
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      try {
-        setUsername(await AsyncStorage.getItem('ae-username'));
-        setClassName(await AsyncStorage.getItem('ae-useuserclassrname'));
-        setUserUID(await AsyncStorage.getItem('ae-useruid'));
-        setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
-        setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
-        // setUserImage(await AsyncStorage.getItem('ae-userimage'));
+  const getUserInfo = async () => {
+    try {
+      setUsername(await AsyncStorage.getItem('ae-username'));
+      setClassName(await AsyncStorage.getItem('ae-useuserclassrname'));
+      setUserUID(await AsyncStorage.getItem('ae-useruid'));
+      setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
+      setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
 
-        const storage = getStorage();
-        const storageRef = ref(storage, `UserimageFile/${await AsyncStorage.getItem('ae-userimage')}`);
-        const downloadURL = await getDownloadURL(storageRef);
-        setImage(downloadURL);
-      } catch (error) {
-        alert('Error fetching user info:', error);
-      }
-    };
+      const storage = getStorage();
+      const db = getDatabase();
+      const userRef = ref(db, 'student/' + useruid + '/userimage');
+      const snapshot = await get(userRef);
+      const data = snapshot.val();
+      const storageRef = storageref(storage, `UserimageFile/${data}`);
+      // Use await inside an async function
+      const downloadURL = await getDownloadURL(storageRef);
+      setImage(downloadURL);
+    } catch (error) {
+      alert('Error fetching user info:', error);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    getUserInfo();
+    setRefreshing(false);
+  }
+
+  useEffect(() => {
     getUserInfo();
   }, []);
 
@@ -82,12 +94,7 @@ const Profile = () => {
 
 
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = () => {
-    setRefreshing(true);
-    // getUserInfo();
-    // fetchUserdata();
-    setRefreshing(false);
-  }
+
 
 
   // Function to handle choosing an image
@@ -121,16 +128,28 @@ const Profile = () => {
     try {
       const storage = getStorage();
       const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1); // Corrected
-      const storageRef = ref(storage, `UserimageFile/${filename}`);
+      const storageRef = storageref(storage, `UserimageFile/${filename}`);
       const response = await fetch(imageUri);
       const blob = await response.blob();
 
-      const userRef = doc(db, 'student', useruid);
-      await updateDoc(userRef, {
+      // Firestore
+      // const userRef = doc(db, 'student', useruid);
+      // await updateDoc(userRef, {
+      //   userimage: filename,
+      // })
+
+      // Realtime Database
+      // Save image filename in the Realtime Database
+      const db = getDatabase();
+      await update(ref(db, 'student/' + useruid), {
         userimage: filename,
-      })
+      });
 
       await uploadBytes(storageRef, blob);
+
+
+
+
       Alert.alert('Success', 'Image uploaded successfully');
     } catch (error) {
       console.error('Error uploading image:', error);
