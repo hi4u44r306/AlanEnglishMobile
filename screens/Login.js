@@ -1,17 +1,16 @@
-// import { View, Text } from 'react-native'
-// import { View, SafeAreaView, FlatList } from "react-native";
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, Text, Image, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, Alert, ActivityIndicator, Dimensions } from "react-native";
-import { Brand, SubBrand, FocusedStatusBar, LoginButton, Blackboard, Copyright } from "../components";
-import { COLORS, SIZES, assets, FONTS } from "../constants";
-import { db, authentication, rtdb } from './firebase-config';
+import { Text, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
+import { Brand, SubBrand, FocusedStatusBar, Blackboard, Copyright } from "../components";
+import { COLORS, SIZES, FONTS } from "../constants";
+import { authentication, db, rtdb } from './firebase-config';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-import { AntDesign, FontAwesome5, Octicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
+import { AntDesign, Octicons } from '@expo/vector-icons';
 import { setTabBarHeight } from '../components/actions/actions';
 import { useDispatch } from 'react-redux';
+import { ref, update } from 'firebase/database';
 
 
 
@@ -74,7 +73,6 @@ const Login = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [username, setUsername] = useState("");
     const currentDate = new Date().toJSON().slice(0, 10);
     const currentMonth = new Date().toJSON().slice(0, 7);
     const [isLoading, setIsLoading] = useState(false);
@@ -141,6 +139,14 @@ const Login = () => {
         signInWithEmailAndPassword(authentication, email, password)
             .then((userCredential) => {
                 const userId = userCredential.user.uid;
+
+                // update(realtimeRef(rtdb, 'student/' + userId + '/totaltimeplayed'), {
+                //     totaltimeplayed: 0,
+                // });
+                update(ref(rtdb, `student/${userId}`), {
+                    totaltimeplayed: 0
+                });
+
                 const studentRef = doc(db, 'student', userId);
                 getDoc(studentRef)
                     .then((docSnapshot) => {
@@ -161,11 +167,6 @@ const Login = () => {
                                 totaltimeplayed: 0,
                                 Resetallmusic: currentMonth + 'alreadyupdated',
                             }, { merge: true });
-
-                            const firebaseRef = ref(); // Get reference to Realtime Database root
-                            update(firebaseRef.child("student").child(userId).child("totaltimeplayed"), {
-                                totaltimeplayed: 0,
-                            });
                         }
 
                         success(username);

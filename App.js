@@ -2,7 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import { useFonts } from "expo-font"
 import { Text, Dimensions } from "react-native";
-import { authentication } from "./screens/firebase-config";
+import { authentication, getstorage, rtdb } from "./screens/firebase-config";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "./screens/firebase-config";
 // import Home from "./screens/Home";
@@ -35,6 +35,8 @@ import { useNavigation } from "@react-navigation/native";
 import BigScreen from "./screens/BigScreen";
 import { onAuthStateChanged } from "firebase/auth";
 import { setTabBarHeight } from "./components/actions/actions";
+import { get, ref } from "firebase/database";
+import { ref as storageref } from "firebase/storage";
 
 
 const store = createStore(rootReducer);
@@ -157,6 +159,11 @@ const App = () => {
       const user = authentication.currentUser;
       if (user) {
         try {
+          const userRef = ref(rtdb, 'student/' + user.uid + '/userimage');
+          const snapshot = await get(userRef);
+          const data = snapshot.val();
+          const storageRef = storageref(getstorage, `UserimageFile/${data}`);
+          await AsyncStorage.setItem('ae-userimage', JSON.stringify(storageRef))
           getDoc(doc(db, 'student', user.uid))
             .then(async (docSnapshot) => {
               const username = docSnapshot.data().name;

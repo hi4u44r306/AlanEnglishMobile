@@ -6,15 +6,14 @@ import { COLORS, FONTS, SIZES } from "../constants";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 import { signOut } from "@firebase/auth";
-import { authentication, db, rtdb } from "./firebase-config";
+import { authentication, db, getstorage, rtdb } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 // import * as FileSystem from 'expo-file-system';
 import { getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
 import { ref as storageref } from "firebase/storage";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { get, getDatabase, onValue, ref, set, update } from 'firebase/database';
+import { get, getDatabase, ref, update } from 'firebase/database';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -39,16 +38,10 @@ const Profile = () => {
       setUserUID(await AsyncStorage.getItem('ae-useruid'));
       setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
       setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
-
-      const storage = getStorage();
-      const db = getDatabase();
-      const userRef = ref(db, 'student/' + useruid + '/userimage');
-      const snapshot = await get(userRef);
-      const data = snapshot.val();
-      const storageRef = storageref(storage, `UserimageFile/${data}`);
-      // Use await inside an async function
-      const downloadURL = await getDownloadURL(storageRef);
+      const userimage = await AsyncStorage.getItem('ae-userimage');
+      const downloadURL = await getDownloadURL(userimage);
       setImage(downloadURL);
+
     } catch (error) {
       alert('Error fetching user info:', error);
     }
@@ -180,8 +173,8 @@ const Profile = () => {
             backgroundColor: 'white',
             borderRadius: 100,
             top: 20,
-            borderWidth: 10,
-            borderColor: '#5784e9',
+            //borderWidth: 10,
+            //borderColor: '#5784e9',
           }}>
             {
               image ?

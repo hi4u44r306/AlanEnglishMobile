@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions, ActivityIndicator } from 'react-native';
 import { COLORS, SIZES } from '../constants';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { Audio } from 'expo-av';
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from './actions/actions';
+import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 
 export default function MusicPlayer({ music }) {
   const { musicplayerdisplay } = useSelector(state => state.musicReducer);
@@ -14,6 +15,7 @@ export default function MusicPlayer({ music }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const dispatch = useDispatch();
   const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
+  const [musicisloading, setMusicIsLoading] = useState(false);
   const sound = useRef(new Audio.Sound());
   // const { playlists } = useSelector(state => state.musicReducer);
 
@@ -29,6 +31,9 @@ export default function MusicPlayer({ music }) {
   const { window } = dimensions;
   const windowWidth = window.width;
   const windowHeight = window.height;
+
+  // 可以在IOS靜音模式播放音樂 像Youtube Music一樣
+  useEffect(() => { Audio.setAudioModeAsync({ playsInSilentModeIOS: true }); });
 
   useEffect(() => {
     setCurrTrack(music);
@@ -82,17 +87,27 @@ export default function MusicPlayer({ music }) {
   // };
 
   async function playSound(musicid) {
+    setMusicIsLoading(true);
+
     if (currentTrackIndex !== null || currentTrackIndex === musicid) {
       await sound.current.stopAsync(); // Stop the currently playing sound
       console.log('stop sound')
       await sound.current.unloadAsync(); // Unload the sound
     }
-    const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/習作本1/習作本1 P11.mp3`));
+
+    const storage = getStorage();
+    const musicRef = ref(storage, `Music/${music.musicName}`);
+    const downloadURL = await getDownloadURL(musicRef);
+    const { sound: newSound } = await Audio.Sound.createAsync({ uri: downloadURL });
+    // const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/習作本1/習作本1 P11.mp3`));
     // const { sound: newSound } = await Audio.Sound.createAsync(require(`../assets/music/${music.musicName}`));
     sound.current = newSound;
     setCurrentTrackIndex(musicid); // Update the current track index here
+
+
     await sound.current.playAsync();
     setIsPlaying(true);
+    setMusicIsLoading(false);
   }
 
   return (
@@ -122,23 +137,33 @@ export default function MusicPlayer({ music }) {
 
 
         <View style={styles.controlsContainer}>
-          <TouchableOpacity onPress={() => {
-            if (isPlaying) {
-              pauseSound();
-            } else {
-              if (sound) {
-                resumeSound();
-              } else {
-                playSound();
-              }
-            }
-          }}>
-            {isPlaying ? (
-              <AntDesign name="pause" size={30} color="black" style={styles.controlIcon} />
-            ) : (
-              <AntDesign name="play" size={30} color="black" style={styles.controlIcon} />
-            )}
-          </TouchableOpacity>
+          {
+            musicisloading ?
+              (
+                <ActivityIndicator size={30} color="black" style={styles.controlIcon} />
+              )
+              :
+              (
+                <TouchableOpacity onPress={() => {
+                  if (isPlaying) {
+                    pauseSound();
+                  } else {
+                    if (sound) {
+                      resumeSound();
+                    } else {
+                      playSound();
+                    }
+                  }
+                }}>
+                  {isPlaying ? (
+                    <AntDesign name="pause" size={30} color="black" style={styles.controlIcon} />
+                  ) : (
+                    <AntDesign name="play" size={30} color="black" style={styles.controlIcon} />
+                  )}
+                </TouchableOpacity>
+              )
+          }
+
           {/* <TouchableOpacity onPress={handleClickNext}>
             <AntDesign name="stepforward" size={30} color="black" style={styles.controlIcon} />
           </TouchableOpacity> */}
