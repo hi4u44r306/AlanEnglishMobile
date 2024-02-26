@@ -14,6 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
 import { ref as storageref } from "firebase/storage";
 import { get, getDatabase, ref, update } from 'firebase/database';
+import { AntDesign, Feather } from "@expo/vector-icons";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -22,14 +23,19 @@ const Profile = () => {
   const [useruid, setUserUID] = useState();
   const [usertimeplayed, setUsertimeplayed] = useState();
   const [currdatetimeplayed, setCurrdatetimeplayed] = useState();
-  // const [userimage, setUserImage] = useState();
+  const [refreshing, setRefreshing] = useState(false);
   const [image, setImage] = useState();
   const [uploading, setUploading] = useState(false);
+
+  const [data, setData] = useState();
 
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
   const Month = new Date().toJSON().slice(5, 7);
 
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   const getUserInfo = async () => {
     try {
@@ -38,8 +44,13 @@ const Profile = () => {
       setUserUID(await AsyncStorage.getItem('ae-useruid'));
       setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
       setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
-      const userimage = await AsyncStorage.getItem('ae-userimage');
-      const downloadURL = await getDownloadURL(userimage);
+
+      const userRef = ref(rtdb, 'student/' + await AsyncStorage.getItem('ae-useruid') + '/userimage');
+      const snapshot = await get(userRef);
+      const data = snapshot.val();
+      setData(data)
+      const storageRef = storageref(getstorage, `UserimageFile/${data}`);
+      const downloadURL = await getDownloadURL(storageRef);
       setImage(downloadURL);
 
     } catch (error) {
@@ -47,15 +58,14 @@ const Profile = () => {
     }
   };
 
+
   const onRefresh = () => {
     setRefreshing(true);
     getUserInfo();
     setRefreshing(false);
   }
 
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+
 
 
   const Logout = () => {
@@ -86,7 +96,6 @@ const Profile = () => {
   };
 
 
-  const [refreshing, setRefreshing] = useState(false);
 
 
 
@@ -119,31 +128,30 @@ const Profile = () => {
   const handleImageUpload = async (imageUri) => {
     setUploading(true);
     try {
+      // Create a reference to the file to delete
+      const desertRef = ref(getstorage, `UserimageFile/${data}`);
+      // Delete the file
+      deleteObject(desertRef).then(() => {
+        alert('deleted successfully')
+      }).catch((error) => {
+
+      });
+    } catch (e) {
+
+    }
+    try {
       const storage = getStorage();
       const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1); // Corrected
       const storageRef = storageref(storage, `UserimageFile/${filename}`);
       const response = await fetch(imageUri);
       const blob = await response.blob();
-
-      // Firestore
-      // const userRef = doc(db, 'student', useruid);
-      // await updateDoc(userRef, {
-      //   userimage: filename,
-      // })
-
-      // Realtime Database
-      // Save image filename in the Realtime Database
       const db = getDatabase();
       await update(ref(db, 'student/' + useruid), {
         userimage: filename,
       });
-
       await uploadBytes(storageRef, blob);
-
-
-
-
       Alert.alert('Success', 'Image uploaded successfully');
+      getUserInfo();
     } catch (error) {
       console.error('Error uploading image:', error);
       Alert.alert('Error', 'Failed to upload image');
@@ -171,7 +179,6 @@ const Profile = () => {
         <View style={styles.titleContainer}>
           <View style={{
             backgroundColor: 'white',
-            borderRadius: 100,
             top: 20,
             //borderWidth: 10,
             //borderColor: '#5784e9',
@@ -182,17 +189,27 @@ const Profile = () => {
                   <Image source={{ uri: image }} style={{
                     width: 150,
                     height: 150,
-                    borderRadius: 100,
+                    borderRadius: 40,
                   }} />
                 ) : (
                   <Text>Loading...</Text>
                 )
             }
+            <TouchableOpacity onPress={handleChooseImage} disabled={uploading} style={{
+              backgroundColor: '#2d7dd2',
+              padding: 10,
+              borderRadius: 10,
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+            }}>
+              <Feather name="edit" size={20} color={'white'} />
+            </TouchableOpacity>
 
           </View>
           {uploading && <Text style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 50 }}>上傳中...</Text>}
         </View>
-        <Button title="選擇照片" onPress={handleChooseImage} disabled={uploading} />
+        {/* <Button title="選擇照片" onPress={handleChooseImage} disabled={uploading} /> */}
 
         <Text style={styles.titleText}>{username || 'NONE'}</Text>
         <View style={styles.userInfoContainer}>
@@ -246,7 +263,7 @@ const Profile = () => {
         </View>
       </ScrollView>
 
-    </ScreenContainer>
+    </ScreenContainer >
   );
 };
 

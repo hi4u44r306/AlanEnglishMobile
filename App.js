@@ -159,11 +159,6 @@ const App = () => {
       const user = authentication.currentUser;
       if (user) {
         try {
-          const userRef = ref(rtdb, 'student/' + user.uid + '/userimage');
-          const snapshot = await get(userRef);
-          const data = snapshot.val();
-          const storageRef = storageref(getstorage, `UserimageFile/${data}`);
-          await AsyncStorage.setItem('ae-userimage', JSON.stringify(storageRef))
           getDoc(doc(db, 'student', user.uid))
             .then(async (docSnapshot) => {
               const username = docSnapshot.data().name;

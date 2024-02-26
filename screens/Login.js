@@ -189,10 +189,10 @@ const Login = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={[styles.container, { paddingTop: windowHeight < 800 ? 20 : 40 }]}
         >
+            <FocusedStatusBar />
             <View style={{ zIndex: 999 }}>
                 <Toast config={toastConfig} ref={toastRef} topOffset={50} />
             </View>
-            <FocusedStatusBar />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent: "center" }}>
                     <Blackboard fontSize={windowHeight < 800 ? 13 : 15} margin={windowHeight < 800 ? 10 : 20} />
