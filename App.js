@@ -31,6 +31,8 @@ import { COLORS, FONTS } from "./constants";
 
 // import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Teacher from "./screens/Teacher";
 
 
 const store = createStore(rootReducer);
@@ -48,6 +50,7 @@ const playlistpage = '播放列表';
 const profilepage = '用戶';
 const leaderboardpage = '排行榜';
 const homework = '聯絡簿';
+const teacher = '老師專用';
 
 
 const PlaylistStackScreen = () => (
@@ -66,6 +69,11 @@ const PlaylistStackScreen = () => (
 function Root() {
   const { playing } = useSelector(state => state.musicReducer);
   const [currMusic, setCurrMusic] = useState(null);
+  // const [role, setRole] = useState();
+
+  // useEffect(async () => {
+  //   setRole(await AsyncStorage.getItem('userclassname'))
+  // }, [])
 
   useEffect(() => {
     setCurrMusic(playing)
@@ -98,6 +106,9 @@ function Root() {
             else if (rn === homework) {
               iconName = focused ? 'book' : 'book-outline';
             }
+            else if (rn === teacher) {
+              iconName = focused ? 'person-add' : 'person-add-outline';
+            }
 
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
@@ -109,11 +120,15 @@ function Root() {
           tabBarInactiveTintColor: 'black'
         })}
       >
-        {/* <Tab.Screen name="首頁" component={Home} /> */}
         <Tab.Screen name="排行榜" component={Leaderboard} />
         <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
-        {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
         <Tab.Screen name="用戶" component={Profile} />
+        {/* <Tab.Screen name="首頁" component={Home} /> */}
+        {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
+        {AsyncStorage.getItem('userclassname') !== 'Teacher' && (
+          <Tab.Screen name="老師專用" component={Teacher} />
+        )}
+
       </Tab.Navigator>
       <View>
         {currMusic

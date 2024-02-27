@@ -41,7 +41,7 @@ const Profile = () => {
   const getUserInfo = async () => {
     try {
       setUsername(await AsyncStorage.getItem('ae-username'));
-      setClassName(await AsyncStorage.getItem('ae-useuserclassrname'));
+      setClassName(await AsyncStorage.getItem('ae-userclassname'));
       setUserUID(await AsyncStorage.getItem('ae-useruid'));
       setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
       setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
@@ -84,7 +84,12 @@ const Profile = () => {
             // Handle the confirmation action
             alert('登出成功');
             signOut(authentication)
-              .then(() => {
+              .then(async () => {
+                await AsyncStorage.removeItem('ae-username');
+                await AsyncStorage.removeItem('ae-userclassname');
+                await AsyncStorage.removeItem('ae-totaltimeplayed');
+                await AsyncStorage.removeItem('ae-currdatetimeplayed');
+                await AsyncStorage.removeItem('ae-userimage');
                 navigation.navigate("Login");
               }).catch((error) => {
                 alert(error);

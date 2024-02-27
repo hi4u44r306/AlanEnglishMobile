@@ -148,18 +148,18 @@ const Login = () => {
                 const studentRef = doc(db, 'student', userId);
                 getDoc(studentRef)
                     .then(async (docSnapshot) => {
-
                         const username = docSnapshot.data().name.toUpperCase();
                         const userclass = docSnapshot.data().class;
                         const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
                         const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
-                        const userimage = docSnapshot.data().userimage;
+                        const userimage = docSnapshot.data().userimage || '';
 
+                        await AsyncStorage.setItem('ae-useruid', userId)
                         await AsyncStorage.setItem('ae-username', username);
-                        await AsyncStorage.setItem('ae-useuserclassrname', userclass);
+                        await AsyncStorage.setItem('ae-userclassname', userclass);
                         await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
                         await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
-                        await AsyncStorage.setItem('ae-userimage', userimage);
+                        await AsyncStorage.setItem('ae-userimage', userimage || '');
 
                         const onlinetime = docSnapshot.data().onlinetime;
 
@@ -188,12 +188,13 @@ const Login = () => {
 
                         error();
                     });
-                getDoc(doc(db, 'teacher', userId)).then(async (docSnapshot) => {
-                    const teacherschool = docSnapshot.data().school;
-                    await AsyncStorage.setItem('ae-teacherschool', teacherschool);
-                })
+                // getDoc(doc(db, 'teacher', userId)).then(async (docSnapshot) => {
+                //     const teacherschool = docSnapshot.data().school;
+                //     await AsyncStorage.setItem('ae-teacherschool', teacherschool);
+                // })
             })
             .catch(async () => {
+
                 await AsyncStorage.setItem('ae-username', '');
                 await AsyncStorage.setItem('ae-useuserclassrname', '');
                 await AsyncStorage.setItem('ae-totaltimeplayed', '');
@@ -237,7 +238,7 @@ const Login = () => {
                         <TextInput
                             placeholder="Email..."
                             onChangeText={setEmail}
-                            onChange={(event) => { setEmail(event.target.value) }}
+                            onChange={(event) => { setEmail(event.value) }}
                             style={[styles.input, { fontSize: windowHeight < 800 ? 15 : 15 }]}
                         />
 
@@ -245,7 +246,7 @@ const Login = () => {
                         <TextInput
                             placeholder="Password..."
                             onChangeText={setPassword}
-                            onChange={(event) => { setPassword(event.target.value) }}
+                            onChange={(event) => { setPassword(event.value) }}
                             style={[styles.input, { fontSize: windowHeight < 800 ? 15 : 15 }]}
                             secureTextEntry={true}
                         />

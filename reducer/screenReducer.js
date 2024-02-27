@@ -1,7 +1,7 @@
 export const initialState = {
     sidebarshow: 'none',
     duration: 150,
-    tabbarheight: 0,
+    tabbarheight: 65,
     musicplayerheight: 65,
 };
 const screenReducer = (state = initialState, action) => {
