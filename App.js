@@ -15,7 +15,6 @@ import Solve from "./screens/Solve";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from "@expo/vector-icons";
 import PlaylistDetail from "./screens/PlaylistDetail";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import TrackPlayer from 'react-native-track-player';
 // TrackPlayer.registerPlaybackService(() => require('./service.js'));
@@ -29,14 +28,9 @@ import { useEffect } from "react";
 import MusicPlayer from "./components/MusicPlayer";
 import { View } from "react-native";
 import { COLORS, FONTS } from "./constants";
-import { useNavigation } from "@react-navigation/native";
 
 // import Sidebar from "./components/Sidebar";
 import BigScreen from "./screens/BigScreen";
-import { onAuthStateChanged } from "firebase/auth";
-import { setTabBarHeight } from "./components/actions/actions";
-import { get, ref } from "firebase/database";
-import { ref as storageref } from "firebase/storage";
 
 
 const store = createStore(rootReducer);
@@ -154,47 +148,47 @@ const App = () => {
   const currentDate = new Date().toJSON().slice(0, 10);
   const currentMonth = new Date().toJSON().slice(0, 7);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const user = authentication.currentUser;
-      if (user) {
-        try {
-          getDoc(doc(db, 'student', user.uid))
-            .then(async (docSnapshot) => {
-              const username = docSnapshot.data().name;
-              const userclass = docSnapshot.data().class;
-              const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
-              const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
-              const userimage = docSnapshot.data().userimage;
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const user = authentication.currentUser;
+  //     if (user) {
+  //       try {
+  //         getDoc(doc(db, 'student', user.uid))
+  //           .then(async (docSnapshot) => {
+  //             const username = docSnapshot.data().name;
+  //             const userclass = docSnapshot.data().class;
+  //             const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
+  //             const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
+  //             const userimage = docSnapshot.data().userimage;
 
-              await AsyncStorage.setItem('ae-username', username);
-              await AsyncStorage.setItem('ae-useuserclassrname', userclass);
-              await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
-              await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
-              await AsyncStorage.setItem('ae-userimage', userimage);
+  //             await AsyncStorage.setItem('ae-username', username);
+  //             await AsyncStorage.setItem('ae-useuserclassrname', userclass);
+  //             await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
+  //             await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
+  //             await AsyncStorage.setItem('ae-userimage', userimage);
 
-            })
-          getDoc(doc(db, 'teacher', user.uid)).then(async (docSnapshot) => {
-            const teacherschool = docSnapshot.data().school;
+  //           })
+  //         getDoc(doc(db, 'teacher', user.uid)).then(async (docSnapshot) => {
+  //           const teacherschool = docSnapshot.data().school;
 
-            await AsyncStorage.setItem('ae-teacherschool', teacherschool);
-          })
-        } catch (error) {
-          console.error('Error while setting student data:', error);
-        }
-      } else {
-        await AsyncStorage.setItem('ae-username', '');
-        await AsyncStorage.setItem('ae-useuserclassrname', '');
-        await AsyncStorage.setItem('ae-totaltimeplayed', '');
-        await AsyncStorage.setItem('ae-currdatetimeplayed', '');
-        await AsyncStorage.setItem('ae-teacherschool', '');
-      }
-    };
-    const unsubscribe = authentication.onAuthStateChanged(async () => {
-      await fetchUserData();
-    });
-    return () => unsubscribe();
-  }, []);
+  //           await AsyncStorage.setItem('ae-teacherschool', teacherschool);
+  //         })
+  //       } catch (error) {
+  //         console.error('Error while setting student data:', error);
+  //       }
+  //     } else {
+  //       await AsyncStorage.setItem('ae-username', '');
+  //       await AsyncStorage.setItem('ae-useuserclassrname', '');
+  //       await AsyncStorage.setItem('ae-totaltimeplayed', '');
+  //       await AsyncStorage.setItem('ae-currdatetimeplayed', '');
+  //       await AsyncStorage.setItem('ae-teacherschool', '');
+  //     }
+  //   };
+  //   const unsubscribe = authentication.onAuthStateChanged(async () => {
+  //     await fetchUserData();
+  //   });
+  //   return () => unsubscribe();
+  // }, []);
 
 
   if (!loaded) return null;

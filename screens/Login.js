@@ -11,6 +11,7 @@ import { AntDesign, Octicons } from '@expo/vector-icons';
 import { setTabBarHeight } from '../components/actions/actions';
 import { useDispatch } from 'react-redux';
 import { ref, update } from 'firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -73,10 +74,7 @@ const Login = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const currentDate = new Date().toJSON().slice(0, 10);
-    const currentMonth = new Date().toJSON().slice(0, 7);
     const [isLoading, setIsLoading] = useState(false);
-    const toastRef = useRef();
     const dispatch = useDispatch();
     const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
 
@@ -149,8 +147,20 @@ const Login = () => {
 
                 const studentRef = doc(db, 'student', userId);
                 getDoc(studentRef)
-                    .then((docSnapshot) => {
-                        const username = docSnapshot.data().name;
+                    .then(async (docSnapshot) => {
+
+                        const username = docSnapshot.data().name.toUpperCase();
+                        const userclass = docSnapshot.data().class;
+                        const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
+                        const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
+                        const userimage = docSnapshot.data().userimage;
+
+                        await AsyncStorage.setItem('ae-username', username);
+                        await AsyncStorage.setItem('ae-useuserclassrname', userclass);
+                        await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
+                        await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
+                        await AsyncStorage.setItem('ae-userimage', userimage);
+
                         const onlinetime = docSnapshot.data().onlinetime;
 
                         if (onlinetime !== currentDate) {
@@ -175,10 +185,20 @@ const Login = () => {
                         }, 1000);
                     })
                     .catch(() => {
+
                         error();
                     });
+                getDoc(doc(db, 'teacher', userId)).then(async (docSnapshot) => {
+                    const teacherschool = docSnapshot.data().school;
+                    await AsyncStorage.setItem('ae-teacherschool', teacherschool);
+                })
             })
-            .catch(() => {
+            .catch(async () => {
+                await AsyncStorage.setItem('ae-username', '');
+                await AsyncStorage.setItem('ae-useuserclassrname', '');
+                await AsyncStorage.setItem('ae-totaltimeplayed', '');
+                await AsyncStorage.setItem('ae-currdatetimeplayed', '');
+                await AsyncStorage.setItem('ae-teacherschool', '');
                 error();
             });
     }
@@ -191,7 +211,7 @@ const Login = () => {
         >
             <FocusedStatusBar />
             <View style={{ zIndex: 999 }}>
-                <Toast config={toastConfig} ref={toastRef} topOffset={50} />
+                <Toast config={toastConfig} topOffset={50} />
             </View>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent: "center" }}>

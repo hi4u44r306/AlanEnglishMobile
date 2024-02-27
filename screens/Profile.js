@@ -16,6 +16,7 @@ import { ref as storageref } from "firebase/storage";
 import { get, getDatabase, ref, update } from 'firebase/database';
 import { AntDesign, Feather } from "@expo/vector-icons";
 
+
 const Profile = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState();
@@ -59,11 +60,11 @@ const Profile = () => {
   };
 
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    getUserInfo();
-    setRefreshing(false);
-  }
+  // const onRefresh = () => {
+  //   setRefreshing(true);
+  //   getUserInfo();
+  //   setRefreshing(false);
+  // }
 
 
 
@@ -81,7 +82,7 @@ const Profile = () => {
           text: '確定',
           onPress: () => {
             // Handle the confirmation action
-            alert('User confirmed');
+            alert('登出成功');
             signOut(authentication)
               .then(() => {
                 navigation.navigate("Login");
@@ -167,21 +168,22 @@ const Profile = () => {
     <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <HomeHeader display='none' />
-      <ScrollView
+      {/* <ScrollView
         contentContainerStyle={styles.Upper}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
+      // refreshControl={
+      //   <RefreshControl
+      //     refreshing={refreshing}
+      //     onRefresh={onRefresh}
+      //   />
+      // }
       >
+      </ScrollView> */}
+      <View style={styles.Upper}>
         <View style={styles.titleContainer}>
+
           <View style={{
             backgroundColor: 'white',
             top: 20,
-            //borderWidth: 10,
-            //borderColor: '#5784e9',
           }}>
             {
               image ?
@@ -189,7 +191,7 @@ const Profile = () => {
                   <Image source={{ uri: image }} style={{
                     width: 150,
                     height: 150,
-                    borderRadius: 40,
+                    borderRadius: 100,
                   }} />
                 ) : (
                   <Text>Loading...</Text>
@@ -205,19 +207,16 @@ const Profile = () => {
             }}>
               <Feather name="edit" size={20} color={'white'} />
             </TouchableOpacity>
-
           </View>
           {uploading && <Text style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 50 }}>上傳中...</Text>}
         </View>
-        {/* <Button title="選擇照片" onPress={handleChooseImage} disabled={uploading} /> */}
 
         <Text style={styles.titleText}>{username || 'NONE'}</Text>
         <View style={styles.userInfoContainer}>
           <View>
-            <Text style={{ fontSize: 20, fontFamily: FONTS.bold }}>Account</Text>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>班級</Text>
-              <Text style={styles.secondtitleText}>{classname || '0'} 班</Text>
+              <Text style={styles.secondtitleText}>{classname || ''} 班</Text>
             </View>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
@@ -230,6 +229,10 @@ const Profile = () => {
             </View>
           </View>
         </View>
+        <LogoutButton
+          fontSize={20}
+          handlePress={Logout}
+        />
         <View>
           {/* <View style={styles.listeningCountContainer}>
             <View style={{ paddingLeft: 20, paddingRight: 20 }}>
@@ -256,14 +259,11 @@ const Profile = () => {
               </View>
             </View>
           </View> */}
-          <LogoutButton
-            fontSize={20}
-            handlePress={Logout}
-          />
-        </View>
-      </ScrollView>
 
-    </ScreenContainer >
+        </View>
+      </View>
+
+    </ScreenContainer>
   );
 };
 
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    marginTop: 5,
+    marginTop: 25,
     fontSize: 26,
     fontWeight: '900',
     fontFamily: FONTS.bold,

@@ -1,16 +1,18 @@
-import React, { useState } from "react";
-import { View, Text, Image, TextInput, TouchableOpacity, SafeAreaView } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, Text, Image, TextInput, TouchableOpacity, SafeAreaView, Button, Dimensions } from "react-native";
 
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { Brand } from "./Brand";
 
 import { db } from "../screens/firebase-config";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import FocusedStatusBar from "./FocusedStatusBar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSidebar } from "./actions/actions";
+import Drawer from "./Drawer";
+
+import RBSheet from "react-native-raw-bottom-sheet";
 
 
 
@@ -45,6 +47,8 @@ const HomeHeader = ({ onSearch, display }) => {
   //   // navigation.navigate('用戶'); 
   // };
 
+
+  const refRBSheet = useRef();
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.main, }}>
       <View style={{
@@ -64,7 +68,40 @@ const HomeHeader = ({ onSearch, display }) => {
               <FontAwesome name="list-ul" size={25} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} />
             </View>
           </TouchableOpacity> */}
-
+          <TouchableOpacity onPress={() => refRBSheet.current.open()}
+            style={{
+              marginRight: 30,
+              justifyContent: 'center',
+              justifyItems: 'center',
+              alignContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Feather
+              name="settings"
+              size={30}
+              color={'black'}
+              handlePress={() => refRBSheet.current.close()}
+            // onPress={() => refRBSheet.current.close()}
+            />
+          </TouchableOpacity>
+          <RBSheet
+            ref={refRBSheet}
+            height={Dimensions.get('window').height / 2}
+            closeOnDragDown={true}
+            closeOnPressMask={false}
+            customStyles={{
+              wrapper: {
+                backgroundColor: "transparent"
+              },
+              draggableIcon: {
+                backgroundColor: "#000"
+              }
+            }}
+          >
+            {/* Your content inside the RBSheet */}
+            <Drawer />
+          </RBSheet>
         </View>
 
 

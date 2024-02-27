@@ -25,9 +25,8 @@ const Blackboard = ({ fontSize, margin }) => {
 const styles = StyleSheet.create({
   text: {
     color: COLORS.white,
-    fontFamily: FONTS.mainFont,
     fontWeight: '700',
-    margin: 3,
+    margin: 5,
   },
 });
 
