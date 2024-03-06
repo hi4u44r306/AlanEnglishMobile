@@ -69,11 +69,6 @@ const PlaylistStackScreen = () => (
 function Root() {
   const { playing } = useSelector(state => state.musicReducer);
   const [currMusic, setCurrMusic] = useState(null);
-  // const [role, setRole] = useState();
-
-  // useEffect(async () => {
-  //   setRole(await AsyncStorage.getItem('userclassname'))
-  // }, [])
 
   useEffect(() => {
     setCurrMusic(playing)

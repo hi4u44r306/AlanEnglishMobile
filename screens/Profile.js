@@ -13,7 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 // import * as FileSystem from 'expo-file-system';
 import { getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
 import { ref as storageref } from "firebase/storage";
-import { get, getDatabase, ref, update } from 'firebase/database';
+import { child, get, getDatabase, onValue, ref, update } from 'firebase/database';
 import { AntDesign, Feather } from "@expo/vector-icons";
 
 
@@ -22,42 +22,53 @@ const Profile = () => {
   const [username, setUsername] = useState();
   const [classname, setClassName] = useState();
   const [useruid, setUserUID] = useState();
-  const [usertimeplayed, setUsertimeplayed] = useState();
-  const [currdatetimeplayed, setCurrdatetimeplayed] = useState();
-  const [refreshing, setRefreshing] = useState(false);
   const [image, setImage] = useState();
   const [uploading, setUploading] = useState(false);
-
-  const [data, setData] = useState();
-
-  const currentDate = new Date().toJSON().slice(0, 10);
-  const currentMonth = new Date().toJSON().slice(0, 7);
+  const [imagedata, setImageData] = useState();
   const Month = new Date().toJSON().slice(5, 7);
+  const [dayplaytime, setDayPlayTime] = useState();
+  const [monthplaytime, setMonthPlayTime] = useState();
+  const dbRef = ref(rtdb);
+
 
   useEffect(() => {
-    getUserInfo();
-  }, []);
-
-  const getUserInfo = async () => {
-    try {
-      setUsername(await AsyncStorage.getItem('ae-username'));
-      setClassName(await AsyncStorage.getItem('ae-userclassname'));
+    async function fetchUserData() {
       setUserUID(await AsyncStorage.getItem('ae-useruid'));
-      setUsertimeplayed(await AsyncStorage.getItem('ae-totaltimeplayed'));
-      setCurrdatetimeplayed(await AsyncStorage.getItem('ae-currdatetimeplayed'));
-
-      const userRef = ref(rtdb, 'student/' + await AsyncStorage.getItem('ae-useruid') + '/userimage');
-      const snapshot = await get(userRef);
-      const data = snapshot.val();
-      setData(data)
-      const storageRef = storageref(getstorage, `UserimageFile/${data}`);
-      const downloadURL = await getDownloadURL(storageRef);
-      setImage(downloadURL);
-
-    } catch (error) {
-      alert('Error fetching user info:', error);
+      const musicplayRef = child(dbRef, `student/${await AsyncStorage.getItem('ae-useruid')}`);
+      onValue(musicplayRef, async (snapshot) => {
+        if (snapshot.exists()) {
+          setDayPlayTime(snapshot.val().Daytotaltimeplayed);
+          setMonthPlayTime(snapshot.val().Monthtotaltimeplayed);
+          setClassName(snapshot.val().class);
+          setUsername(snapshot.val().name.toUpperCase());
+          setImageData(snapshot.val().userimage);
+          const storageRef = storageref(getstorage, `UserimageFile/${snapshot.val().userimage}`);
+          const downloadURL = await getDownloadURL(storageRef);
+          setImage(downloadURL);
+        } else {
+          setDayPlayTime();
+        }
+      }, (error) => {
+        console.log("Error fetching complete value:", error);
+      });
     }
-  };
+
+    fetchUserData();
+  }, [])
+
+
+  // const getUserInfo = async () => {
+  //   try {
+  //     // setUserUID(await AsyncStorage.getItem('ae-useruid'));
+
+  //     const storageRef = storageref(getstorage, `UserimageFile/${imagedata}`);
+  //     const downloadURL = await getDownloadURL(storageRef);
+  //     setImage(downloadURL);
+
+  //   } catch (error) {
+  //     alert('Error fetching user info:', error);
+  //   }
+  // };
 
 
   // const onRefresh = () => {
@@ -100,10 +111,6 @@ const Profile = () => {
       { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
     );
   };
-
-
-
-
 
   // Function to handle choosing an image
   const handleChooseImage = async () => {
@@ -225,11 +232,11 @@ const Profile = () => {
             </View>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
-              <Text style={styles.secondtitleText}>{usertimeplayed || '0'} 次</Text>
+              <Text style={styles.secondtitleText}>{monthplaytime || '0'} 次</Text>
             </View>
             <View style={styles.userinfo}>
               <Text style={styles.userinfolabel}>今日聽力次數 </Text>
-              <Text style={styles.secondtitleText}>{currdatetimeplayed || '0'} 次</Text>
+              <Text style={styles.secondtitleText}>{dayplaytime || '0'} 次</Text>
               {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
             </View>
           </View>

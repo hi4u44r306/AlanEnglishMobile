@@ -3,15 +3,13 @@ import { useNavigation } from "@react-navigation/native";
 import { Text, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, FONTS } from "../constants";
-import { authentication, db, rtdb } from './firebase-config';
+import { authentication, rtdb } from './firebase-config';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import Toast from 'react-native-toast-message';
 import { AntDesign, Octicons } from '@expo/vector-icons';
 import { setTabBarHeight } from '../components/actions/actions';
 import { useDispatch } from 'react-redux';
-import { ref, update } from 'firebase/database';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { child, get, ref, update } from 'firebase/database';
 
 
 
@@ -134,74 +132,44 @@ const Login = () => {
         const currentDate = new Date().toISOString().slice(0, 10);
         const currentMonth = new Date().toISOString().slice(0, 7);
 
-        signInWithEmailAndPassword(authentication, email, password)
-            .then((userCredential) => {
-                const userId = userCredential.user.uid;
+        try {
+            signInWithEmailAndPassword(authentication, email, password).then((userCredential) => {
+                const userid = userCredential.user.uid
+                const dbRef = ref(rtdb);
+                get(child(dbRef, `student/${userid}`)).then((snapshot) => {
+                    const userName = snapshot.val().name.toUpperCase();
+                    const onlinetime = snapshot.val().onlinetime;
+                    const musicRef = ref(rtdb, '/student/' + userid);
+                    if (onlinetime !== currentDate) {
+                        update(musicRef, {
+                            Daytotaltimeplayed: 0,
+                            onlinemonth: currentMonth,
+                            onlinetime: currentDate,
+                        })
+                    }
 
-                // update(realtimeRef(rtdb, 'student/' + userId + '/totaltimeplayed'), {
-                //     totaltimeplayed: 0,
-                // });
-                update(ref(rtdb, `student/${userId}`), {
-                    totaltimeplayed: 0
-                });
+                    if (snapshot.val().Resetallmusic === 'notupdated' || snapshot.val().Resetallmusic !== currentMonth + 'alreadyupdated') {
 
-                const studentRef = doc(db, 'student', userId);
-                getDoc(studentRef)
-                    .then(async (docSnapshot) => {
-                        const username = docSnapshot.data().name.toUpperCase();
-                        const userclass = docSnapshot.data().class;
-                        const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
-                        const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
-                        const userimage = docSnapshot.data().userimage || '';
+                        const databaseRef = ref(rtdb, `student/${userid}`);
+                        update(databaseRef, {
+                            Monthtotaltimeplayed: 0,
+                            Resetallmusic: currentMonth + 'alreadyupdated',
+                        });
+                        const musicLogfileRef = ref(rtdb, `student/${userid}/MusicLogfile`);
+                        remove(musicLogfileRef);
+                    }
 
-                        await AsyncStorage.setItem('ae-useruid', userId)
-                        await AsyncStorage.setItem('ae-username', username);
-                        await AsyncStorage.setItem('ae-userclassname', userclass);
-                        await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
-                        await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
-                        await AsyncStorage.setItem('ae-userimage', userimage || '');
-
-                        const onlinetime = docSnapshot.data().onlinetime;
-
-                        if (onlinetime !== currentDate) {
-                            updateDoc(studentRef, {
-                                onlinemonth: currentMonth,
-                                onlinetime: currentDate,
-                                currdatetimeplayed: 0,
-                            });
-                        }
-
-                        const resetAllMusic = docSnapshot.data().Resetallmusic;
-                        if (resetAllMusic === 'notupdated' || resetAllMusic !== currentMonth + 'alreadyupdated') {
-                            setDoc(studentRef, {
-                                totaltimeplayed: 0,
-                                Resetallmusic: currentMonth + 'alreadyupdated',
-                            }, { merge: true });
-                        }
-
-                        success(username);
-                        setTimeout(() => {
-                            navigation.navigate("Root")
-                        }, 1000);
-                    })
-                    .catch(() => {
-
-                        error();
-                    });
-                // getDoc(doc(db, 'teacher', userId)).then(async (docSnapshot) => {
-                //     const teacherschool = docSnapshot.data().school;
-                //     await AsyncStorage.setItem('ae-teacherschool', teacherschool);
-                // })
+                    success(userName);
+                    setTimeout(() => {
+                        navigation.navigate("Root")
+                    }, 1000);
+                })
             })
-            .catch(async () => {
 
-                await AsyncStorage.setItem('ae-username', '');
-                await AsyncStorage.setItem('ae-useuserclassrname', '');
-                await AsyncStorage.setItem('ae-totaltimeplayed', '');
-                await AsyncStorage.setItem('ae-currdatetimeplayed', '');
-                await AsyncStorage.setItem('ae-teacherschool', '');
-                error();
-            });
+
+        } catch {
+            error();
+        }
     }
 
 
