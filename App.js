@@ -9,7 +9,7 @@ import { db } from "./screens/firebase-config";
 import Login from "./screens/Login";
 import Profile from "./screens/Profile";
 import Playlist from "./screens/Playlist";
-import Leaderboard from './screens/Leaderboard';
+// import Leaderboard from './screens/Leaderboard';
 import Details from './screens/Details';
 import Solve from "./screens/Solve";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -33,6 +33,12 @@ import { COLORS, FONTS } from "./constants";
 import BigScreen from "./screens/BigScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Teacher from "./screens/Teacher";
+import { onAuthStateChanged } from "firebase/auth";
+import { off, onValue, ref, ref as rtdbRef } from "firebase/database";
+import AddUser from "./screens/AddUser";
+import StudentControl from "./screens/StudentControl";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Setting from "./screens/Setting";
 
 
 const store = createStore(rootReducer);
@@ -51,7 +57,30 @@ const profilepage = '用戶';
 const leaderboardpage = '排行榜';
 const homework = '聯絡簿';
 const teacher = '老師專用';
+const setting = '設定'
 
+const TeacherFunction = () => {
+  return (
+    <Stack.Navigator initialRouteName="Teacher" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Teacher" component={Teacher} />
+      <Stack.Screen name="StudentControl" component={StudentControl}
+        // PlaylistDetail 的最上面返回鍵
+        options={{
+          headerShown: true, title: '', headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: '#ebc0a7' }, headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
+        }}
+      />
+      <Stack.Screen
+        name="AddUser" component={AddUser}
+        options={{
+          headerShown: true,
+          title: '',
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: COLORS.main },
+          headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 },
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const PlaylistStackScreen = () => (
 
@@ -60,9 +89,15 @@ const PlaylistStackScreen = () => (
     <Stack.Screen name="PlaylistDetail" component={PlaylistDetail}
 
       // PlaylistDetail 的最上面返回鍵
-      options={{
-        headerShown: true, title: '', headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: COLORS.main }, headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
-      }} />
+      options={({ route }) => ({
+        headerShown: true,
+        headerBackTitle: '',
+        headerBackTitleStyle: { color: 'black', fontWeight: '600', display: 'flex', justifyContent: 'center' },
+        title: route.params?.musicType || '',
+        headerTintColor: 'black',
+        headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 100, backgroundColor: '#ebc0a7' },
+        headerTitleStyle: { fontFamily: 'Nunito', fontSize: 18, fontWeight: '700' }
+      })} />
   </Stack.Navigator>
 );
 
@@ -74,7 +109,8 @@ function Root() {
     setCurrMusic(playing)
   }, [playing]);
 
-
+  const insets = useSafeAreaInsets();
+  const tabBarHeight = 55 + insets.bottom;
   return (
     <View style={{ flex: 1, overflow: 'hidden' }}>
       <Tab.Navigator
@@ -102,27 +138,32 @@ function Root() {
               iconName = focused ? 'book' : 'book-outline';
             }
             else if (rn === teacher) {
-              iconName = focused ? 'person-add' : 'person-add-outline';
+              iconName = focused ? 'document-text' : 'document-text-outline';
+            }
+            else if (rn === setting) {
+              iconName = focused ? 'settings' : 'settings-outline';
             }
 
             return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
           },
-          tabBarStyle: { height: Dimensions.get('window').height < 800 ? 65 : 90, backgroundColor: COLORS.main, },
-          tabBarLabelStyle: { fontFamily: FONTS.mainFont, fontSize: 14, },
-          // tabBarActiveTintColor: 'rgb(64, 98, 187)',
-          tabBarActiveTintColor: COLORS.blue,
+          tabBarStyle: { height: tabBarHeight, backgroundColor: COLORS.main, },
+          tabBarLabelStyle: { fontFamily: FONTS.mainFont, fontSize: 12, },
+          tabBarActiveTintColor: '#f70505',
+          // tabBarActiveTintColor: '#056af7',
           tabBarInactiveTintColor: 'black'
         })}
       >
-        <Tab.Screen name="排行榜" component={Leaderboard} />
+        {/* <Tab.Screen name="排行榜" component={Leaderboard} /> */}
         <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
+        {AsyncStorage.getItem('ae-class') !== 'Teacher' && (
+          <Tab.Screen name="老師專用" component={TeacherFunction} />
+        )}
         <Tab.Screen name="用戶" component={Profile} />
+        <Tab.Screen name="設定" component={Setting} />
         {/* <Tab.Screen name="首頁" component={Home} /> */}
         {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
-        {AsyncStorage.getItem('userclassname') !== 'Teacher' && (
-          <Tab.Screen name="老師專用" component={Teacher} />
-        )}
+
 
       </Tab.Navigator>
       <View>
@@ -141,7 +182,7 @@ function Root() {
 }
 
 
-const App = () => {
+function App() {
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
     InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
@@ -155,50 +196,75 @@ const App = () => {
     AbhayaLibre: require("./assets/fonts/AbhayaLibre-Bold.ttf"),
   })
 
-  const currentDate = new Date().toJSON().slice(0, 10);
-  const currentMonth = new Date().toJSON().slice(0, 7);
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const user = authentication.currentUser;
-  //     if (user) {
-  //       try {
-  //         getDoc(doc(db, 'student', user.uid))
-  //           .then(async (docSnapshot) => {
-  //             const username = docSnapshot.data().name;
-  //             const userclass = docSnapshot.data().class;
-  //             const totaltimeplayed = JSON.stringify(docSnapshot.data().totaltimeplayed);
-  //             const currdatetimeplayed = JSON.stringify(docSnapshot.data().currdatetimeplayed);
-  //             const userimage = docSnapshot.data().userimage;
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = authentication.currentUser;
+      if (user) {
+        AsyncStorage.setItem('ae-useruid', user.uid);
+        try {
+          const studentDocRef = rtdbRef(rtdb, `student/${user.uid}`);
+          onValue(studentDocRef, snapshot => {
+            const data = snapshot.val();
+            AsyncStorage.setItem('ae-username', data.name.toUpperCase());
+            AsyncStorage.setItem('ae-class', data.class);
+            AsyncStorage.setItem('ae-email', data.email);
+            AsyncStorage.setItem('ae-plan', data.plan);
+            AsyncStorage.setItem('ae-userimage', data.userimage);
+            AsyncStorage.setItem('ae-daytotal', JSON.stringify(data.Daytotaltimeplayed));
+            AsyncStorage.setItem('ae-monthtotal', JSON.stringify(data.Monthtotaltimeplayed));
+          })
+        } catch (error) {
+          console.error('Error while setting student data:', error);
+        }
+      } else {
+        AsyncStorage.setItem('ae-username', "");
+        AsyncStorage.setItem('ae-class', "");
+        AsyncStorage.setItem('ae-email', "");
+        AsyncStorage.setItem('ae-plan', "");
+        AsyncStorage.setItem('ae-userimage', "");
+      }
+    };
+    const unsubscribe = authentication.onAuthStateChanged(async () => {
+      await fetchUserData();
+    });
+    return () => unsubscribe();
+  }, []);
 
-  //             await AsyncStorage.setItem('ae-username', username);
-  //             await AsyncStorage.setItem('ae-useuserclassrname', userclass);
-  //             await AsyncStorage.setItem('ae-totaltimeplayed', totaltimeplayed);
-  //             await AsyncStorage.setItem('ae-currdatetimeplayed', currdatetimeplayed);
-  //             await AsyncStorage.setItem('ae-userimage', userimage);
 
-  //           })
-  //         getDoc(doc(db, 'teacher', user.uid)).then(async (docSnapshot) => {
-  //           const teacherschool = docSnapshot.data().school;
+  useEffect(() => {
+    const fetchPlaylistsFromRTDB = () => {
+      try {
+        const dbRef = rtdbRef(rtdb, 'Music');
+        const navItemsRef = rtdbRef(rtdb, 'AppNavbar/');
+        onValue(dbRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            AsyncStorage.setItem('ae-playlistData', JSON.stringify(data));
+          }
+        });
+        onValue(navItemsRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const childTitles = Object.keys(data);
+            AsyncStorage.setItem('ae-navData', JSON.stringify(data));
+            AsyncStorage.setItem('ae-NavItems', JSON.stringify(childTitles));
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching playlists from RTDB:", error);
+      }
+    };
 
-  //           await AsyncStorage.setItem('ae-teacherschool', teacherschool);
-  //         })
-  //       } catch (error) {
-  //         console.error('Error while setting student data:', error);
-  //       }
-  //     } else {
-  //       await AsyncStorage.setItem('ae-username', '');
-  //       await AsyncStorage.setItem('ae-useuserclassrname', '');
-  //       await AsyncStorage.setItem('ae-totaltimeplayed', '');
-  //       await AsyncStorage.setItem('ae-currdatetimeplayed', '');
-  //       await AsyncStorage.setItem('ae-teacherschool', '');
-  //     }
-  //   };
-  //   const unsubscribe = authentication.onAuthStateChanged(async () => {
-  //     await fetchUserData();
-  //   });
-  //   return () => unsubscribe();
-  // }, []);
+    fetchPlaylistsFromRTDB();
+
+    // 清理函數，當組件卸載時移除監聽器
+    return () => {
+      // 如果你需要在組件卸載時移除監聽，可以使用 off 方法
+      const dbRef = rtdbRef(rtdb, 'Music');
+      off(dbRef);  // 移除監聽
+    };
+  }, []); // 空的依賴陣列表示只在組件掛載和卸載時執行
 
 
   if (!loaded) return null;
@@ -206,7 +272,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Root"
           screenOptions={{
             headerShown: false,
             cardStyle: { backgroundColor: 'transparent' },

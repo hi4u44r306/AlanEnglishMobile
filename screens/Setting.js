@@ -16,7 +16,7 @@ import { child, get, getDatabase, onValue, ref, update } from 'firebase/database
 import { AntDesign, Feather } from "@expo/vector-icons";
 
 
-const Profile = () => {
+const Setting = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState({
     username: '',
@@ -160,49 +160,8 @@ const Profile = () => {
     <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <HomeHeader display='none' />
-      {/* <ScrollView
-        contentContainerStyle={styles.Upper}
-      // refreshControl={
-      //   <RefreshControl
-      //     refreshing={refreshing}
-      //     onRefresh={onRefresh}
-      //   />
-      // }
-      >
-      </ScrollView> */}
+
       <View style={styles.Upper}>
-        {/* <View style={styles.titleContainer}>
-
-          <View style={{
-            backgroundColor: 'white',
-            top: 20,
-          }}>
-            {
-              image ?
-                (
-                  <Image source={{ uri: image }} style={{
-                    width: 150,
-                    height: 150,
-                    borderRadius: 100,
-                  }} />
-                ) : (
-                  <Text>Loading...</Text>
-                )
-            }
-            <TouchableOpacity onPress={handleChooseImage} disabled={uploading} style={{
-              backgroundColor: '#2d7dd2',
-              padding: 10,
-              borderRadius: 10,
-              position: 'absolute',
-              right: 0,
-              bottom: 0,
-            }}>
-              <Feather name="edit" size={20} color={'white'} />
-            </TouchableOpacity>
-          </View>
-          {uploading && <Text style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 50 }}>上傳中...</Text>}
-        </View> */}
-
         <Text style={styles.titleText}>{userData.username || 'NONE'}</Text>
         <View style={styles.userInfoContainer}>
           <View style={styles.userinfo}>
@@ -336,4 +295,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Profile;
+export default Setting;

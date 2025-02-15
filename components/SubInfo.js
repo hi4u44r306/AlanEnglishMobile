@@ -1,10 +1,10 @@
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { View, Image, Text } from "react-native";
 
 import { SIZES, FONTS, COLORS, SHADOWS, assets } from "../constants";
 
-export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
+export const MusicTitle = ({ title, subTitle, musicplay, complete }) => {
   return (
     <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
       <Image source={require('../assets/img/headphone.png')} style={{
@@ -12,11 +12,10 @@ export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
         height: 50,
         marginRight: 18,
       }} />
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '5px' }}>
+      <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'start', gap: 10 }}>
         {/* BookName */}
         <Text
           style={{
-            // fontFamily: FONTS.semiBold,
             fontWeight: 'bold',
             fontSize: SIZES.medium,
             color: COLORS.primary,
@@ -24,19 +23,47 @@ export const MusicTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
         >
           {title}
         </Text>
-        <Text>-</Text>
+        {/* <Text>-</Text> */}
 
         {/* Page */}
-        <Text
+        <View
           style={{
             // fontFamily: FONTS.bold,
             fontSize: SIZES.font,
             color: COLORS.primary,
+            gap: 10,
+            flexDirection: 'row'
           }}
         >
-          {subTitle}
-        </Text>
+          <Text>
+            {subTitle}
+          </Text>
+          <Text>
+            播放次數 : {musicplay || 0} 次
+          </Text>
+          <Text>通過 :</Text>
+          <Text>
+            {
+              complete === '通過'
+                ?
+                <AntDesign name={"checkcircle"} style={{
+                  display: 'flex',
+                  color: '#8bc34a',
+                  fontWeight: '700',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  justifyContent: 'space-around',
+                }} />
+                :
+                <Text>-</Text>
+            }
+          </Text>
+        </View>
       </View>
+      {/* <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
+        <Text>播放次數 : {musicplay || 0} 次</Text>
+        <Text>通過 :</Text>
+      </View> */}
     </View>
   );
 };

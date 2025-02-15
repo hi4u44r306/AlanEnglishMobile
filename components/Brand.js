@@ -21,6 +21,7 @@ export const Brand = ({ fontSize, margin }) => {
       alignItems: 'center',
       justifyContent: 'center',
       paddingLeft: 15,
+      gap: 1,
     }}>
       {/* <Image source={require('../assets/A-logo.png')} style={{
         width: 35,

@@ -42,7 +42,6 @@ const HomeHeader = ({ onSearch, display }) => {
   const dispatch = useDispatch();
   // const handleProfilePress = () => {
   //   dispatch(setSidebar('flex'))
-  //   console.log('sidebar open')
 
   //   // navigation.navigate('用戶'); 
   // };
@@ -53,6 +52,7 @@ const HomeHeader = ({ onSearch, display }) => {
     <SafeAreaView style={{ backgroundColor: COLORS.main, }}>
       <View style={{
         paddingTop: 15,
+        paddingBottom: 15,
       }}>
         <View
           style={{
@@ -62,12 +62,7 @@ const HomeHeader = ({ onSearch, display }) => {
             alignItems: "center",
           }}
         >
-          <Brand fontSize={30} />
-          {/* <TouchableOpacity onPress={handleProfilePress}>
-            <View style={{ height: 45, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-              <FontAwesome name="list-ul" size={25} color="rgb(64, 98, 187)" style={{ marginRight: 10, }} />
-            </View>
-          </TouchableOpacity> */}
+          <Brand fontSize={25} />
           <TouchableOpacity onPress={() => refRBSheet.current.open()}
             style={{
               marginRight: 30,
@@ -79,7 +74,7 @@ const HomeHeader = ({ onSearch, display }) => {
           >
             <Feather
               name="settings"
-              size={30}
+              size={25}
               color={'black'}
               handlePress={() => refRBSheet.current.close()}
             // onPress={() => refRBSheet.current.close()}

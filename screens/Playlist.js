@@ -1,52 +1,86 @@
-import React from "react";
-import { View, TouchableOpacity, StyleSheet, Text, Image, FlatList, SafeAreaView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, TouchableOpacity, StyleSheet, Text, Image, FlatList, SafeAreaView, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FocusedStatusBar, HomeHeader } from "../components";
 import { COLORS, FONTS, SHADOWS, SIZES } from "../constants";
 import { useSelector } from "react-redux";
 import ScreenContainer from "./ScreenContainer";
+import { off, onValue, ref as rtdbRef } from "firebase/database";
+import { rtdb } from "./firebase-config";
 
-const playlists = {
-  習作本: ['Workbook_1', 'Workbook_2', 'Workbook_3', 'Workbook_4', 'Workbook_5'],
-  SuperEasyReading: ['SER1', 'SER2', 'SER3'],
-  STEAM: ['STEAM1', 'STEAM2', 'STEAM3'],
-  ShortArticalReading: ['SARC1'],
-  ReadingLamp: ['RL1Reading', 'RL2Reading', 'RL3Reading'],
-  Skyline: ['Skyline1', 'Skyline2', 'Skyline3'],
-  ReadingTable: ['ReadingTable1', 'ReadingTable2', 'ReadingTable3'],
-};
+
+
 
 const Playlist = () => {
   const navigation = useNavigation();
-  const { screenmargin } = useSelector(state => state.musicReducer);
+  // const { screenmargin } = useSelector(state => state.musicReducer);
 
   const handlePlaylistDetailNavigation = (musicType) => {
     navigation.navigate("PlaylistDetail", { musicType });
   };
 
+  const [data, setData] = useState([]);
 
-  //類別方框
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      onPress={() => handlePlaylistDetailNavigation(`${item}`)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        alignContent: 'center',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        width: 150,
-        padding: 15,
-        backgroundColor: COLORS.white,
-        borderRadius: SIZES.font,
-        marginBottom: SIZES.extraLarge,
-        margin: SIZES.base,
-        ...SHADOWS.dark,
-      }}
-    >
-      <Image source={require('../assets/img/headphone.png')} style={styles.img} />
-      <Text style={{ fontWeight: '600', fontSize: 15 }}>{item}</Text>
-    </TouchableOpacity>
+  // Fetch data from Firebase RTDB
+  useEffect(() => {
+    const navItemsRef = rtdbRef(rtdb, 'AppNavbar/');
+    onValue(navItemsRef, (snapshot) => {
+      const fetchedData = snapshot.val();
+      if (fetchedData) {
+        // Convert the data to a structured array for FlatList
+        const parsedData = Object.keys(fetchedData).map((key) => ({
+          title: key,
+          children: Object.values(fetchedData[key]),
+        }));
+        setData(parsedData);
+      }
+    });
+
+    return () => {
+      // Clean up listener on unmount
+      const dbRef = rtdbRef(rtdb, 'AppNavbar/');
+      off(dbRef);  // 移除監聽
+    }
+  }, []);
+
+  const screenWidth = Dimensions.get('window').width;
+  const itemWidth = screenWidth / 2 - 30; // Adjust spacing
+
+
+  const renderItem = ({ item }) => (
+    <View style={styles.section}>
+      {/* Render the section title */}
+      <Text style={styles.title} key={item.title}>{item.title}</Text>
+      {/* Render the children */}
+      <View>
+        <FlatList
+          data={item.children}
+          numColumns={2}
+          keyExtractor={(child, index) => index.toString()}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item: child }) => (
+            // 類別方框
+            <TouchableOpacity
+              onPress={() => handlePlaylistDetailNavigation(`${child.path}`)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: itemWidth,
+                padding: 8,
+                backgroundColor: COLORS.white,
+                borderRadius: 5,
+                margin: SIZES.base,
+                ...SHADOWS.medium,
+              }}
+            >
+              {/* <Image source={require('../assets/img/headphone.png')} style={styles.img} /> */}
+              <Text style={{ fontWeight: '700', fontSize: 18, fontFamily: "Nunito" }}>{child.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+    </View>
   );
 
   return (
@@ -54,41 +88,9 @@ const Playlist = () => {
       <FocusedStatusBar backgroundColor={COLORS.black} />
       <HomeHeader display="none" />
       <FlatList
-        style={{ paddingBottom: 20 }}
-        data={[
-          { title: 'WorkBook (習作本)', data: playlists.習作本 },
-          { title: 'Super Easy Reading', data: playlists.SuperEasyReading },
-          { title: 'Steam Reading', data: playlists.STEAM },
-          { title: 'Short Artical Reading', data: playlists.ShortArticalReading },
-          { title: 'Reading Lamp', data: playlists.ReadingLamp },
-          { title: 'Skyline', data: playlists.Skyline },
-          { title: 'Reading Table', data: playlists.ReadingTable },
-        ]}
+        data={data}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <View style={styles.typetitle}>
-              <Text style={{
-                // fontFamily: FONTS.mainFont,
-                fontWeight: '700',
-                height: 20,
-                color: 'white',
-                fontSize: 16,
-                letterSpacing: 1,
-              }}>{item.title}</Text>
-            </View>
-            <View>
-              <FlatList
-                data={item.data}
-                keyExtractor={(subItem, index) => index.toString()}
-                renderItem={renderItem}
-                style={{
-                  flex: 4, flexDirection: 'row', flexWrap: 'wrap'
-                }}
-              />
-            </View>
-          </View>
-        )}
+        renderItem={renderItem}
       />
     </ScreenContainer>
 
@@ -98,37 +100,32 @@ const Playlist = () => {
 
 
 const styles = StyleSheet.create({
-  typetitle: {
-    width: 250,
-    height: 25,
-    padding: 18,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    alignContent: 'center',
-    backgroundColor: '#005b7f',
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
-    marginTop: 10,
-    marginBottom: 15,
-  },
-  playlistContainer: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
-    backgroundColor: 'white',
-  },
-  arrow: {
-    width: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   img: {
-    width: 50,
-    height: 50,
-  }
+    width: 70,
+    height: 70,
+  },
+  section: {
+    marginVertical: 10,
+    padding: 10,
+    borderRadius: 5,
+    elevation: 2,
+  },
+  title: {
+    backgroundColor: '#ebc0a7',
+    padding: 10,
+    borderRadius: 5,
+    elevation: 2,
+    marginBottom: 10,
+    fontSize: 20,
+    fontWeight: "bold",
+    fontFamily: "Nunito",
+  },
+  child: {
+    marginTop: 5,
+  },
+  childText: {
+    fontSize: 14,
+  },
 });
 
 export default Playlist;

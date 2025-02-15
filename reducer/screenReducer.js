@@ -1,7 +1,6 @@
 export const initialState = {
     sidebarshow: 'none',
     duration: 150,
-    tabbarheight: 65,
     musicplayerheight: 65,
 };
 const screenReducer = (state = initialState, action) => {
@@ -15,11 +14,6 @@ const screenReducer = (state = initialState, action) => {
             return {
                 ...state,
                 duration: action.payload
-            }
-        case "TAB_BAR_HEIGHT":
-            return {
-                ...state,
-                tabbarheight: action.payload
             }
         case "MUSICPLAYER_HEIGHT":
             return {

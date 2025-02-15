@@ -5,26 +5,29 @@ import { MusicTitle } from "./SubInfo";
 import { PlayButton } from "./Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
-import { child, onValue, ref } from "firebase/database";
+import { child, off, onValue, ref } from "firebase/database";
+import { getDownloadURL, getStorage, ref as storageRef } from "firebase/storage"
 import { rtdb } from "../screens/firebase-config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 
 const MusicCard = ((props) => {
-
+  const [audioURL, setAudioURL] = useState('');
   const dispatch = useDispatch();
-  const { playlists } = useSelector(state => state.musicReducer);
-  const currentTrackID = playlists.findIndex(obj => obj.musicName === props.music.musicName);
+  const { bookname, musicName } = props.music;
   const [complete, setComplete] = useState();
   const [musicplay, setMusicPlay] = useState();
-  const convertmusicName = props.music.musicName.replace(/^(.*?)\/(.*?)\.mp3$/, '$2');
+  const convertmusicName = bookname + ' ' + musicName.replace(/^(.*?)\/(.*?)\.mp3$/, '$2');
+
 
   useEffect(() => {
     async function fetchMusicData() {
       // 次數通過
       const dbRef = ref(rtdb);
       const completeRef = child(dbRef, `student/${await AsyncStorage.getItem('ae-useruid')}/MusicLogfile/${convertmusicName}/complete`);
-      const musicplayRef = child(dbRef, `student/${await AsyncStorage.getItem('ae-useruid')}/MusicLogfile/${convertmusicName}/musicplay`);
+      const musicplayRef = child(dbRef, `student/VInrAIdNPahzHpkhoyFF7ChVHIc2/MusicLogfile/${convertmusicName}/musicplay`);
+
+      // const musicplayRef = child(dbRef, `student/${await AsyncStorage.getItem('ae-useruid')}/MusicLogfile/${convertmusicName}/musicplay`);
 
       onValue(musicplayRef, (snapshot) => {
         if (snapshot.exists()) {
@@ -46,14 +49,30 @@ const MusicCard = ((props) => {
         alert("Error fetching complete value:", error);
       });
     }
-
     fetchMusicData();
   }, [convertmusicName]);
 
+  async function fetchAudioURL() {
+    const storage = getStorage();
+    try {
+      const audioPath = storageRef(storage, `Music/${musicName}`);
+      const audioDownloadURL = await getDownloadURL(audioPath);
+      setAudioURL(audioDownloadURL);
+      return audioDownloadURL;
+    } catch (error) {
+      console.error("Error fetching audio URL:", error);
+    }
+  }
+
   function handlePlay() {
+    fetchAudioURL();
+    if (!musicName) {
+      console.error("Music name is undefined.");
+      return;
+    }
     dispatch(setCurrentMargin(65))
     dispatch(setMusicPlayerDisplay('flex'))
-    dispatch(setCurrentPlaying({ ...props.music, index: currentTrackID }));
+    dispatch(setCurrentPlaying({ ...props.music, audioURL }));
   }
 
 
@@ -71,25 +90,9 @@ const MusicCard = ((props) => {
             subTitle={props.music.page}
             titleSize={SIZES.large}
             subTitleSize={SIZES.small}
+            musicplay={musicplay}
           />
           <PlayButton handlePress={handlePlay} />
-        </View>
-        <View style={styles.labelcontainer}>
-          <View style={styles.quizlabel}>
-            <Text style={styles.quizlabeltext}>播放次數 : {musicplay || 0} 次</Text>
-          </View>
-          <View style={styles.quizlabel}>
-            <Text style={styles.quizlabeltext}>通過 :</Text>
-            <Text style={styles.quizlabeltext}>
-              {
-                complete === '通過'
-                  ?
-                  <AntDesign name={"checkcircle"} style={styles.timeplayed} />
-                  :
-                  <AntDesign name={"closecircle"} style={styles.timeplayednotcomplete} />
-              }
-            </Text>
-          </View>
         </View>
       </View>
     </View>
@@ -101,9 +104,7 @@ export default MusicCard;
 const styles = StyleSheet.create({
   musiclist: {
     width: "100%",
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
+    padding: 10,
     justifyContent: 'center',
     alignContent: 'center',
     borderBottomColor: 'gray',
@@ -117,7 +118,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   quizlabel: {
-    backgroundColor: 'yellow',
     padding: 10,
     borderRadius: 10,
     flexDirection: 'row',
