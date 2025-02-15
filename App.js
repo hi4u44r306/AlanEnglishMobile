@@ -39,6 +39,7 @@ import AddUser from "./screens/AddUser";
 import StudentControl from "./screens/StudentControl";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Setting from "./screens/Setting";
+import Toast from "react-native-toast-message";
 
 
 const store = createStore(rootReducer);
@@ -101,83 +102,136 @@ const PlaylistStackScreen = () => (
   </Stack.Navigator>
 );
 
+
+
 function Root() {
   const { playing } = useSelector(state => state.musicReducer);
   const [currMusic, setCurrMusic] = useState(null);
+  const insets = useSafeAreaInsets();
+  const tabBarHeight = 55 + insets.bottom;
+
+  const toastConfig = {
+    success: internalState => (
+      <View style={{
+        position: 'absolute',
+        height: 80,
+        width: '100%',
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 10
+      }}>
+        {/* 你可以在這裡自定義 icon */}
+        <Text style={{
+          color: 'black',
+          fontWeight: 'bold',
+          fontSize: 16,
+        }}>
+          {internalState.text1}
+        </Text>
+      </View>
+    ),
+    error: internalState => (
+      <View style={{
+        position: 'absolute',
+        height: 80,
+        width: '100%',
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 10
+      }}>
+        <Text style={{
+          color: 'black',
+          fontWeight: 'bold',
+          fontSize: 16,
+        }}>
+          {internalState.text1}
+        </Text>
+      </View>
+    ),
+    // info 與其他類型也可以依需求設定
+  };
 
   useEffect(() => {
     setCurrMusic(playing)
   }, [playing]);
 
-  const insets = useSafeAreaInsets();
-  const tabBarHeight = 55 + insets.bottom;
+
   return (
-    <View style={{ flex: 1, overflow: 'hidden' }}>
-      <Tab.Navigator
-        initialRouteName="播放列表"
-        tabBarShowLabel
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarIcon: ({ focused, color }) => {
-            let iconName;
-            let rn = route.name;
+    <>
+      {/* Toast Container 放在這裡，整個頁面最上層 */}
+      <Toast config={toastConfig} topOffset={0} />
+      <View style={{ flex: 1, overflow: 'hidden' }}>
+        <Tab.Navigator
+          initialRouteName="播放列表"
+          tabBarShowLabel
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarIcon: ({ focused, color }) => {
+              let iconName;
+              let rn = route.name;
 
-            // if (rn === homepage) {
-            //   iconName = focused ? 'home' : 'home-outline';
-            // }
-            if (rn === playlistpage) {
-              iconName = focused ? 'musical-notes' : 'musical-notes-outline';
-            }
-            else if (rn === profilepage) {
-              iconName = focused ? 'person-circle' : 'person-circle-outline';
-            }
-            else if (rn === leaderboardpage) {
-              iconName = focused ? 'medal' : 'medal-outline';
-            }
-            else if (rn === homework) {
-              iconName = focused ? 'book' : 'book-outline';
-            }
-            else if (rn === teacher) {
-              iconName = focused ? 'document-text' : 'document-text-outline';
-            }
-            else if (rn === setting) {
-              iconName = focused ? 'settings' : 'settings-outline';
-            }
+              // if (rn === homepage) {
+              //   iconName = focused ? 'home' : 'home-outline';
+              // }
+              if (rn === playlistpage) {
+                iconName = focused ? 'musical-notes' : 'musical-notes-outline';
+              }
+              else if (rn === profilepage) {
+                iconName = focused ? 'person-circle' : 'person-circle-outline';
+              }
+              else if (rn === leaderboardpage) {
+                iconName = focused ? 'medal' : 'medal-outline';
+              }
+              else if (rn === homework) {
+                iconName = focused ? 'book' : 'book-outline';
+              }
+              else if (rn === teacher) {
+                iconName = focused ? 'document-text' : 'document-text-outline';
+              }
+              else if (rn === setting) {
+                iconName = focused ? 'settings' : 'settings-outline';
+              }
 
-            return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
+              return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
-          },
-          tabBarStyle: { height: tabBarHeight, backgroundColor: COLORS.main, },
-          tabBarLabelStyle: { fontFamily: FONTS.mainFont, fontSize: 12, },
-          tabBarActiveTintColor: '#f70505',
-          // tabBarActiveTintColor: '#056af7',
-          tabBarInactiveTintColor: 'black'
-        })}
-      >
-        {/* <Tab.Screen name="排行榜" component={Leaderboard} /> */}
-        <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
-        {AsyncStorage.getItem('ae-class') !== 'Teacher' && (
-          <Tab.Screen name="老師專用" component={TeacherFunction} />
-        )}
-        <Tab.Screen name="用戶" component={Profile} />
-        <Tab.Screen name="設定" component={Setting} />
-        {/* <Tab.Screen name="首頁" component={Home} /> */}
-        {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
-
-
-      </Tab.Navigator>
-      <View>
-        {currMusic
-          &&
-          (
-            <>
-              <MusicPlayer music={currMusic} />
-              {/* <BigScreen music={currMusic} /> */}
-            </>
+            },
+            tabBarStyle: { height: tabBarHeight, backgroundColor: COLORS.main, },
+            tabBarLabelStyle: { fontFamily: FONTS.mainFont, fontSize: 12, },
+            tabBarActiveTintColor: '#f70505',
+            // tabBarActiveTintColor: '#056af7',
+            tabBarInactiveTintColor: 'black'
+          })}
+        >
+          {/* <Tab.Screen name="排行榜" component={Leaderboard} /> */}
+          <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
+          {AsyncStorage.getItem('ae-class') !== 'Teacher' && (
+            <Tab.Screen name="老師專用" component={TeacherFunction} />
           )}
+          <Tab.Screen name="用戶" component={Profile} />
+          <Tab.Screen name="設定" component={Setting} />
+          {/* <Tab.Screen name="首頁" component={Home} /> */}
+          {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
+
+
+        </Tab.Navigator>
+        <View>
+          {currMusic
+            &&
+            (
+              <>
+                <MusicPlayer music={currMusic} />
+                {/* <BigScreen music={currMusic} /> */}
+              </>
+            )}
+        </View>
+        {/* <Sidebar /> */}
       </View>
-      {/* <Sidebar /> */}
-    </View>
+
+    </>
   );
 }
 

@@ -32,7 +32,9 @@ export const MusicTitle = ({ title, subTitle, musicplay, complete }) => {
             fontSize: SIZES.font,
             color: COLORS.primary,
             gap: 10,
-            flexDirection: 'row'
+            flexDirection: 'row',
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <Text>

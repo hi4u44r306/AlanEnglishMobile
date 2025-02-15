@@ -67,7 +67,7 @@ const PlaylistDetail = () => {
                 <Text style={styles.titletext}>{musicType}</Text>
             </View> */}
             <FlatList
-                style={{ paddingBottom: windowHeight < 800 ? 10 : 30 }}
+                style={{ paddingBottom: windowHeight < 800 ? 20 : 30 }}
                 data={playlists[`${musicType}`]}
                 renderItem={({ item }) => (
                     <MusicCard music={item} onclickmusic={handleCardClick} />

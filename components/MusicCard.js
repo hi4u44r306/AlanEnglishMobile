@@ -5,51 +5,49 @@ import { MusicTitle } from "./SubInfo";
 import { PlayButton } from "./Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from "./actions/actions";
-import { child, off, onValue, ref } from "firebase/database";
+import { child, off, onValue, ref as rtdbRef } from "firebase/database";
 import { getDownloadURL, getStorage, ref as storageRef } from "firebase/storage"
 import { rtdb } from "../screens/firebase-config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
+import { getAuth } from "firebase/auth";
 
 const MusicCard = ((props) => {
   const [audioURL, setAudioURL] = useState('');
   const dispatch = useDispatch();
-  const { bookname, musicName } = props.music;
+  const { bookname, musicName, page } = props.music;
   const [complete, setComplete] = useState();
   const [musicplay, setMusicPlay] = useState();
-  const convertmusicName = bookname + ' ' + musicName.replace(/^(.*?)\/(.*?)\.mp3$/, '$2');
-
+  const convertmusicName = bookname + ' ' + page;
+  // const convertmusicName = bookname + ' ' + musicName.replace(/^(.*?)\/(.*?)\.mp3$/, '$2');
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   useEffect(() => {
-    async function fetchMusicData() {
-      // 次數通過
-      const dbRef = ref(rtdb);
-      const completeRef = child(dbRef, `student/${await AsyncStorage.getItem('ae-useruid')}/MusicLogfile/${convertmusicName}/complete`);
-      const musicplayRef = child(dbRef, `student/VInrAIdNPahzHpkhoyFF7ChVHIc2/MusicLogfile/${convertmusicName}/musicplay`);
+    const dbRef = rtdbRef(rtdb);
+    const completeRef = child(dbRef, `student/${user.uid}/MusicLogfile/${convertmusicName}/complete`);
+    const musicplayRef = child(dbRef, `student/${user.uid}/MusicLogfile/${convertmusicName}/musicplay`);
 
-      // const musicplayRef = child(dbRef, `student/${await AsyncStorage.getItem('ae-useruid')}/MusicLogfile/${convertmusicName}/musicplay`);
+    onValue(musicplayRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setMusicPlay(snapshot.val());
+        console.log(snapshot.val());
+      } else {
+        setMusicPlay(); // If data doesn't exist, setComplete to its default value
+      }
+    }, (error) => {
+      alert("Error fetching complete value:", error);
+    });
 
-      onValue(musicplayRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setMusicPlay(snapshot.val());
-        } else {
-          setMusicPlay(); // If data doesn't exist, setComplete to its default value
-        }
-      }, (error) => {
-        alert("Error fetching complete value:", error);
-      });
-
-      onValue(completeRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setComplete(snapshot.val());
-        } else {
-          setComplete(); // If data doesn't exist, setComplete to its default value
-        }
-      }, (error) => {
-        alert("Error fetching complete value:", error);
-      });
-    }
-    fetchMusicData();
+    onValue(completeRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setComplete(snapshot.val());
+      } else {
+        setComplete(); // If data doesn't exist, setComplete to its default value
+      }
+    }, (error) => {
+      alert("Error fetching complete value:", error);
+    });
   }, [convertmusicName]);
 
   async function fetchAudioURL() {
@@ -91,6 +89,7 @@ const MusicCard = ((props) => {
             titleSize={SIZES.large}
             subTitleSize={SIZES.small}
             musicplay={musicplay}
+            complete={complete}
           />
           <PlayButton handlePress={handlePlay} />
         </View>

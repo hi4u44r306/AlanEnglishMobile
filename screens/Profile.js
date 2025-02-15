@@ -5,7 +5,7 @@ import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
-import { signOut } from "@firebase/auth";
+import { getAuth, signOut } from "@firebase/auth";
 import { authentication, getstorage } from "./firebase-config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
