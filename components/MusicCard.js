@@ -31,7 +31,6 @@ const MusicCard = ((props) => {
     onValue(musicplayRef, (snapshot) => {
       if (snapshot.exists()) {
         setMusicPlay(snapshot.val());
-        console.log(snapshot.val());
       } else {
         setMusicPlay(); // If data doesn't exist, setComplete to its default value
       }

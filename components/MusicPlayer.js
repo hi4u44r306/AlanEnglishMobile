@@ -27,6 +27,13 @@ export default function MusicPlayer({ music }) {
   const [durationMillis, setDurationMillis] = useState(0);
   const [isPlaylistsLoaded, setIsPlaylistsLoaded] = useState(false);
   const [userId, setUserId] = useState();
+  // state 用來顯示目前累計的聽取時間（用於畫面顯示、debug 等）
+  const [listenedMillis, setListenedMillis] = useState(0);
+  // ref 用來儲存最新的聽取時間（避免閉包問題）
+  const listenedMillisRef = useRef(0);
+  // 用來儲存計時器 ID
+  const timerRef = useRef(null);
+
   const auth = getAuth();
   const user = auth.currentUser;
 
@@ -60,15 +67,18 @@ export default function MusicPlayer({ music }) {
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
   }, []);
 
-  // 當外部傳入的 music 改變時重新播放
+  // 當外部傳入的 music 改變時重新播放，並重置累計聽取時間
   useEffect(() => {
     if (music && isPlaylistsLoaded) {
       setCurrentTrack(music);
+      // 重置 state 與 ref
+      setListenedMillis(0);
+      listenedMillisRef.current = 0;
       playSound(music);
     }
   }, [music, isPlaylistsLoaded]);
 
-  // 播放器顯示狀態改變時的淡入/淡出
+  // 播放器顯示狀態改變時的淡入淡出
   useEffect(() => {
     Animated.timing(animatedOpacity, {
       toValue: musicplayerdisplay === 'flex' ? 1 : 0,
@@ -76,6 +86,30 @@ export default function MusicPlayer({ music }) {
       useNativeDriver: false,
     }).start();
   }, [musicplayerdisplay]);
+
+  // 利用 useEffect 當播放狀態改變時啟動或清除計時器
+  useEffect(() => {
+    if (isPlaying) {
+      // 每 1 秒累加 1000 毫秒
+      timerRef.current = setInterval(() => {
+        listenedMillisRef.current += 1000;
+        console.log('listenedMillisRef : ', listenedMillisRef.current)
+        setListenedMillis(listenedMillisRef.current);
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+    // 清除計時器（component unmount 時）
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [isPlaying]);
 
   // 播放下一首
   const handleNextTrack = () => {
@@ -85,7 +119,6 @@ export default function MusicPlayer({ music }) {
     const musicList = Object.values(playlists[music.type]);
 
     const currentIndex = getCurrentMusicIndex();
-    console.log('目前播放的 index:', currentIndex);
     if (currentIndex === -1) return;
 
     let nextTrackIndex = currentIndex + 1;
@@ -93,21 +126,36 @@ export default function MusicPlayer({ music }) {
       nextTrackIndex = 0; // 如果已經到最後一首，就循環回第一首
     }
     const nextTrack = musicList[nextTrackIndex];
-    console.log('下一首的 index:', nextTrackIndex, '下一首資料:', nextTrack);
 
+    // 當切換曲目時，重置累計聽取時間
+    setListenedMillis(0);
+    listenedMillisRef.current = 0;
     dispatch(setCurrentPlaying(nextTrack));
   };
 
+  // 顯示通過通知
   const success = () => {
     Toast.show({
       type: 'success',
       position: 'top',
-      text1: '聽力次數+1',
+      text1: '太棒了! 聽力次數+1',
       visibilityTime: 2000,
       autoHide: true,
     });
   };
 
+  // 顯示錯誤通知
+  const error = () => {
+    Toast.show({
+      type: 'info',
+      position: 'top',
+      text1: '要完全聽完才能增加播放次數喔!',
+      visibilityTime: 5000,
+      autoHide: true,
+    });
+  };
+
+  // 更新資料庫
   function updateRTDBData() {
     success();
     // 組合一個辨識音樂的字串
@@ -137,7 +185,6 @@ export default function MusicPlayer({ music }) {
         const path = `/student/${userId}/${counterType}`;
         const counterRef = rtdbRef(rtdb, path);
         const snapshot = await get(counterRef, { once: true });
-        // 若資料不存在則預設為 0，並確保轉成數字
         const currentCount = snapshot.exists() ? parseInt(snapshot.val(), 10) : 0;
         await set(counterRef, currentCount + 1);
       } catch (error) {
@@ -160,8 +207,20 @@ export default function MusicPlayer({ music }) {
       setDurationMillis(safeDuration);
 
       if (status.didJustFinish) {
-        console.log("didJustFinish triggered");
-        updateRTDBData();
+        // 清除計時器
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        // 利用 ref 的值來計算聽取比例
+        const listenedPercentage = safeDuration ? listenedMillisRef.current / safeDuration : 0;
+        console.log('listenedPercentage : ', listenedPercentage)
+        // 只有聽取達 95% 以上才更新播放次數
+        if (listenedPercentage >= 0.95) {
+          updateRTDBData();
+        } else {
+          error();
+        }
         handleNextTrack();
       }
     }
@@ -175,6 +234,9 @@ export default function MusicPlayer({ music }) {
         await sound.current.unloadAsync();
       }
       setMusicLoading(true);
+      // 重置累計聽取時間（state 與 ref）
+      setListenedMillis(0);
+      listenedMillisRef.current = 0;
       const storage = getStorage();
       const musicRef = storageRef(storage, `Music/${track.musicName}`);
       const downloadURL = await getDownloadURL(musicRef);
@@ -193,10 +255,11 @@ export default function MusicPlayer({ music }) {
   const togglePlayPause = async () => {
     if (isPlaying) {
       await sound.current.pauseAsync();
+      setIsPlaying(false);
     } else {
       await sound.current.playAsync();
+      setIsPlaying(true);
     }
-    setIsPlaying(!isPlaying);
   };
 
   // 關閉播放器
@@ -206,6 +269,10 @@ export default function MusicPlayer({ music }) {
       duration,
       useNativeDriver: false,
     }).start();
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
     await sound.current.stopAsync();
     dispatch(setCurrentMargin(0));
     dispatch(setMusicPlayerDisplay('none'));
@@ -214,16 +281,9 @@ export default function MusicPlayer({ music }) {
   // 將物件轉成陣列再做 findIndex
   const getCurrentMusicIndex = () => {
     if (!playlists || !playlists[music.type]) return -1;
-
-    // playlists[music.type] 可能是 {0: {...}, 1: {...}, 2: {...}}
     const musicList = Object.values(playlists[music.type]);
-    // 現在 musicList 才是一個真正的陣列
-
     return musicList.findIndex(item => item.musicName === music.musicName);
   };
-
-
-
 
   const insets = useSafeAreaInsets();
   const tabBarHeight = 55 + insets.bottom;
@@ -236,7 +296,7 @@ export default function MusicPlayer({ music }) {
         bottom: tabBarHeight,
         width: '100%',
         alignItems: 'center',
-        opacity: animatedOpacity,  // 加上淡入淡出效果
+        opacity: animatedOpacity,
       }}
     >
       <View style={styles.container}>
@@ -266,7 +326,6 @@ export default function MusicPlayer({ music }) {
               }
             }}
           />
-
         </View>
 
         {/* 下方：控制列 */}
@@ -275,22 +334,13 @@ export default function MusicPlayer({ music }) {
             <AntDesign name="close" size={24} style={styles.controlIcon} />
           </TouchableOpacity>
 
-          {/* <Image 
-            source={require('../assets/img/headphone.png')} 
-            style={styles.image} 
-          /> */}
-
           <View style={styles.detailsContainer}>
             <Text style={styles.bookName}>{currentTrack.bookname}</Text>
             <Text style={styles.page}>{currentTrack.page}</Text>
           </View>
 
           {musicLoading ? (
-            <ActivityIndicator
-              size={30}
-              color="black"
-              style={styles.controlIcon}
-            />
+            <ActivityIndicator size={30} color="black" style={styles.controlIcon} />
           ) : (
             <TouchableOpacity onPress={togglePlayPause}>
               <AntDesign
@@ -309,7 +359,6 @@ export default function MusicPlayer({ music }) {
               style={styles.controlIcon}
             />
           </TouchableOpacity>
-
         </View>
       </View>
     </Animated.View>
@@ -325,9 +374,7 @@ const styles = {
     padding: 10,
     width: '100%',
   },
-  // -------------- Slider + 時間 --------------
   sliderContainer: {
-    // 讓 Slider 置頂
     width: '100%',
     alignItems: 'center',
   },
@@ -345,25 +392,14 @@ const styles = {
     fontSize: SIZES.font,
     fontWeight: '600'
   },
-
-  // -------------- 控制列 --------------
   controlsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    // 這裡可以再加一些 marginTop、padding 等微調
   },
   controlIcon: {
     marginHorizontal: 10,
     color: COLORS.black,
-  },
-
-  // -------------- 其他 --------------
-  image: {
-    borderRadius: 10,
-    width: 50,
-    height: 50,
-    marginRight: 18,
   },
   detailsContainer: {
     flex: 1,

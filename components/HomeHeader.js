@@ -98,8 +98,6 @@ const HomeHeader = ({ onSearch, display }) => {
             <Drawer />
           </RBSheet>
         </View>
-
-
         <View style={{ marginTop: SIZES.font, display: display }}>
           <View
             style={{

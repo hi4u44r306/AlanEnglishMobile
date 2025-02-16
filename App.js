@@ -3,8 +3,6 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import { useFonts } from "expo-font"
 import { Text, Dimensions } from "react-native";
 import { authentication, getstorage, rtdb } from "./screens/firebase-config";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "./screens/firebase-config";
 // import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Profile from "./screens/Profile";
@@ -19,7 +17,7 @@ import PlaylistDetail from "./screens/PlaylistDetail";
 // import TrackPlayer from 'react-native-track-player';
 // TrackPlayer.registerPlaybackService(() => require('./service.js'));
 
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { createStore } from 'redux';
 import rootReducer from './reducer/reducer'; // Assuming you have a rootReducer
 import { useState } from "react";
@@ -33,8 +31,7 @@ import { COLORS, FONTS } from "./constants";
 import BigScreen from "./screens/BigScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Teacher from "./screens/Teacher";
-import { onAuthStateChanged } from "firebase/auth";
-import { off, onValue, ref, ref as rtdbRef } from "firebase/database";
+import { off, onValue, ref as rtdbRef } from "firebase/database";
 import AddUser from "./screens/AddUser";
 import StudentControl from "./screens/StudentControl";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -114,15 +111,19 @@ function Root() {
     success: internalState => (
       <View style={{
         position: 'absolute',
-        height: 80,
-        width: '100%',
-        backgroundColor: 'white',
+        top: 100,
+        height: 50,
+        padding: 10,
+        borderRadius: 5,
+        // width: '100%',
+        backgroundColor: '#44db56',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
         gap: 10
       }}>
         {/* 你可以在這裡自定義 icon */}
+        <Ionicons name="checkmark-done-circle-sharp" size={20} />
         <Text style={{
           color: 'black',
           fontWeight: 'bold',
@@ -135,14 +136,41 @@ function Root() {
     error: internalState => (
       <View style={{
         position: 'absolute',
-        height: 80,
-        width: '100%',
-        backgroundColor: 'white',
+        top: 100,
+        height: 50,
+        padding: 10,
+        borderRadius: 5,
+        // width: '100%',
+        backgroundColor: '#44db56',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
         gap: 10
       }}>
+        <Text style={{
+          color: 'black',
+          fontWeight: 'bold',
+          fontSize: 16,
+        }}>
+          {internalState.text1}
+        </Text>
+      </View>
+    ),
+    info: internalState => (
+      <View style={{
+        position: 'absolute',
+        top: 100,
+        height: 50,
+        padding: 10,
+        borderRadius: 5,
+        // width: '100%',
+        backgroundColor: '#34b4eb',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 10
+      }}>
+        <Ionicons name="alert-circle" size={20} />
         <Text style={{
           color: 'black',
           fontWeight: 'bold',
@@ -162,9 +190,8 @@ function Root() {
 
   return (
     <>
-      {/* Toast Container 放在這裡，整個頁面最上層 */}
-      <Toast config={toastConfig} topOffset={0} />
       <View style={{ flex: 1, overflow: 'hidden' }}>
+
         <Tab.Navigator
           initialRouteName="播放列表"
           tabBarShowLabel
@@ -218,6 +245,10 @@ function Root() {
 
 
         </Tab.Navigator>
+
+        {/* Toast Container 放在這裡，整個頁面最上層 */}
+        <Toast config={toastConfig} topOffset={0} />
+
         <View>
           {currMusic
             &&
@@ -230,7 +261,6 @@ function Root() {
         </View>
         {/* <Sidebar /> */}
       </View>
-
     </>
   );
 }
@@ -326,7 +356,7 @@ function App() {
     <Provider store={store}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator
-          initialRouteName="Root"
+          initialRouteName="Login"
           screenOptions={{
             headerShown: false,
             cardStyle: { backgroundColor: 'transparent' },
