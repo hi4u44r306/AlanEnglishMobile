@@ -16,6 +16,7 @@ import { child, get, ref, update } from 'firebase/database';
 const toastConfig = {
     success: internalState => (
         <View style={{
+            fontFamily: 'Nunito',
             position: 'absolute',
             height: 80,
             width: '100%',
@@ -28,12 +29,11 @@ const toastConfig = {
             flexDirection: 'row',
             gap: '10px'
         }}>
-            <Octicons name='check-circle-fill' style={{ color: 'rgb(7, 188, 12)' }} size={30} />
+            <Octicons name='check-circle-fill' style={{ color: 'rgb(7, 188, 12)' }} size={20} />
             <Text style={{
                 color: 'black',
                 fontWeight: 'bold',
                 fontSize: SIZES.medium,
-
             }}>
                 {internalState.text1}
             </Text>
@@ -41,11 +41,10 @@ const toastConfig = {
     ),
     error: internalState => (
         <View style={{
+            fontFamily: 'Nunito',
             position: 'absolute',
             height: 80,
             width: '100%',
-            // borderColor: "#ffbf3f",
-            // borderWidth: 5,
             backgroundColor: 'white',
             justifyContent: 'center',
             alignContent: 'center',
@@ -258,10 +257,11 @@ const Login = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        // fontFamily: 'Nunito',
     },
     inputtitle: {
         fontFamily: FONTS.mainFont,
-        fontWeight: "900",
+        fontWeight: "700",
         textAlign: 'center',
         justifyContent: 'center',
         backgroundColor: "white",
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     },
     input: {
         fontFamily: FONTS.VarelaRound,
-        fontWeight: "900",
+        fontWeight: "700",
         textAlign: 'center',
         justifyContent: 'center',
         backgroundColor: "white",

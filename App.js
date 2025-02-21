@@ -3,7 +3,7 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native"
 import { useFonts } from "expo-font"
 import { Text, Dimensions } from "react-native";
 import { authentication, getstorage, rtdb } from "./screens/firebase-config";
-// import Home from "./screens/Home";
+import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Profile from "./screens/Profile";
 import Playlist from "./screens/Playlist";
@@ -37,6 +37,7 @@ import StudentControl from "./screens/StudentControl";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Setting from "./screens/Setting";
 import Toast from "react-native-toast-message";
+import AddHomework from "./screens/AddHomework";
 
 
 const store = createStore(rootReducer);
@@ -61,10 +62,24 @@ const TeacherFunction = () => {
   return (
     <Stack.Navigator initialRouteName="Teacher" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Teacher" component={Teacher} />
+      <Stack.Screen name="AddHomework" component={AddHomework}
+        // AddHomework 的最上面返回鍵
+        options={{
+          headerShown: true, 
+          title: '', 
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, 
+          backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
+        }}
+      />
       <Stack.Screen name="StudentControl" component={StudentControl}
         // PlaylistDetail 的最上面返回鍵
         options={{
-          headerShown: true, title: '', headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: '#ebc0a7' }, headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
+          headerShown: true, 
+          title: '', 
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, 
+          backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
         }}
       />
       <Stack.Screen
@@ -72,7 +87,7 @@ const TeacherFunction = () => {
         options={{
           headerShown: true,
           title: '',
-          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: COLORS.main },
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: '#ebc0a7' },
           headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 },
         }}
       />
@@ -141,7 +156,7 @@ function Root() {
         padding: 10,
         borderRadius: 5,
         // width: '100%',
-        backgroundColor: '#44db56',
+        backgroundColor: '#ff1303',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
@@ -201,9 +216,9 @@ function Root() {
               let iconName;
               let rn = route.name;
 
-              // if (rn === homepage) {
-              //   iconName = focused ? 'home' : 'home-outline';
-              // }
+              if (rn === homepage) {
+                iconName = focused ? 'home' : 'home-outline';
+              }
               if (rn === playlistpage) {
                 iconName = focused ? 'musical-notes' : 'musical-notes-outline';
               }
@@ -238,9 +253,9 @@ function Root() {
           {AsyncStorage.getItem('ae-class') !== 'Teacher' && (
             <Tab.Screen name="老師專用" component={TeacherFunction} />
           )}
+          <Tab.Screen name="首頁" component={Home} />
           <Tab.Screen name="用戶" component={Profile} />
           <Tab.Screen name="設定" component={Setting} />
-          {/* <Tab.Screen name="首頁" component={Home} /> */}
           {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
 
 

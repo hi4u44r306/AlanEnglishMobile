@@ -74,6 +74,29 @@ const Teacher = () => {
         <ScreenContainer>
             <FocusedStatusBar backgroundColor={COLORS.black} />
             <HomeHeader display="none" />
+            {/* 新增課後聽力內容 */}
+            <TouchableOpacity
+                onPress={() => navigation.navigate("AddHomework")}
+                style={{
+                    display: 'flex',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    flexDirection: 'row',
+                    padding: 15,
+                    backgroundColor: 'rgb(244, 244, 244)',
+                    borderRadius: SIZES.font,
+                    marginBottom: SIZES.extraLarge,
+                    margin: SIZES.base,
+                    gap: 20,
+                }}
+            >
+                <MaterialCommunityIcons name="account-multiple-plus" size={iconsize} color="black" />
+                <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>新增課後聽力內容</Text>
+            </TouchableOpacity>
+
+            
+            {/* 新增用戶 */}
             <TouchableOpacity
                 onPress={() => navigation.navigate("AddUser")}
                 style={{
@@ -94,6 +117,7 @@ const Teacher = () => {
                 <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>新增用戶</Text>
             </TouchableOpacity>
 
+            {/* 控制台 */}
             <TouchableOpacity
                 onPress={() => navigation.navigate("StudentControl")}
                 style={{
@@ -114,6 +138,7 @@ const Teacher = () => {
                 <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>控制台</Text>
             </TouchableOpacity>
 
+            {/* 新增音樂 */}
             <TouchableOpacity
                 onPress={() => navigation.navigate("AddUser")}
                 style={{

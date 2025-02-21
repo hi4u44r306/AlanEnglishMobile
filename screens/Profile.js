@@ -6,13 +6,13 @@ import { COLORS, FONTS, SIZES } from "../constants";
 import ScreenContainer from "./ScreenContainer";
 import { ProgressBar } from 'react-native-paper';
 import { getAuth, signOut } from "@firebase/auth";
-import { authentication, getstorage } from "./firebase-config";
+import { authentication, getstorage, rtdb } from "./firebase-config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 // import * as FileSystem from 'expo-file-system';
 import { getStorage, uploadBytes } from "firebase/storage";
 import { ref as storageref } from "firebase/storage";
-import { child, get, getDatabase, onValue, ref, update } from 'firebase/database';
+import { getDatabase, onValue, ref as rtdbRef, update } from 'firebase/database';
 import { AntDesign, Feather } from "@expo/vector-icons";
 
 
@@ -28,29 +28,51 @@ const Profile = () => {
 
   const Month = new Date().toJSON().slice(5, 7);
 
+  const auth = getAuth();
+  const user = auth.currentUser;
   useEffect(() => {
-    const fetchUserData = async () => {
+    // 用來存放解除監聽的函數
+    let unsubscribe;
+  
+    const fetchRealtimeUserData = async () => {
       try {
-        const username = await AsyncStorage.getItem('ae-username');
-        const classname = await AsyncStorage.getItem('ae-class');
-        const useruid = await AsyncStorage.getItem('ae-useruid');
-        const dayplaytime = await AsyncStorage.getItem('ae-daytotal');
-        const monthplaytime = await AsyncStorage.getItem('ae-monthtotal');
-
-        setUserData({
-          username: username || 'Guest', // Fallback if null
-          classname: classname || 'N/A',
-          useruid: useruid || 'Unknown',
-          dayplaytime: dayplaytime || '0',
-          monthplaytime: monthplaytime || '0',
-        });
+        if (user.uid) {
+          const userRef = rtdbRef(rtdb, `student/${user.uid}`);
+  
+          // 監聽資料變化
+          unsubscribe = onValue(
+            userRef,
+            (snapshot) => {
+              const data = snapshot.val();
+              if (data) {
+                setUserData({
+                  username: data.name || 'Guest',
+                  classname: data.class || 'N/A',
+                  useruid: user.uid,
+                  dayplaytime: data.Daytotaltimeplayed || '0',
+                  monthplaytime: data.Monthtotaltimeplayed || '0',
+                });
+              }
+            },
+            (error) => {
+              console.error("Error fetching realtime user data:", error);
+            }
+          );
+        }
       } catch (error) {
-        console.error('Failed to load user data:', error);
+        console.error('Failed to retrieve user uid from AsyncStorage:', error);
       }
     };
-
-    fetchUserData();
-  }, []); // Empty dependency array to run only on mount
+  
+    fetchRealtimeUserData();
+  
+    // 清除監聽器
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
 
 
   // const onRefresh = () => {
