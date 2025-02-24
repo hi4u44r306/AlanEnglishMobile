@@ -4,14 +4,12 @@ import { FONTS } from '../constants';
 
 const textStyle = (color, fontSize, margin) => ({
   margin: 0,
-  textShadowColor: color,
-  textShadowOffset: { width: 0.6, height: 0 },
-  textShadowRadius: 0,
   color,
   fontSize,
   fontFamily: FONTS.mainFont,
-  // fontWeight: '900',
   letterSpacing: 1.2,
+  // 原本的 textShadowColor, textShadowOffset, textShadowRadius 改成:
+  textShadow: `0.6px 0px 0 ${color}`, // 或者您想要的其他值
 });
 
 export const Brand = ({ fontSize, margin }) => {

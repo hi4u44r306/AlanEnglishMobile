@@ -91,10 +91,30 @@ const Teacher = () => {
                     gap: 20,
                 }}
             >
-                <MaterialCommunityIcons name="account-multiple-plus" size={iconsize} color="black" />
+                <MaterialCommunityIcons name="book-plus" size={iconsize} color="black" />
                 <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>新增課後聽力內容</Text>
             </TouchableOpacity>
 
+            {/* 查看課後聽力內容 */}
+            <TouchableOpacity
+                onPress={() => navigation.navigate("HomeworkList")}
+                style={{
+                    display: 'flex',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    flexDirection: 'row',
+                    padding: 15,
+                    backgroundColor: 'rgb(244, 244, 244)',
+                    borderRadius: SIZES.font,
+                    marginBottom: SIZES.extraLarge,
+                    margin: SIZES.base,
+                    gap: 20,
+                }}
+            >
+                <MaterialCommunityIcons name="book-cog" size={iconsize} color="black" />
+                <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>查看課後聽力內容</Text>
+            </TouchableOpacity>
             
             {/* 新增用戶 */}
             <TouchableOpacity

@@ -1,217 +1,201 @@
-import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, Text, StyleSheet, Alert, Image, RefreshControl, ScrollView, TouchableOpacity, Button } from "react-native";
-import { useNavigation } from '@react-navigation/native';
-import { HomeHeader, FocusedStatusBar, LogoutButton } from "../components";
-import { COLORS, FONTS, SIZES } from "../constants";
+// import React, { useEffect, useState } from "react";
+// import { 
+//   View, Text, Switch, TouchableOpacity, StyleSheet 
+// } from "react-native";
+// import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import * as Notifications from "expo-notifications";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { getAuth } from "firebase/auth";
+// import { rtdb } from "./firebase-config";
+// import { onValue, ref as rtdbRef } from "firebase/database";
+// import { HomeHeader, FocusedStatusBar } from "../components";
+// import { COLORS } from "../constants";
+// import ScreenContainer from "./ScreenContainer";
+
+// const Setting = ({ navigation }) => {
+//   const [time, setTime] = useState(new Date());
+//   const [isPickerVisible, setPickerVisible] = useState(false);
+//   const [username, setUsername] = useState("用戶");
+//   const [pushEnabled, setPushEnabled] = useState(true);
+
+//   const auth = getAuth();
+//   const user = auth.currentUser;
+
+//   // 讀取 Firebase 的用戶名稱
+//   useEffect(() => {
+//     let unsubscribe;
+//     const fetchUserName = async () => {
+//       try {
+//         if (user?.uid) {
+//           const userRef = rtdbRef(rtdb, `student/${user.uid}`);
+//           unsubscribe = onValue(
+//             userRef,
+//             (snapshot) => {
+//               const data = snapshot.val();
+//               if (data) {
+//                 setUsername(data.name || "用戶");
+//               }
+//             },
+//             (error) => {
+//               console.error("Error fetching user data:", error);
+//             }
+//           );
+//         }
+//       } catch (error) {
+//         console.error("讀取用戶名稱失敗:", error);
+//       }
+//     };
+
+//     const loadTime = async () => {
+//       const savedTime = await AsyncStorage.getItem("notificationTime");
+//       if (savedTime) setTime(new Date(savedTime));
+//     };
+
+//     fetchUserName();
+//     loadTime();
+
+//     return () => {
+//       if (unsubscribe) {
+//         unsubscribe();
+//       }
+//     };
+//   }, []);
+
+//   // 顯示時間選擇器
+//   const showPicker = () => setPickerVisible(true);
+//   const hidePicker = () => setPickerVisible(false);
+
+//   // 當用戶選擇時間
+//   const handleConfirm = (selectedTime) => {
+//     hidePicker();
+//     setTime(selectedTime);
+//     AsyncStorage.setItem("notificationTime", selectedTime.toISOString());
+//     scheduleNotification(selectedTime);
+//   };
+
+//   // 設定通知
+//   const scheduleNotification = async (selectedTime) => {
+//     await Notifications.cancelAllScheduledNotificationsAsync();
+
+//     const trigger = new Date(selectedTime);
+//     trigger.setSeconds(0);
+
+//     await Notifications.scheduleNotificationAsync({
+//       content: {
+//         title: "Alan English",
+//         body: `${username}，到了練習聽力的時間！趕快來練習吧！`,
+//       },
+//       trigger,
+//     });
+//   };
+
+//   return (
+//     <ScreenContainer>
+//       <FocusedStatusBar backgroundColor={COLORS.primary} />
+//       <HomeHeader display="none" />
+
+//       <View style={styles.container}>
+//         <Text style={styles.title}>設定</Text>
+
+//         {/* 推播通知開關 */}
+//         <View style={styles.row}>
+//           <Text style={styles.text}>推播通知</Text>
+//           <Switch value={pushEnabled} onValueChange={setPushEnabled} />
+//         </View>
+
+//         {/* 選擇通知時間 */}
+//         <TouchableOpacity style={styles.row} onPress={showPicker}>
+//           <Text style={styles.text}>通知時間</Text>
+//           <Text style={styles.time}>{time.toLocaleTimeString()}</Text>
+//         </TouchableOpacity>
+
+//         <DateTimePickerModal
+//           isVisible={isPickerVisible}
+//           mode="time"
+//           onConfirm={handleConfirm}
+//           onCancel={hidePicker}
+//         />
+
+//         {/* 其他設定選項 */}
+//         <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("Privacy")}>
+//           <Text style={styles.text}>隱私政策</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("AboutUs")}>
+//           <Text style={styles.text}>關於我們</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("LearnMore")}>
+//           <Text style={styles.text}>了解更多</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </ScreenContainer>
+//   );
+// };
+
+// // **樣式**
+// const styles = StyleSheet.create({
+//   container: {
+//     padding: 20,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 20,
+//   },
+//   text: {
+//     fontSize: 18,
+//   },
+//   time: {
+//     fontSize: 18,
+//     color: "gray",
+//   },
+//   row: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     paddingVertical: 15,
+//     borderBottomWidth: 1,
+//     borderBottomColor: "#ddd",
+//   },
+// });
+
+// export default Setting;
+
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { FocusedStatusBar, HomeHeader } from "../components";
 import ScreenContainer from "./ScreenContainer";
-import { ProgressBar } from 'react-native-paper';
-import { signOut } from "@firebase/auth";
-import { authentication, getstorage } from "./firebase-config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as ImagePicker from 'expo-image-picker';
-// import * as FileSystem from 'expo-file-system';
-import { getStorage, uploadBytes } from "firebase/storage";
-import { ref as storageref } from "firebase/storage";
-import { child, get, getDatabase, onValue, ref, update } from 'firebase/database';
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { COLORS } from "../constants";
 
-
-const Setting = () => {
-  const navigation = useNavigation();
-  const [userData, setUserData] = useState({
-    username: '',
-    classname: '',
-    useruid: '',
-    dayplaytime: '',
-    monthplaytime: '',
-  });
-
-  const Month = new Date().toJSON().slice(5, 7);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const username = await AsyncStorage.getItem('ae-username');
-        const classname = await AsyncStorage.getItem('ae-class');
-        const useruid = await AsyncStorage.getItem('ae-useruid');
-        const dayplaytime = await AsyncStorage.getItem('ae-daytotal');
-        const monthplaytime = await AsyncStorage.getItem('ae-monthtotal');
-
-        setUserData({
-          username: username || 'Guest', // Fallback if null
-          classname: classname || 'N/A',
-          useruid: useruid || 'Unknown',
-          dayplaytime: dayplaytime || '0',
-          monthplaytime: monthplaytime || '0',
-        });
-      } catch (error) {
-        console.error('Failed to load user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []); // Empty dependency array to run only on mount
-
-
-  // const onRefresh = () => {
-  //   setRefreshing(true);
-  //   getUserInfo();
-  //   setRefreshing(false);
-  // }
-
-
-  const Logout = () => {
-    Alert.alert(
-      '登出',
-      '確定要登出嗎 ?',
-      [
-        {
-          text: '取消',
-          style: 'cancel',
-        },
-        {
-          text: '確定',
-          onPress: () => {
-            // Handle the confirmation action
-            alert('登出成功');
-            signOut(authentication)
-              .then(async () => {
-                await AsyncStorage.removeItem('ae-username');
-                await AsyncStorage.removeItem('ae-class');
-                await AsyncStorage.removeItem('ae-useruid');
-                await AsyncStorage.removeItem('ae-daytotal');
-                await AsyncStorage.removeItem('ae-monthtotal');
-                navigation.navigate("Login");
-              }).catch((error) => {
-                alert(error);
-              });
-          },
-        },
-      ],
-      { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
-    );
-  };
-
-  // Function to handle choosing an image
-  const handleChooseImage = async () => {
-    try {
-      // Open image picker
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      // Check if image was picked
-      if (!result.canceled) {
-        // Image URI
-        const imageUri = result.assets[0].uri;
-
-        // Upload the image to Firebase Storage
-        await handleImageUpload(imageUri);
-      }
-    } catch (error) {
-      console.error('Error choosing image:', error);
-    }
-  };
-
-
-  // Function to handle image upload
-  const handleImageUpload = async (imageUri) => {
-    setUploading(true);
-    try {
-      // Create a reference to the file to delete
-      const desertRef = ref(getstorage, `UserimageFile/${data}`);
-      // Delete the file
-      deleteObject(desertRef).then(() => {
-        alert('deleted successfully')
-      }).catch((error) => {
-
-      });
-    } catch (e) {
-
-    }
-    try {
-      const storage = getStorage();
-      const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1); // Corrected
-      const storageRef = storageref(storage, `UserimageFile/${filename}`);
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
-      const db = getDatabase();
-      await update(ref(db, 'student/' + useruid), {
-        userimage: filename,
-      });
-      await uploadBytes(storageRef, blob);
-      Alert.alert('Success', 'Image uploaded successfully');
-      getUserInfo();
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      Alert.alert('Error', 'Failed to upload image');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-
-
-
+const Setting = ({ navigation }) => {
   return (
     <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
-      <HomeHeader display='none' />
+      <HomeHeader display="none" />
+      <View style={styles.container}>
+        <Text style={styles.header}>Settings</Text>
 
-      <View style={styles.Upper}>
-        <Text style={styles.titleText}>{userData.username || 'NONE'}</Text>
-        <View style={styles.userInfoContainer}>
-          <View style={styles.userinfo}>
-            <Text style={styles.userinfolabel}>班級</Text>
-            <Text style={styles.secondtitleText}>{userData.classname || ''} 班</Text>
-          </View>
-          <View style={styles.userinfo}>
-            <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
-            <Text style={styles.secondtitleText}>{userData.monthplaytime || '0'} 次</Text>
-          </View>
-          <View style={styles.userinfo}>
-            <Text style={styles.userinfolabel}>今日聽力次數 </Text>
-            <Text style={styles.secondtitleText}>{userData.dayplaytime || '0'} 次</Text>
-            {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
-          </View>
-        </View>
-        <LogoutButton
-          fontSize={20}
-          handlePress={Logout}
-        />
-        <View>
-          {/* <View style={styles.listeningCountContainer}>
-            <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-              <Text style={styles.userInfoText}>
-                今日目標聽力次數 : 30 次
-              </Text>
-              <Text style={styles.userSecondInfoText}>
-                今天已經聽了 {dailytimeplayed} 次了，加油!!!
-              </Text>
-            </View>
-            <View style={{ width: '90%', margin: 20, }}>
-              <ProgressBar progress={percentage} theme={{
-                colors: {
-                  primary: 'red',
-                  surfaceVariant: '#89a9f0'
-                },
-              }} style={{
-                height: 8,
-                borderRadius: 30,
-              }} />
-              <View style={{ marginTop: 10, alignItems: 'stretch', justifyContent: 'space-between', flexDirection: 'row' }}>
-                <Text style={{ color: 'white', fontWeight: '700' }}>0次</Text>
-                <Text style={{ color: 'white', fontWeight: '700' }}>30次</Text>
-              </View>
-            </View>
-          </View> */}
+        {/* 設定選項列表 */}
+        <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("NotificationSettings")}>
+          <Ionicons name="notifications-outline" size={22}   />
+          <Text style={styles.text}>Notifications</Text>
+          <Ionicons name="chevron-forward" size={20} color="#aaa" style={styles.icon} />
+        </TouchableOpacity>
 
-        </View>
+        <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("PrivacyPolicy")}>
+          <Ionicons name="shield-outline" size={22}   />
+          <Text style={styles.text}>Privacy Policy</Text>
+          <Ionicons name="chevron-forward" size={20} color="#aaa" style={styles.icon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("AboutUs")}>
+          <Ionicons name="information-circle-outline" size={22}   />
+          <Text style={styles.text}>About Us</Text>
+          <Ionicons name="chevron-forward" size={20} color="#aaa" style={styles.icon} />
+        </TouchableOpacity>
       </View>
-
     </ScreenContainer>
   );
 };
@@ -219,80 +203,28 @@ const Setting = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    padding: 20,
   },
-  Upper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  titleContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 10,
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
     marginBottom: 20,
-    position: 'relative', // Make the container relative to position the absolute image
   },
-
-  titleText: {
-    marginTop: 25,
-    fontSize: 26,
-    fontWeight: '900',
-    fontFamily: FONTS.bold,
-    color: COLORS.primary,
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
   },
-  userinfolabel: {
-    marginTop: 15,
-    fontSize: 15,
-    fontFamily: FONTS.bold,
-    color: 'black',
+  text: {
+    fontSize: 18,
+    flex: 1,
+    marginLeft: 10,
   },
-  secondtitleText: {
-    marginTop: 15,
-    fontSize: 15,
-    fontFamily: FONTS.bold,
-    color: 'gray',
+  icon: {
+    marginLeft: "auto",
   },
-  userInfoContainer: {
-    width: '50%',
-    backgroundColor: 'white',
-    margin: 15,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    padding: SIZES.base, // You can adjust this padding as needed
-    borderRadius: SIZES.base,
-  },
-  listeningCountContainer: {
-    backgroundColor: '#5784e9',//blue background
-    margin: 15,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    padding: SIZES.base,
-    borderRadius: SIZES.base,
-    elevation: 3,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-  },
-  userinfo: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  userInfoText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: 'white',
-    paddingTop: 25,
-    paddingBottom: 15,
-  },
-  userSecondInfoText: {
-    fontSize: 15,
-    color: 'white',
-    paddingBottom: 20,
-  },
-
 });
 
 export default Setting;

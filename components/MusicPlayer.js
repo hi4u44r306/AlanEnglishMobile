@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Animated, ActivityIndicator } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { COLORS, SIZES } from '../constants';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { Audio } from 'expo-av';
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from './actions/actions';
@@ -33,6 +33,10 @@ export default function MusicPlayer({ music }) {
   const listenedMillisRef = useRef(0);
   // 用來儲存計時器 ID
   const timerRef = useRef(null);
+
+  // 新增：重複播放狀態
+  const [repeat, setRepeat] = useState(false);
+  const repeatRef = useRef(false);
 
   const auth = getAuth();
   const user = auth.currentUser;
@@ -89,18 +93,18 @@ export default function MusicPlayer({ music }) {
 
   // 利用 useEffect 當播放狀態改變時啟動或清除計時器
   useEffect(() => {
+    // 先清除之前的計時器
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    // 當 isPlaying 為 true 時，建立新的計時器
     if (isPlaying) {
-      // 每 1 秒累加 1000 毫秒
       timerRef.current = setInterval(() => {
         listenedMillisRef.current += 1000;
-        console.log('listenedMillisRef : ', listenedMillisRef.current)
+        console.log('listenedMillisRef : ', listenedMillisRef.current);
         setListenedMillis(listenedMillisRef.current);
       }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
     }
     // 清除計時器（component unmount 時）
     return () => {
@@ -109,25 +113,28 @@ export default function MusicPlayer({ music }) {
         timerRef.current = null;
       }
     };
-  }, [isPlaying]);
+  }, [isPlaying, currentTrack]); // 加入 currentTrack 為依賴
+  
 
   // 播放下一首
   const handleNextTrack = () => {
     if (!playlists || !playlists[music.type]) return;
-
-    // 先轉成陣列
+    
     const musicList = Object.values(playlists[music.type]);
-
     const currentIndex = getCurrentMusicIndex();
     if (currentIndex === -1) return;
-
+    
     let nextTrackIndex = currentIndex + 1;
     if (nextTrackIndex >= musicList.length) {
-      nextTrackIndex = 0; // 如果已經到最後一首，就循環回第一首
+      nextTrackIndex = 0;
     }
-    const nextTrack = musicList[nextTrackIndex];
-
-    // 當切換曲目時，重置累計聽取時間
+    let nextTrack = musicList[nextTrackIndex];
+    
+    // 如果下一首或當前曲目被鎖定，則回到第一首（或找出第一個未鎖定的）
+    if (nextTrack.locked || musicList[currentIndex].locked) {
+      nextTrack = musicList.find(track => !track.locked) || musicList[0];
+    }
+    
     setListenedMillis(0);
     listenedMillisRef.current = 0;
     dispatch(setCurrentPlaying(nextTrack));
@@ -147,7 +154,7 @@ export default function MusicPlayer({ music }) {
   // 顯示錯誤通知
   const error = () => {
     Toast.show({
-      type: 'info',
+      type: 'error',
       position: 'top',
       text1: '要完全聽完才能增加播放次數喔!',
       visibilityTime: 5000,
@@ -170,7 +177,7 @@ export default function MusicPlayer({ music }) {
         const currentMusicPlay = snapshot.exists() ? snapshot.val().musicplay : 0;
         const newMusicPlay = currentMusicPlay + 1;
         const updateData =
-          newMusicPlay >= 100
+          newMusicPlay >= 20
             ? { musicplay: newMusicPlay, complete: '通過' }
             : { musicplay: newMusicPlay };
         await update(musicRef, updateData);
@@ -198,33 +205,45 @@ export default function MusicPlayer({ music }) {
     updateCounter(userId, 'Monthtotaltimeplayed');
   }
 
-  // 播放狀態更新，更新進度與檢查是否播放完畢
-  const onPlaybackStatusUpdate = (status) => {
-    if (status.isLoaded) {
-      const safePosition = isNaN(status.positionMillis) ? 0 : status.positionMillis;
-      const safeDuration = isNaN(status.durationMillis) ? 0 : status.durationMillis;
-      setPositionMillis(safePosition);
-      setDurationMillis(safeDuration);
+  // 播放狀態更新的 callback
+// 播放狀態更新的 callback
+const onPlaybackStatusUpdate = (status) => {
+  if (status.isLoaded) {
+    const safePosition = isNaN(status.positionMillis) ? 0 : status.positionMillis;
+    const safeDuration = isNaN(status.durationMillis) ? 0 : status.durationMillis;
+    setPositionMillis(safePosition);
+    setDurationMillis(safeDuration);
 
-      if (status.didJustFinish) {
-        // 清除計時器
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-        }
-        // 利用 ref 的值來計算聽取比例
-        const listenedPercentage = safeDuration ? listenedMillisRef.current / safeDuration : 0;
-        console.log('listenedPercentage : ', listenedPercentage)
-        // 只有聽取達 95% 以上才更新播放次數
-        if (listenedPercentage >= 0.95) {
-          updateRTDBData();
-        } else {
-          error();
-        }
+    if (status.didJustFinish) {
+      // 清除計時器
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      // 利用 ref 的值來計算聽取比例
+      const listenedPercentage = safeDuration ? listenedMillisRef.current / safeDuration : 0;
+      console.log('listenedPercentage : ', listenedPercentage);
+      // 只有聽取達 95% 以上才更新播放次數
+      if (listenedPercentage >= 0.01) {
+        updateRTDBData();
+      } else {
+        error();
+      }
+      // 重置累計聽取時間
+      setListenedMillis(0);
+      listenedMillisRef.current = 0;
+      // 根據重複模式決定：重播目前曲目或播放下一首
+      if (repeatRef.current) {
+        // 將 isPlaying 設為 false 來觸發 useEffect 重啟計時器
+        setIsPlaying(false);
+        playSound(currentTrack);
+      } else {
         handleNextTrack();
       }
     }
-  };
+  }
+};
+
 
   // 播放音檔
   const playSound = async (track) => {
@@ -260,6 +279,15 @@ export default function MusicPlayer({ music }) {
       await sound.current.playAsync();
       setIsPlaying(true);
     }
+  };
+
+  // 切換重複播放狀態
+  const toggleRepeat = () => {
+    setRepeat(prev => {
+      const newValue = !prev;
+      repeatRef.current = newValue;
+      return newValue;
+    });
   };
 
   // 關閉播放器
@@ -339,6 +367,29 @@ export default function MusicPlayer({ music }) {
             <Text style={styles.page}>{currentTrack.page}</Text>
           </View>
 
+          {/* 新增：重複播放按鈕，根據狀態改變顏色 */}
+          <TouchableOpacity onPress={toggleRepeat}>
+          {
+            repeat ?
+            (
+              <MaterialIcons
+              name="repeat-on"
+              size={30}
+              style={[styles.controlIcon, { color: "red" }]}
+              />
+            )
+            :
+            (
+              <MaterialIcons
+              name="repeat"
+              size={30}
+              style={[styles.controlIcon, { color: "black" }]}
+              />
+            )
+          }
+            
+          </TouchableOpacity>
+
           {musicLoading ? (
             <ActivityIndicator size={30} color="black" style={styles.controlIcon} />
           ) : (
@@ -351,14 +402,15 @@ export default function MusicPlayer({ music }) {
             </TouchableOpacity>
           )}
 
-          <TouchableOpacity onPress={handleNextTrack}>
+          {/* 如果需要也可以加入下一首按鈕 */}
+          {/* <TouchableOpacity onPress={handleNextTrack}>
             <AntDesign
               name="stepforward"
               size={30}
               color="black"
               style={styles.controlIcon}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </Animated.View>

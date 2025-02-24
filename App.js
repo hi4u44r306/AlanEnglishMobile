@@ -38,6 +38,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Setting from "./screens/Setting";
 import Toast from "react-native-toast-message";
 import AddHomework from "./screens/AddHomework";
+import HomeworkList from "./screens/HomeworkList";
+import * as Notifications from "expo-notifications";
+import NotificationSettings from "./screens/NotificationSettings";
 
 
 const store = createStore(rootReducer);
@@ -58,39 +61,77 @@ const homework = '聯絡簿';
 const teacher = '老師專用';
 const setting = '設定'
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+const SettingFunction = () => {
+  return (
+    <Stack.Navigator initialRouteName="Setting" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Setting" component={Setting} />
+      <Stack.Screen name="NotificationSettings" component={NotificationSettings}
+        // AddHomework 的最上面返回鍵
+        options={{
+          headerShown: true,
+          headerBackTitle: '',
+          headerBackTitleStyle: { color: 'black', fontWeight: '600', display: 'flex', justifyContent: 'center' },
+          headerTintColor: 'black',
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 100, backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: 'Nunito', fontSize: 18, fontWeight: '700' }
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const TeacherFunction = () => {
   return (
     <Stack.Navigator initialRouteName="Teacher" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Teacher" component={Teacher} />
       <Stack.Screen name="AddHomework" component={AddHomework}
         // AddHomework 的最上面返回鍵
-        options={{
-          headerShown: true, 
-          title: '', 
-          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, 
-          backgroundColor: '#ebc0a7' },
-          headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
-        }}
-      />
+        options={({ route }) => ({
+          headerShown: true,
+          headerBackTitle: '',
+          headerBackTitleStyle: { color: 'black', fontWeight: '600', display: 'flex', justifyContent: 'center' },
+          headerTintColor: 'black',
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 100, backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: 'Nunito', fontSize: 18, fontWeight: '700' }
+        })} />
+      <Stack.Screen name="HomeworkList" component={HomeworkList}
+        // AddHomework 的最上面返回鍵
+        options={({ route }) => ({
+          headerShown: true,
+          headerBackTitle: '',
+          headerBackTitleStyle: { color: 'black', fontWeight: '600', display: 'flex', justifyContent: 'center' },
+          headerTintColor: 'black',
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 100, backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: 'Nunito', fontSize: 18, fontWeight: '700' }
+        })} />
       <Stack.Screen name="StudentControl" component={StudentControl}
         // PlaylistDetail 的最上面返回鍵
-        options={{
-          headerShown: true, 
-          title: '', 
-          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, 
-          backgroundColor: '#ebc0a7' },
-          headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 }
-        }}
-      />
+        options={({ route }) => ({
+          headerShown: true,
+          headerBackTitle: '',
+          headerBackTitleStyle: { color: 'black', fontWeight: '600', display: 'flex', justifyContent: 'center' },
+          headerTintColor: 'black',
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 100, backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: 'Nunito', fontSize: 18, fontWeight: '700' }
+        })} />
       <Stack.Screen
         name="AddUser" component={AddUser}
-        options={{
+        options={({ route }) => ({
           headerShown: true,
-          title: '',
-          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 85, backgroundColor: '#ebc0a7' },
-          headerTitleStyle: { fontFamily: FONTS.mainFont, fontSize: 16 },
-        }}
-      />
+          headerBackTitle: '',
+          headerBackTitleStyle: { color: 'black', fontWeight: '600', display: 'flex', justifyContent: 'center' },
+          headerTintColor: 'black',
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 100, backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: 'Nunito', fontSize: 18, fontWeight: '700' }
+        })} />
     </Stack.Navigator>
   );
 };
@@ -129,8 +170,7 @@ function Root() {
         top: 100,
         height: 50,
         padding: 10,
-        borderRadius: 5,
-        // width: '100%',
+        width: '100%',
         backgroundColor: '#44db56',
         justifyContent: 'center',
         alignItems: 'center',
@@ -155,7 +195,7 @@ function Root() {
         height: 50,
         padding: 10,
         borderRadius: 5,
-        // width: '100%',
+        width: '100%',
         backgroundColor: '#ff1303',
         justifyContent: 'center',
         alignItems: 'center',
@@ -171,30 +211,30 @@ function Root() {
         </Text>
       </View>
     ),
-    info: internalState => (
-      <View style={{
-        position: 'absolute',
-        top: 100,
-        height: 50,
-        padding: 10,
-        borderRadius: 5,
-        // width: '100%',
-        backgroundColor: '#34b4eb',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        gap: 10
-      }}>
-        <Ionicons name="alert-circle" size={20} />
-        <Text style={{
-          color: 'black',
-          fontWeight: 'bold',
-          fontSize: 16,
-        }}>
-          {internalState.text1}
-        </Text>
-      </View>
-    ),
+    // info: internalState => (
+    //   <View style={{
+    //     position: 'absolute',
+    //     top: 100,
+    //     height: 50,
+    //     padding: 10,
+    //     borderRadius: 5,
+    //     width: '100%',
+    //     backgroundColor: '#34b4eb',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     flexDirection: 'row',
+    //     gap: 10
+    //   }}>
+    //     <Ionicons name="alert-circle" size={20} />
+    //     <Text style={{
+    //       color: 'black',
+    //       fontWeight: 'bold',
+    //       fontSize: 16,
+    //     }}>
+    //       {internalState.text1}
+    //     </Text>
+    //   </View>
+    // ),
     // info 與其他類型也可以依需求設定
   };
 
@@ -206,6 +246,10 @@ function Root() {
   return (
     <>
       <View style={{ flex: 1, overflow: 'hidden' }}>
+          <View style={{ zIndex: 999 }}>
+          {/* Toast Container 放在這裡，整個頁面最上層 */}
+          <Toast config={toastConfig} topOffset={0} />
+        </View>
 
         <Tab.Navigator
           initialRouteName="播放列表"
@@ -255,15 +299,14 @@ function Root() {
           )}
           <Tab.Screen name="首頁" component={Home} />
           <Tab.Screen name="用戶" component={Profile} />
-          <Tab.Screen name="設定" component={Setting} />
+          <Tab.Screen name="設定" component={SettingFunction} />
           {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
 
 
         </Tab.Navigator>
 
-        {/* Toast Container 放在這裡，整個頁面最上層 */}
-        <Toast config={toastConfig} topOffset={0} />
 
+        
         <View>
           {currMusic
             &&
@@ -282,6 +325,15 @@ function Root() {
 
 
 function App() {
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        alert("請允許通知權限！");
+      }
+    };
+    requestPermissions();
+  }, []);
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
     InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),

@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigation } from "@react-navigation/native";
-import { Text, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
+import { Text, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, ActivityIndicator, Dimensions, Pressable } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { authentication, rtdb } from './firebase-config';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Toast from 'react-native-toast-message';
-import { AntDesign, Octicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, Octicons } from '@expo/vector-icons';
 import { setTabBarHeight } from '../components/actions/actions';
 import { useDispatch } from 'react-redux';
 import { child, get, ref, update } from 'firebase/database';
@@ -20,37 +20,43 @@ const toastConfig = {
             position: 'absolute',
             height: 80,
             width: '100%',
-            // borderColor: "#ffbf3f",
-            // borderWidth: 5,
-            backgroundColor: 'white',
+            backgroundColor: '#44db56',
             justifyContent: 'center',
             alignContent: 'center',
             alignItems: 'center',
             flexDirection: 'row',
-            gap: '10px'
+            gap: 10
         }}>
-            <Octicons name='check-circle-fill' style={{ color: 'rgb(7, 188, 12)' }} size={20} />
+            <Ionicons name="checkmark-done-circle-sharp" size={20} />
+            <Text style={{
+                color: 'black',
+                fontWeight: 'bold',
+                fontSize: 16,
+            }}>
+                {internalState.text1}
+            </Text>
+            {/* <Octicons name='check-circle-fill' style={{ color: 'rgb(7, 188, 12)' }} size={20} />
             <Text style={{
                 color: 'black',
                 fontWeight: 'bold',
                 fontSize: SIZES.medium,
             }}>
                 {internalState.text1}
-            </Text>
+            </Text> */}
         </View>
     ),
     error: internalState => (
         <View style={{
             fontFamily: 'Nunito',
             position: 'absolute',
-            height: 80,
+            height: 50,
             width: '100%',
-            backgroundColor: 'white',
+            backgroundColor: '#ff1303',
             justifyContent: 'center',
             alignContent: 'center',
             alignItems: 'center',
             flexDirection: 'row',
-            gap: '10px'
+            gap: 10
         }}>
             <AntDesign name='closecircle' style={{ color: 'rgb(247, 32, 32)' }} size={30} />
             <Text style={{
@@ -107,7 +113,7 @@ const Login = () => {
             type: 'success',
             position: 'top',
             text1: `歡迎回來 ${username}`,
-            visibilityTime: 2000,
+            visibilityTime: 3000,
             autoHide: true,
             onShow: () => { },
             onHide: () => { },
@@ -119,7 +125,7 @@ const Login = () => {
             type: 'error',
             position: 'top',
             text1: '帳號或密碼不正確',
-            visibilityTime: 2000,
+            visibilityTime: 3000,
             autoHide: true,
             onShow: () => { },
             onHide: () => { },
@@ -181,7 +187,7 @@ const Login = () => {
             <View style={{ zIndex: 999 }}>
                 <Toast config={toastConfig} topOffset={50} />
             </View>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <Pressable onPress={Keyboard.dismiss}>
                 <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent: "center" }}>
                     <Blackboard fontSize={windowHeight < 800 ? 13 : 15} margin={windowHeight < 800 ? 10 : 20} />
                     <Brand fontSize={windowHeight < 800 ? 40 : 45} margin={2} />
@@ -249,7 +255,7 @@ const Login = () => {
 
                     </View>
                 </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
         </KeyboardAvoidingView>
         // </SafeAreaView>
     )

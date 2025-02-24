@@ -11,7 +11,7 @@ import { Picker } from "@react-native-picker/picker";
 import Toast from "react-native-toast-message";
 import ScreenContainer from "./ScreenContainer";
 import { rtdb } from "./firebase-config";
-import { onValue, off, ref as rtdbRef } from "firebase/database";
+import { onValue, off, ref as rtdbRef, set } from "firebase/database";
 
 // 偵測書本的結構：回傳 "unit" 或 "page"
 const detectBookStructure = (book) => {
@@ -184,7 +184,7 @@ const AddHomework = () => {
     setAssignments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmitHomework = () => {
+  const handleSubmitHomework = async () => {
     console.log("handleSubmitHomework called");
     console.log("classValue:", classValue);
     console.log("assignments:", assignments);
@@ -212,8 +212,7 @@ const AddHomework = () => {
         });
         return;
       }
-      // 注意：這邊檢查的 key 為 startPage/endPage，但 UI 上是用 start/end
-      if (item.structure === "page" && (!item.startPage || !item.endPage)) {
+      if (item.structure === "page" && (!item.start || !item.end)) {
         console.log("頁數範圍未填寫，item:", item);
         Toast.show({
           type: "error",
@@ -235,20 +234,35 @@ const AddHomework = () => {
       }
     }
   
-    console.log("所有作業項目驗證通過，準備送出作業，資料：", {
-      classValue,
-      assignments,
-    });
+    // 取得今日日期，格式 YYYY-MM-DD
+    const todayDate = new Date().toISOString().split("T")[0];
   
-    // TODO: 將這些資料寫入 Firebase
+    // 建構要上傳的資料物件
+    const homeworkData = {
+      assignments, // 存放多筆作業項目
+      createdAt: new Date().getTime(),
+    };
   
-    Toast.show({
-      type: "success",
-      text1: "作業已建立！",
-      position: "top",
-      visibilityTime: 2000,
-    });
+    try {
+      // 寫入路徑： homeworkAssignments/{班級}/{今日日期}
+      await set(rtdbRef(rtdb, `HomeworkAssignments/${classValue}/${todayDate}`), homeworkData);
+      Toast.show({
+        type: "success",
+        text1: "作業已建立！",
+        position: "top",
+        visibilityTime: 2000,
+      });
+    } catch (error) {
+      console.error("Error uploading homework: ", error);
+      Toast.show({
+        type: "error",
+        text1: "上傳作業失敗！",
+        position: "top",
+        visibilityTime: 2000,
+      });
+    }
   };
+  
   
 
   return (
@@ -268,6 +282,7 @@ const AddHomework = () => {
             <Picker.Item label="E3" value="E3" />
             <Picker.Item label="E5" value="E5" />
             <Picker.Item label="E7" value="E7" />
+            <Picker.Item label="Teacher" value="Teacher" />
           </Picker>
         </View>
 
