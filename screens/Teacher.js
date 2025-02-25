@@ -74,6 +74,26 @@ const Teacher = () => {
         <ScreenContainer>
             <FocusedStatusBar backgroundColor={COLORS.black} />
             <HomeHeader display="none" />
+            {/* 設定通知 */}
+            <TouchableOpacity
+                onPress={() => navigation.navigate("SetNotification")}
+                style={{
+                    display: 'flex',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    flexDirection: 'row',
+                    padding: 15,
+                    backgroundColor: 'rgb(244, 244, 244)',
+                    borderRadius: SIZES.font,
+                    marginBottom: SIZES.extraLarge,
+                    margin: SIZES.base,
+                    gap: 20,
+                }}
+            >
+                <MaterialCommunityIcons name="book-plus" size={iconsize} color="black" />
+                <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>設定通知</Text>
+            </TouchableOpacity>
             {/* 新增課後聽力內容 */}
             <TouchableOpacity
                 onPress={() => navigation.navigate("AddHomework")}

@@ -14,6 +14,8 @@ import { getStorage, uploadBytes } from "firebase/storage";
 import { ref as storageref } from "firebase/storage";
 import { getDatabase, onValue, ref as rtdbRef, update } from 'firebase/database';
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { remove } from "firebase/database";
+
 
 
 const Profile = () => {
@@ -82,6 +84,17 @@ const Profile = () => {
   // }
 
 
+  async function removePushToken() {
+    try {
+      await remove(rtdbRef(rtdb, `pushTokens/${user.uid}`));
+      console.log("推播 token 已移除");
+    } catch (error) {
+      console.error("移除 token 時發生錯誤：", error);
+    }
+  }
+
+
+
   const Logout = () => {
     Alert.alert(
       '登出',
@@ -95,6 +108,7 @@ const Profile = () => {
           text: '確定',
           onPress: () => {
             // Handle the confirmation action
+            removePushToken();
             alert('登出成功');
             signOut(authentication)
               .then(async () => {

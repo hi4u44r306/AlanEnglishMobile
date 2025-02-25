@@ -31,7 +31,7 @@ import { COLORS, FONTS } from "./constants";
 import BigScreen from "./screens/BigScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Teacher from "./screens/Teacher";
-import { off, onValue, ref as rtdbRef } from "firebase/database";
+import { off, onValue, ref as rtdbRef, set } from "firebase/database";
 import AddUser from "./screens/AddUser";
 import StudentControl from "./screens/StudentControl";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -39,9 +39,10 @@ import Setting from "./screens/Setting";
 import Toast from "react-native-toast-message";
 import AddHomework from "./screens/AddHomework";
 import HomeworkList from "./screens/HomeworkList";
-import * as Notifications from "expo-notifications";
 import NotificationSettings from "./screens/NotificationSettings";
-
+import SetNotification from "./screens/SetNotification";
+import * as Notifications from "expo-notifications";
+import { Alert } from 'react-native';
 
 const store = createStore(rootReducer);
 const theme = {
@@ -92,6 +93,16 @@ const TeacherFunction = () => {
   return (
     <Stack.Navigator initialRouteName="Teacher" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Teacher" component={Teacher} />
+      <Stack.Screen name="SetNotification" component={SetNotification}
+        // AddHomework 的最上面返回鍵
+        options={({ route }) => ({
+          headerShown: true,
+          headerBackTitle: '',
+          headerBackTitleStyle: { color: 'black', fontWeight: '600', display: 'flex', justifyContent: 'center' },
+          headerTintColor: 'black',
+          headerStyle: { height: Dimensions.get('window').height < 800 ? 70 : 100, backgroundColor: '#ebc0a7' },
+          headerTitleStyle: { fontFamily: 'Nunito', fontSize: 18, fontWeight: '700' }
+        })} />
       <Stack.Screen name="AddHomework" component={AddHomework}
         // AddHomework 的最上面返回鍵
         options={({ route }) => ({
@@ -325,6 +336,36 @@ function Root() {
 
 
 function App() {
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    // 取得當前通知權限
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    // 如果權限未授予則請求權限
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      Alert.alert('未能取得推播權限！');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log("取得的推播 token:", token);
+    return token;
+  }
+  
+  async function savePushToken(userId, token) {
+    try {
+      // 儲存在 "pushTokens/{userId}" 下，方便後續管理
+      await set(rtdbRef(rtdb, 'pushTokens/' + userId), token);
+      console.log("推播 token 儲存成功");
+    } catch (error) {
+      console.error("推播 token 儲存失敗：", error);
+    }
+  }
+
   useEffect(() => {
     const requestPermissions = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -334,6 +375,12 @@ function App() {
     };
     requestPermissions();
   }, []);
+
+  useEffect(() => {
+    
+  }, []);
+  
+
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
     InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
@@ -353,6 +400,16 @@ function App() {
       const user = authentication.currentUser;
       if (user) {
         AsyncStorage.setItem('ae-useruid', user.uid);
+
+        const setupPushNotifications = async () => {
+          const token = await registerForPushNotificationsAsync();
+          if (token) {
+            // 假設 user.uid 可取得當前用戶的唯一 ID
+            savePushToken(user.uid, token);
+          }
+        };
+        setupPushNotifications();
+
         try {
           const studentDocRef = rtdbRef(rtdb, `student/${user.uid}`);
           onValue(studentDocRef, snapshot => {
@@ -445,6 +502,10 @@ function App() {
     </Provider>
   );
 }
+
+
+
+
 
 
 
