@@ -1,17 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from "@react-navigation/native";
-import { Text, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, ActivityIndicator, Dimensions, Pressable } from "react-native";
+import { Text, View, TextInput, StyleSheet, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, TouchableOpacity, ActivityIndicator, Dimensions, Pressable, Modal, SafeAreaView } from "react-native";
 import { Brand, SubBrand, FocusedStatusBar, Blackboard, Copyright } from "../components";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { authentication, rtdb } from './firebase-config';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Toast from 'react-native-toast-message';
-import { AntDesign, Ionicons, Octicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { setTabBarHeight } from '../components/actions/actions';
 import { useDispatch } from 'react-redux';
-import { child, get, ref, update } from 'firebase/database';
+import { child, get, ref as rtdbRef, update } from 'firebase/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 
 const toastConfig = {
@@ -81,6 +80,10 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const [dimensions, setDimesions] = useState({ window: Dimensions.get('window') });
+    const [modalVisible, setModalVisible] = useState(false);
+    const { window } = dimensions;
+    const windowWidth = window.width;
+    const windowHeight = window.height;
 
     useEffect(() => {
         const subscription = Dimensions.addEventListener("change", ({ window }) => {
@@ -88,10 +91,6 @@ const Login = () => {
         });
         return () => subscription?.remove();
     })
-
-    const { window } = dimensions;
-    const windowWidth = window.width;
-    const windowHeight = window.height;
 
     // This function will be triggered when the button is pressed
     const toggleLoading = () => {
@@ -133,25 +132,25 @@ const Login = () => {
         })
     }
 
-    const login = async () => {
+    const handleLogin = async () => {
         toggleLoading();
         const currentDate = new Date().toISOString().slice(0, 10);
         const currentMonth = new Date().toISOString().slice(0, 7);
-
         try {
             const userCredential = await signInWithEmailAndPassword(authentication, email, password);
             const userid = userCredential.user.uid;
+            console.log("登入成功: ", userCredential.user.uid)
 
-            const dbRef = ref(rtdb);
+            const dbRef = rtdbRef(rtdb);
             const snapshot = await get(child(dbRef, `student/${userid}`));
 
             if (snapshot.exists()) {
                 const userName = snapshot.val().name.toUpperCase();
                 const onlinetime = snapshot.val().onlinetime;
 
-                const musicRef = ref(rtdb, '/student/' + userid);
+                const musicRef = rtdbRef(rtdb, '/student/' + userid);
                 if (onlinetime !== currentDate) {
-                    update(musicRef, {
+                    await update(musicRef, {
                         Daytotaltimeplayed: 0,
                         onlinemonth: currentMonth,
                         onlinetime: currentDate,
@@ -159,26 +158,26 @@ const Login = () => {
                 }
 
                 if (snapshot.val().Resetallmusic === 'notupdated' || snapshot.val().Resetallmusic !== currentMonth + 'alreadyupdated') {
-                    const databaseRef = ref(rtdb, `student/${userid}`);
-                    update(databaseRef, {
+                    const databaseRef = rtdbRef(rtdb, `student/${userid}`);
+                    await update(databaseRef, {
                         Monthtotaltimeplayed: 0,
                         Resetallmusic: currentMonth + 'alreadyupdated',
                     });
-                    const musicLogfileRef = ref(rtdb, `student/${userid}/MusicLogfile`);
+                    const musicLogfileRef = rtdbRef(rtdb, `student/${userid}/MusicLogfile`);
                     remove(musicLogfileRef);
                 }
 
-                // **將 UID 存入 AsyncStorage**
                 await AsyncStorage.setItem('userId', userid);
 
                 success(userName);
                 setTimeout(() => {
                     navigation.navigate("Root");
-                }, 1000);
+                }, 2000);
             } else {
                 error();
             }
         } catch {
+            console.log("登入失敗: ", error.message)
             error();
         }
     };
@@ -186,51 +185,59 @@ const Login = () => {
 
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={[styles.container, { paddingTop: windowHeight < 800 ? 20 : 40 }]}
-        >
-            <FocusedStatusBar />
+        <SafeAreaView style={styles.safeContainer}>
             <View style={{ zIndex: 999 }}>
                 <Toast config={toastConfig} topOffset={50} />
             </View>
-            <Pressable onPress={Keyboard.dismiss}>
-                <View style={{ marginTop: SIZES.font, alignItems: "center", justifyContent: "center" }}>
-                    <Blackboard fontSize={windowHeight < 800 ? 13 : 15} margin={windowHeight < 800 ? 10 : 20} />
-                    <Brand fontSize={windowHeight < 800 ? 40 : 45} margin={2} />
-                    <SubBrand fontSize={windowHeight < 800 ? 13 : 15} />
-                    <View
-                        style={{
-                            width: "90%",
-                            borderRadius: SIZES.font,
-                            flexDirection: "column",
-                            alignItems: "center",
-                            margin: 20,
-                            paddingHorizontal: SIZES.font,
-                            paddingVertical: SIZES.small - 2,
-                            borderColor: "#ffbf3f",
-                            borderWidth: 5,
-                            borderRadius: 10,
-                        }}
-                    >
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.keyboardContainer}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.innerContainer}>
+                        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.reminderButton}>
+                            <MaterialCommunityIcons name='chat-question-outline' size={20} color={'white'} />
+                            <Text style={styles.reminderText}>
+                                APP 使用手冊
+                            </Text>
+                        </TouchableOpacity>
 
-                        <Text style={[styles.inputtitle, { fontSize: windowHeight < 800 ? 15 : 19 }]}>帳號</Text>
-                        <TextInput
-                            placeholder="Email..."
-                            onChangeText={setEmail}
-                            onChange={(event) => { setEmail(event.value) }}
-                            style={[styles.input, { fontSize: windowHeight < 800 ? 15 : 15 }]}
-                        />
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => setModalVisible(false)}
+                        >
+                            <View style={styles.modalContainer}>
+                                <Blackboard fontSize={15} margin={10} />
 
-                        <Text style={[styles.inputtitle, { fontSize: windowHeight < 800 ? 15 : 19 }]}>密碼</Text>
-                        <TextInput
-                            placeholder="Password..."
-                            onChangeText={setPassword}
-                            onChange={(event) => { setPassword(event.value) }}
-                            style={[styles.input, { fontSize: windowHeight < 800 ? 15 : 15 }]}
-                            secureTextEntry={true}
-                        />
-                        <TouchableOpacity onPress={login}>
+                                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                                    <Text style={styles.closeButtonText}>關閉</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
+                        <Brand fontSize={50} margin={0} />
+                        <SubBrand fontSize={18} />
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputtitle}>帳號</Text>
+                            <TextInput
+                                placeholder="Email..."
+                                style={styles.input}
+                                onChangeText={setEmail}
+                                onChange={(event) => { setEmail(event.value) }}
+                            />
+                            <Text style={styles.inputtitle}>密碼</Text>
+                            <TextInput
+                                placeholder="Password..."
+                                style={styles.input}
+                                secureTextEntry={true}
+                                onChangeText={setPassword}
+                                onChange={(event) => { setPassword(event.value) }}
+                            />
+                        </View>
+
+                        <TouchableOpacity onPress={handleLogin}>
                             <View
                                 style={{
                                     backgroundColor: COLORS.white,
@@ -258,53 +265,114 @@ const Login = () => {
                         <TouchableOpacity style={styles.solevbtn} onPress={() => navigation.navigate('Solve')}>
                             <Text style={styles.solevbtntext}>無法登入嗎?</Text>
                         </TouchableOpacity>
-                        <Copyright />
 
+                        <Copyright />
                     </View>
-                </View>
-            </Pressable>
-        </KeyboardAvoidingView>
-        // </SafeAreaView>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
-    container: {
+    reminderButton: {
+        backgroundColor: '#fc7703',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        minWidth: 120, // 增加按鈕寬度
+        display: 'flex',
+        justifyContent: "center",
+        alignItems: 'center',
+        gap: 5,
+        flexDirection: 'row',
+        marginBottom: 10,
+    },
+    reminderText: {
+        color: 'white',
+        fontSize: 18, // 讓字變大
+        fontWeight: "bold",
+
+    },
+    modalContainer: {
         flex: 1,
-        // fontFamily: 'Nunito',
+        backgroundColor: "rgba(0, 0, 0, 0.5)", // 半透明背景
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    closeButton: {
+        backgroundColor: "red",
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        minWidth: 120,
+        marginTop: 20,
+    },
+    closeButtonText: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    safeContainer: {
+        flex: 1,
+        backgroundColor: "white", // 背景色
+    },
+    keyboardContainer: {
+        flex: 1,
+    },
+    innerContainer: {
+        flex: 1,
+        justifyContent: "center", // 讓內容在中間
+        alignItems: "center",
+        paddingVertical: 20, // 上下留點空間
+    },
+    inputContainer: {
+        width: "90%",
+        alignItems: "center",
+        marginVertical: 20,
     },
     inputtitle: {
-        fontFamily: FONTS.mainFont,
+        fontSize: 18,
         fontWeight: "700",
-        textAlign: 'center',
-        justifyContent: 'center',
-        backgroundColor: "white",
         color: COLORS.primary,
-        margin: 3,
-        // padding: 10,
+        marginBottom: 5,
     },
     input: {
-        fontFamily: FONTS.VarelaRound,
-        fontWeight: "700",
-        textAlign: 'center',
-        justifyContent: 'center',
-        backgroundColor: "white",
-        color: COLORS.primary,
-        borderColor: COLORS.inputfieldgreen,
-        borderWidth: 3.5,
-        borderRadius: 5,
         width: "90%",
-        height: 'auto',
-        margin: 3,
         padding: 15,
+        borderWidth: 2,
+        borderColor: COLORS.inputfieldgreen,
+        borderRadius: 5,
+        backgroundColor: "white",
+        textAlign: "center",
+        fontSize: 16,
+        marginBottom: 10,
+    },
+    loginButton: {
+        backgroundColor: COLORS.primary,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        minWidth: 120,
+        alignItems: "center",
+        justifyContent: "center",
+        marginVertical: 10,
+    },
+    loginButtonText: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold",
     },
     solevbtn: {
-        padding: 10,
-        borderWidth: 0, // You can add a border if needed
-        backgroundColor: 'transparent', // Make the background transparent
+        marginTop: 10,
     },
     solevbtntext: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: "bold",
     },
 
 });

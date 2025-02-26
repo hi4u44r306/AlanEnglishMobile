@@ -114,27 +114,27 @@ export default function MusicPlayer({ music }) {
       }
     };
   }, [isPlaying, currentTrack]); // 加入 currentTrack 為依賴
-  
+
 
   // 播放下一首
   const handleNextTrack = () => {
     if (!playlists || !playlists[music.type]) return;
-    
+
     const musicList = Object.values(playlists[music.type]);
     const currentIndex = getCurrentMusicIndex();
     if (currentIndex === -1) return;
-    
+
     let nextTrackIndex = currentIndex + 1;
     if (nextTrackIndex >= musicList.length) {
       nextTrackIndex = 0;
     }
     let nextTrack = musicList[nextTrackIndex];
-    
+
     // 如果下一首或當前曲目被鎖定，則回到第一首（或找出第一個未鎖定的）
     if (nextTrack.locked || musicList[currentIndex].locked) {
       nextTrack = musicList.find(track => !track.locked) || musicList[0];
     }
-    
+
     setListenedMillis(0);
     listenedMillisRef.current = 0;
     dispatch(setCurrentPlaying(nextTrack));
@@ -206,43 +206,43 @@ export default function MusicPlayer({ music }) {
   }
 
   // 播放狀態更新的 callback
-// 播放狀態更新的 callback
-const onPlaybackStatusUpdate = (status) => {
-  if (status.isLoaded) {
-    const safePosition = isNaN(status.positionMillis) ? 0 : status.positionMillis;
-    const safeDuration = isNaN(status.durationMillis) ? 0 : status.durationMillis;
-    setPositionMillis(safePosition);
-    setDurationMillis(safeDuration);
+  // 播放狀態更新的 callback
+  const onPlaybackStatusUpdate = (status) => {
+    if (status.isLoaded) {
+      const safePosition = isNaN(status.positionMillis) ? 0 : status.positionMillis;
+      const safeDuration = isNaN(status.durationMillis) ? 0 : status.durationMillis;
+      setPositionMillis(safePosition);
+      setDurationMillis(safeDuration);
 
-    if (status.didJustFinish) {
-      // 清除計時器
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      // 利用 ref 的值來計算聽取比例
-      const listenedPercentage = safeDuration ? listenedMillisRef.current / safeDuration : 0;
-      console.log('listenedPercentage : ', listenedPercentage);
-      // 只有聽取達 95% 以上才更新播放次數
-      if (listenedPercentage >= 0.01) {
-        updateRTDBData();
-      } else {
-        error();
-      }
-      // 重置累計聽取時間
-      setListenedMillis(0);
-      listenedMillisRef.current = 0;
-      // 根據重複模式決定：重播目前曲目或播放下一首
-      if (repeatRef.current) {
-        // 將 isPlaying 設為 false 來觸發 useEffect 重啟計時器
-        setIsPlaying(false);
-        playSound(currentTrack);
-      } else {
-        handleNextTrack();
+      if (status.didJustFinish) {
+        // 清除計時器
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        // 利用 ref 的值來計算聽取比例
+        const listenedPercentage = safeDuration ? listenedMillisRef.current / safeDuration : 0;
+        console.log('listenedPercentage : ', listenedPercentage);
+        // 只有聽取達 95% 以上才更新播放次數
+        if (listenedPercentage >= 0.01) {
+          updateRTDBData();
+        } else {
+          error();
+        }
+        // 重置累計聽取時間
+        setListenedMillis(0);
+        listenedMillisRef.current = 0;
+        // 根據重複模式決定：重播目前曲目或播放下一首
+        if (repeatRef.current) {
+          // 將 isPlaying 設為 false 來觸發 useEffect 重啟計時器
+          setIsPlaying(false);
+          playSound(currentTrack);
+        } else {
+          handleNextTrack();
+        }
       }
     }
-  }
-};
+  };
 
 
   // 播放音檔
@@ -367,27 +367,32 @@ const onPlaybackStatusUpdate = (status) => {
             <Text style={styles.page}>{currentTrack.page}</Text>
           </View>
 
+          <View style={styles.detailsContainer}>
+            <Text style={styles.bookName}>{currentTrack.bookname}</Text>
+            <Text style={styles.page}>{currentTrack.page}</Text>
+          </View>
+
           {/* 新增：重複播放按鈕，根據狀態改變顏色 */}
           <TouchableOpacity onPress={toggleRepeat}>
-          {
-            repeat ?
-            (
-              <MaterialIcons
-              name="repeat-on"
-              size={30}
-              style={[styles.controlIcon, { color: "red" }]}
-              />
-            )
-            :
-            (
-              <MaterialIcons
-              name="repeat"
-              size={30}
-              style={[styles.controlIcon, { color: "black" }]}
-              />
-            )
-          }
-            
+            {
+              repeat ?
+                (
+                  <MaterialIcons
+                    name="repeat-on"
+                    size={30}
+                    style={[styles.controlIcon, { color: "red" }]}
+                  />
+                )
+                :
+                (
+                  <MaterialIcons
+                    name="repeat"
+                    size={30}
+                    style={[styles.controlIcon, { color: "black" }]}
+                  />
+                )
+            }
+
           </TouchableOpacity>
 
           {musicLoading ? (

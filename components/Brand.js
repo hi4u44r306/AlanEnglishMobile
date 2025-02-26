@@ -3,7 +3,7 @@ import { View, Text, Image } from 'react-native';
 import { FONTS } from '../constants';
 
 const textStyle = (color, fontSize, margin) => ({
-  margin: 0,
+  margin,
   color,
   fontSize,
   fontFamily: FONTS.mainFont,

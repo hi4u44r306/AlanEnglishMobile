@@ -163,13 +163,50 @@
 // export default Setting;
 
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { FocusedStatusBar, HomeHeader } from "../components";
+import { FocusedStatusBar, HomeHeader, LogoutButton } from "../components";
 import ScreenContainer from "./ScreenContainer";
 import { COLORS } from "../constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const Setting = ({ navigation }) => {
+  const Logout = () => {
+    Alert.alert(
+      '登出',
+      '確定要登出嗎 ?',
+      [
+        {
+          text: '取消',
+          style: 'cancel',
+        },
+        {
+          text: '確定',
+
+          onPress: async () => {
+            await AsyncStorage.removeItem('userId'); // 清除儲存的用戶 UID
+            navigation.replace("Login"); // 導回登入頁面
+            // Handle the confirmation action
+            removePushToken();
+            alert('登出成功');
+            signOut(authentication)
+              .then(async () => {
+                await AsyncStorage.removeItem('ae-username');
+                await AsyncStorage.removeItem('ae-class');
+                await AsyncStorage.removeItem('ae-useruid');
+                await AsyncStorage.removeItem('ae-daytotal');
+                await AsyncStorage.removeItem('ae-monthtotal');
+                navigation.navigate("Login");
+              }).catch((error) => {
+                alert(error);
+              });
+          },
+        },
+      ],
+      { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
+    );
+  };
   return (
     <ScreenContainer>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
@@ -195,6 +232,11 @@ const Setting = ({ navigation }) => {
           <Text style={styles.text}>About Us</Text>
           <Ionicons name="chevron-forward" size={20} color="#aaa" style={styles.icon} />
         </TouchableOpacity>
+
+        <LogoutButton
+          fontSize={20}
+          handlePress={Logout}
+        />
       </View>
     </ScreenContainer>
   );

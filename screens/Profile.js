@@ -95,41 +95,41 @@ const Profile = () => {
 
 
 
-  const Logout = () => {
-    Alert.alert(
-      '登出',
-      '確定要登出嗎 ?',
-      [
-        {
-          text: '取消',
-          style: 'cancel',
-        },
-        {
-          text: '確定',
+  // const Logout = () => {
+  //   Alert.alert(
+  //     '登出',
+  //     '確定要登出嗎 ?',
+  //     [
+  //       {
+  //         text: '取消',
+  //         style: 'cancel',
+  //       },
+  //       {
+  //         text: '確定',
 
-          onPress: async () => {
-            await AsyncStorage.removeItem('userId'); // 清除儲存的用戶 UID
-            navigation.replace("Login"); // 導回登入頁面
-            // Handle the confirmation action
-            removePushToken();
-            alert('登出成功');
-            signOut(authentication)
-              .then(async () => {
-                await AsyncStorage.removeItem('ae-username');
-                await AsyncStorage.removeItem('ae-class');
-                await AsyncStorage.removeItem('ae-useruid');
-                await AsyncStorage.removeItem('ae-daytotal');
-                await AsyncStorage.removeItem('ae-monthtotal');
-                navigation.navigate("Login");
-              }).catch((error) => {
-                alert(error);
-              });
-          },
-        },
-      ],
-      { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
-    );
-  };
+  //         onPress: async () => {
+  //           await AsyncStorage.removeItem('userId'); // 清除儲存的用戶 UID
+  //           navigation.replace("Login"); // 導回登入頁面
+  //           // Handle the confirmation action
+  //           removePushToken();
+  //           alert('登出成功');
+  //           signOut(authentication)
+  //             .then(async () => {
+  //               await AsyncStorage.removeItem('ae-username');
+  //               await AsyncStorage.removeItem('ae-class');
+  //               await AsyncStorage.removeItem('ae-useruid');
+  //               await AsyncStorage.removeItem('ae-daytotal');
+  //               await AsyncStorage.removeItem('ae-monthtotal');
+  //               navigation.navigate("Login");
+  //             }).catch((error) => {
+  //               alert(error);
+  //             });
+  //         },
+  //       },
+  //     ],
+  //     { cancelable: false } // Prevents the user from dismissing the dialog by tapping outside it
+  //   );
+  // };
 
   // Function to handle choosing an image
   const handleChooseImage = async () => {
@@ -258,10 +258,10 @@ const Profile = () => {
             {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
           </View>
         </View>
-        <LogoutButton
+        {/* <LogoutButton
           fontSize={20}
           handlePress={Logout}
-        />
+        /> */}
         <View>
           {/* <View style={styles.listeningCountContainer}>
             <View style={{ paddingLeft: 20, paddingRight: 20 }}>

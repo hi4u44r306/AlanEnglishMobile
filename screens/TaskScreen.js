@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert, StyleSheet, ImageBackground } from "react-native";
 import { authentication, rtdb } from "./firebase-config";
 import { ref as rtdbRef, get, update } from "firebase/database";
 import ScreenContainer from "./ScreenContainer";
@@ -78,17 +78,113 @@ const TaskScreen = () => {
     };
 
     return (
-        <ScreenContainer>
-            <FocusedStatusBar backgroundColor={COLORS.primary} />
-            <HomeHeader display="none" />
-            <View>
-                <Text>當前金幣：{coins}</Text>
-                <Text>今日聽力次數：{tasks.listenCount}</Text>
-                <Button title="每日簽到" onPress={checkIn} />
-                <Button title="領取任務獎勵" onPress={claimReward} />
-            </View>
-        </ScreenContainer>
+        <ImageBackground style={styles.background}>
+            <ScreenContainer>
+                <FocusedStatusBar backgroundColor={COLORS.primary} />
+                <HomeHeader display="none" />
+
+                {/* 金幣顯示 */}
+                <View style={styles.coinContainer}>
+                    <Text style={styles.coinText}>💰 {coins}</Text>
+                </View>
+
+                {/* 任務盒子 - 每日簽到 */}
+                <View style={styles.taskBox}>
+                    <Text style={styles.taskTitle}>📅 每日簽到</Text>
+                    <Text style={styles.taskDesc}>每天簽到可獲得 10 金幣</Text>
+                    <TouchableOpacity onPress={checkIn} style={styles.taskButton}>
+                        <Text style={styles.buttonText}>簽到</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* 任務盒子 - 領取獎勵 */}
+                <View style={styles.taskBox}>
+                    <Text style={styles.taskTitle}>🎧 任務獎勵</Text>
+                    <Text style={styles.taskDesc}>聆聽 10/20 次可領取金幣</Text>
+                    <TouchableOpacity onPress={claimReward} style={styles.taskButtonPurple}>
+                        <Text style={styles.buttonText}>領取獎勵</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScreenContainer>
+        </ImageBackground>
     );
 };
+
+const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        backgroundColor: "#F5F5F5", // 柔和的背景色
+        justifyContent: "center",
+    },
+    coinContainer: {
+        alignSelf: "center",
+        backgroundColor: "#FFFFFF",
+        padding: 15,
+        borderRadius: 10,
+        marginBottom: 20,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    coinText: {
+        fontSize: 22,
+        color: "#333",
+        fontWeight: "600",
+    },
+    taskBox: {
+        backgroundColor: "#FFFFFF",
+        borderRadius: 12,
+        padding: 20,
+        marginVertical: 10,
+        marginHorizontal: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+    },
+    taskTitle: {
+        fontSize: 18,
+        color: "#222",
+        fontWeight: "600",
+        marginBottom: 5,
+    },
+    taskDesc: {
+        fontSize: 14,
+        color: "#666",
+        textAlign: "center",
+        marginBottom: 10,
+    },
+    taskButton: {
+        backgroundColor: "#3A5A40", // 低調的綠色
+        paddingVertical: 10,
+        paddingHorizontal: 25,
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    taskButtonPurple: {
+        backgroundColor: "#2C3E50", // 深藍色，增強穩重感
+        paddingVertical: 10,
+        paddingHorizontal: 25,
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    buttonText: {
+        fontSize: 16,
+        color: "#FFFFFF",
+        fontWeight: "500",
+        textAlign: "center",
+    },
+});
+
 
 export default TaskScreen;
