@@ -179,19 +179,19 @@ const Setting = ({ navigation }) => {
 
         {/* 設定選項列表 */}
         <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("NotificationSettings")}>
-          <Ionicons name="notifications-outline" size={22}   />
+          <Ionicons name="notifications-outline" size={22} />
           <Text style={styles.text}>Notifications</Text>
           <Ionicons name="chevron-forward" size={20} color="#aaa" style={styles.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("PrivacyPolicy")}>
-          <Ionicons name="shield-outline" size={22}   />
+          <Ionicons name="shield-outline" size={22} />
           <Text style={styles.text}>Privacy Policy</Text>
           <Ionicons name="chevron-forward" size={20} color="#aaa" style={styles.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.row} onPress={() => navigation.navigate("AboutUs")}>
-          <Ionicons name="information-circle-outline" size={22}   />
+          <Ionicons name="information-circle-outline" size={22} />
           <Text style={styles.text}>About Us</Text>
           <Ionicons name="chevron-forward" size={20} color="#aaa" style={styles.icon} />
         </TouchableOpacity>

@@ -35,12 +35,12 @@ const Profile = () => {
   useEffect(() => {
     // 用來存放解除監聽的函數
     let unsubscribe;
-  
+
     const fetchRealtimeUserData = async () => {
       try {
         if (user.uid) {
           const userRef = rtdbRef(rtdb, `student/${user.uid}`);
-  
+
           // 監聽資料變化
           unsubscribe = onValue(
             userRef,
@@ -65,9 +65,9 @@ const Profile = () => {
         console.error('Failed to retrieve user uid from AsyncStorage:', error);
       }
     };
-  
+
     fetchRealtimeUserData();
-  
+
     // 清除監聽器
     return () => {
       if (unsubscribe) {
@@ -106,7 +106,10 @@ const Profile = () => {
         },
         {
           text: '確定',
-          onPress: () => {
+
+          onPress: async () => {
+            await AsyncStorage.removeItem('userId'); // 清除儲存的用戶 UID
+            navigation.replace("Login"); // 導回登入頁面
             // Handle the confirmation action
             removePushToken();
             alert('登出成功');

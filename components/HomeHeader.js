@@ -5,7 +5,7 @@ import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { Brand } from "./Brand";
 
 import { db } from "../screens/firebase-config";
-import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, FontAwesome5, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import FocusedStatusBar from "./FocusedStatusBar";
 import { useEffect } from "react";
@@ -72,8 +72,8 @@ const HomeHeader = ({ onSearch, display }) => {
               alignItems: 'center',
             }}
           >
-            <Feather
-              name="settings"
+            <FontAwesome6
+              name="user-gear"
               size={25}
               color={'black'}
               handlePress={() => refRBSheet.current.close()}
@@ -82,20 +82,15 @@ const HomeHeader = ({ onSearch, display }) => {
           </TouchableOpacity>
           <RBSheet
             ref={refRBSheet}
-            height={Dimensions.get('window').height / 2}
-            closeOnDragDown={true}
-            closeOnPressMask={false}
+            height={Dimensions.get('window').height * 0.8}
+            closeOnDragDown={false}  // 移除拖動關閉
+            closeOnPressMask={false}  // 點擊遮罩不關閉
             customStyles={{
-              wrapper: {
-                backgroundColor: "transparent"
-              },
-              draggableIcon: {
-                backgroundColor: "#000"
-              }
+              wrapper: { backgroundColor: "transparent" },
+              draggableIcon: { display: "none" }  // 隱藏預設的拖動 Icon
             }}
           >
-            {/* Your content inside the RBSheet */}
-            <Drawer />
+            <Drawer onClose={() => refRBSheet.current?.close()} />
           </RBSheet>
         </View>
         <View style={{ marginTop: SIZES.font, display: display }}>

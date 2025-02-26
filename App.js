@@ -43,6 +43,8 @@ import NotificationSettings from "./screens/NotificationSettings";
 import SetNotification from "./screens/SetNotification";
 import * as Notifications from "expo-notifications";
 import { Alert } from 'react-native';
+import { getAuth } from "firebase/auth";
+import TaskScreen from "./screens/TaskScreen";
 
 const store = createStore(rootReducer);
 const theme = {
@@ -57,6 +59,7 @@ const Tab = createBottomTabNavigator();
 const homepage = '首頁';
 const playlistpage = '播放列表';
 const profilepage = '用戶';
+const taskpage = '任務';
 const leaderboardpage = '排行榜';
 const homework = '聯絡簿';
 const teacher = '老師專用';
@@ -253,11 +256,50 @@ function Root() {
     setCurrMusic(playing)
   }, [playing]);
 
+  const [userclass, setUserClass] = useState();
+
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+  useEffect(() => {
+    let unsubscribe;
+
+    const fetchRealtimeUserData = async () => {
+      try {
+        if (user?.uid) {
+          const userRef = rtdbRef(rtdb, `student/${user.uid}`);
+
+          unsubscribe = onValue(
+            userRef,
+            (snapshot) => {
+              const data = snapshot.val();
+              if (data) {
+                setUserClass(data.class);
+              }
+            },
+            (error) => {
+              console.error("Error fetching realtime user data:", error);
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Failed to retrieve user uid:", error);
+      }
+    };
+
+    fetchRealtimeUserData();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [user?.uid]); // 確保當 `user.uid` 變更時重新執行
 
   return (
     <>
       <View style={{ flex: 1, overflow: 'hidden' }}>
-          <View style={{ zIndex: 999 }}>
+        <View style={{ zIndex: 999 }}>
           {/* Toast Container 放在這裡，整個頁面最上層 */}
           <Toast config={toastConfig} topOffset={0} />
         </View>
@@ -292,6 +334,9 @@ function Root() {
               else if (rn === setting) {
                 iconName = focused ? 'settings' : 'settings-outline';
               }
+              else if (rn === taskpage) {
+                iconName = focused ? 'file-tray-full' : 'file-tray-full-outline';
+              }
 
               return <Text><Ionicons name={iconName} size={20} color={color} /></Text>
 
@@ -305,11 +350,12 @@ function Root() {
         >
           {/* <Tab.Screen name="排行榜" component={Leaderboard} /> */}
           <Tab.Screen name="播放列表" component={PlaylistStackScreen} />
-          {AsyncStorage.getItem('ae-class') !== 'Teacher' && (
+          {userclass === 'Teacher' && (
             <Tab.Screen name="老師專用" component={TeacherFunction} />
           )}
           <Tab.Screen name="首頁" component={Home} />
-          <Tab.Screen name="用戶" component={Profile} />
+          {/* <Tab.Screen name="用戶" component={Profile} /> */}
+          <Tab.Screen name="任務" component={TaskScreen} />
           <Tab.Screen name="設定" component={SettingFunction} />
           {/* <Tab.Screen name="聯絡簿" component={Homework} /> */}
 
@@ -317,7 +363,7 @@ function Root() {
         </Tab.Navigator>
 
 
-        
+
         <View>
           {currMusic
             &&
@@ -355,7 +401,7 @@ function App() {
     console.log("取得的推播 token:", token);
     return token;
   }
-  
+
   async function savePushToken(userId, token) {
     try {
       // 儲存在 "pushTokens/{userId}" 下，方便後續管理
@@ -377,9 +423,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    
+
   }, []);
-  
+
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -497,6 +543,7 @@ function App() {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Details" component={Details} />
           <Stack.Screen name="Solve" component={Solve} />
+          <Stack.Screen name="Profile" component={Profile} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

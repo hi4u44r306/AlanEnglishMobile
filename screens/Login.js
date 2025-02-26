@@ -10,6 +10,7 @@ import { AntDesign, Ionicons, Octicons } from '@expo/vector-icons';
 import { setTabBarHeight } from '../components/actions/actions';
 import { useDispatch } from 'react-redux';
 import { child, get, ref, update } from 'firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -138,44 +139,50 @@ const Login = () => {
         const currentMonth = new Date().toISOString().slice(0, 7);
 
         try {
-            signInWithEmailAndPassword(authentication, email, password).then((userCredential) => {
-                const userid = userCredential.user.uid
-                const dbRef = ref(rtdb);
-                get(child(dbRef, `student/${userid}`)).then((snapshot) => {
-                    const userName = snapshot.val().name.toUpperCase();
-                    const onlinetime = snapshot.val().onlinetime;
-                    const musicRef = ref(rtdb, '/student/' + userid);
-                    if (onlinetime !== currentDate) {
-                        update(musicRef, {
-                            Daytotaltimeplayed: 0,
-                            onlinemonth: currentMonth,
-                            onlinetime: currentDate,
-                        })
-                    }
+            const userCredential = await signInWithEmailAndPassword(authentication, email, password);
+            const userid = userCredential.user.uid;
 
-                    if (snapshot.val().Resetallmusic === 'notupdated' || snapshot.val().Resetallmusic !== currentMonth + 'alreadyupdated') {
+            const dbRef = ref(rtdb);
+            const snapshot = await get(child(dbRef, `student/${userid}`));
 
-                        const databaseRef = ref(rtdb, `student/${userid}`);
-                        update(databaseRef, {
-                            Monthtotaltimeplayed: 0,
-                            Resetallmusic: currentMonth + 'alreadyupdated',
-                        });
-                        const musicLogfileRef = ref(rtdb, `student/${userid}/MusicLogfile`);
-                        remove(musicLogfileRef);
-                    }
+            if (snapshot.exists()) {
+                const userName = snapshot.val().name.toUpperCase();
+                const onlinetime = snapshot.val().onlinetime;
 
-                    success(userName);
-                    setTimeout(() => {
-                        navigation.navigate("Root")
-                    }, 1000);
-                })
-            })
+                const musicRef = ref(rtdb, '/student/' + userid);
+                if (onlinetime !== currentDate) {
+                    update(musicRef, {
+                        Daytotaltimeplayed: 0,
+                        onlinemonth: currentMonth,
+                        onlinetime: currentDate,
+                    });
+                }
 
+                if (snapshot.val().Resetallmusic === 'notupdated' || snapshot.val().Resetallmusic !== currentMonth + 'alreadyupdated') {
+                    const databaseRef = ref(rtdb, `student/${userid}`);
+                    update(databaseRef, {
+                        Monthtotaltimeplayed: 0,
+                        Resetallmusic: currentMonth + 'alreadyupdated',
+                    });
+                    const musicLogfileRef = ref(rtdb, `student/${userid}/MusicLogfile`);
+                    remove(musicLogfileRef);
+                }
 
+                // **將 UID 存入 AsyncStorage**
+                await AsyncStorage.setItem('userId', userid);
+
+                success(userName);
+                setTimeout(() => {
+                    navigation.navigate("Root");
+                }, 1000);
+            } else {
+                error();
+            }
         } catch {
             error();
         }
-    }
+    };
+
 
 
     return (
