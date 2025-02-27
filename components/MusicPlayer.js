@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, Animated, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, ActivityIndicator, Image } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { COLORS, SIZES } from '../constants';
 import { AntDesign, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
-import { Audio } from 'expo-av';
+import { Audio, ResizeMode } from 'expo-av';
 import { setCurrentMargin, setCurrentPlaying, setMusicPlayerDisplay } from './actions/actions';
 import { getDownloadURL, getStorage, ref as storageRef } from 'firebase/storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -362,11 +362,11 @@ export default function MusicPlayer({ music }) {
             <AntDesign name="close" size={24} style={styles.controlIcon} />
           </TouchableOpacity>
 
-          <View style={styles.detailsContainer}>
-            <Text style={styles.bookName}>{currentTrack.bookname}</Text>
-            <Text style={styles.page}>{currentTrack.page}</Text>
-          </View>
 
+          <Image
+            style={styles.image}
+            source={require('../assets/img/headphone.png')}
+          />
           <View style={styles.detailsContainer}>
             <Text style={styles.bookName}>{currentTrack.bookname}</Text>
             <Text style={styles.page}>{currentTrack.page}</Text>
@@ -470,4 +470,10 @@ const styles = {
     color: COLORS.black,
     fontSize: SIZES.font,
   },
+  image: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+    ResizeMode: 'contain',
+  }
 };

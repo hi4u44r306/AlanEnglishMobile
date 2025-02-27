@@ -131,9 +131,13 @@ const Drawer = ({ onClose }) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                <AntDesign name="close" color={'black'} size={35} />
+                <AntDesign name="close" color={'white'} size={30} />
             </TouchableOpacity>
             <View style={styles.userInfoContainer}>
+                <View style={styles.userinfo}>
+                    <Text style={styles.userinfolabel}>用戶名稱</Text>
+                    <Text style={styles.secondtitleText}>{userData.username || ''} </Text>
+                </View>
                 <View style={styles.userinfo}>
                     <Text style={styles.userinfolabel}>班級</Text>
                     <Text style={styles.secondtitleText}>{userData.classname || ''} 班</Text>
@@ -179,11 +183,12 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     closeButton: {
-        alignSelf: 'flex-start',
+        alignSelf: 'center',
         padding: 10,
+        backgroundColor: '#fa2020',
+        borderRadius: 50,
     },
     userInfoContainer: {
-        margin: 15,
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
         padding: SIZES.base, // You can adjust this padding as needed

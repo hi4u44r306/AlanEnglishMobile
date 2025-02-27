@@ -1,31 +1,35 @@
 import React, { useState } from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  Alert, 
-  Image 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import ScreenContainer from "./ScreenContainer";
-import { FocusedStatusBar, HomeHeader } from "../components";
+import { FocusedStatusBar } from "../components";
 import { rtdb } from "./firebase-config";
-import { child, get, ref as rtdbRef } from "firebase/database";
-import * as Notifications from "expo-notifications";
+import { child, get, ref as rtdbRef, push, set } from "firebase/database";
 import { COLORS } from "../constants";
 
 const SetNotification = () => {
+  const [customTitle, setCustomTitle] = useState("");
   const [message, setMessage] = useState("");
 
-  // 從 Firebase RTDB 中取得所有用戶的推播 token
+  // 取得 Firebase 中的推播 tokens
   const fetchPushTokens = async () => {
     try {
       const dbRef = rtdbRef(rtdb);
       const snapshot = await get(child(dbRef, "pushTokens"));
       if (snapshot.exists()) {
-        const tokens = Object.values(snapshot.val());
-        console.log("取得的 tokens:", tokens);
+        // 移除重複的 tokens
+        const tokens = [...new Set(Object.values(snapshot.val()))];
         return tokens;
       } else {
         return [];
@@ -36,30 +40,44 @@ const SetNotification = () => {
     }
   };
 
+
+  // 儲存通知到 Firebase
+  const saveNotificationToFirebase = async (title, message) => {
+    try {
+      const notificationRef = push(rtdbRef(rtdb, "notifications"));
+      await set(notificationRef, {
+        title: title,
+        body: message,
+        timestamp: new Date().toISOString(),
+      });
+      console.log("通知已儲存到 Firebase");
+    } catch (error) {
+      console.error("儲存通知時發生錯誤:", error);
+    }
+  };
+
+  // 發送通知
   const sendNotification = async () => {
-    if (!message.trim()) {
-      Alert.alert("請輸入通知內容");
+    if (!customTitle.trim() || !message.trim()) {
+      Alert.alert("請輸入完整的通知標題與內容");
       return;
     }
 
     const tokens = await fetchPushTokens();
-
     if (tokens.length === 0) {
       Alert.alert("目前沒有用戶可以接收通知");
       return;
     }
 
-    // 建立要發送的訊息，每個 token 一筆
-    const notifications = tokens.map(token => ({
+    const notifications = tokens.map((token) => ({
       to: token,
       sound: "default",
-      title: "Alan English",
+      title: customTitle,
       body: message,
       data: { extraData: "可根據需求傳遞其他資料" },
     }));
 
     try {
-      // 呼叫 Expo 推播 API
       const response = await fetch("https://exp.host/--/api/v2/push/send", {
         method: "POST",
         headers: {
@@ -69,9 +87,15 @@ const SetNotification = () => {
         },
         body: JSON.stringify(notifications),
       });
-      const data = await response.json();
-      console.log("Push notification response:", data);
+
+      console.log("Push notification response:", await response.json());
       Alert.alert("通知已發送！");
+
+      // 儲存通知到 Firebase
+      await saveNotificationToFirebase(customTitle, message);
+
+      // 清除輸入欄位
+      setCustomTitle("");
       setMessage("");
     } catch (error) {
       console.error("Error sending push notifications:", error);
@@ -80,46 +104,58 @@ const SetNotification = () => {
   };
 
   return (
-    <ScreenContainer>
+    <SafeAreaView style={styles.safeArea}>
       <FocusedStatusBar backgroundColor={COLORS.black} />
-      <HomeHeader display="none" />
-      <View style={styles.container}>
-       
-        <Text style={styles.title}>設定全域通知</Text>
-        <Text style={styles.subtitle}>分享聽力練習推播通知訊息！</Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <Text style={styles.title}>設定全域通知</Text>
+          <Text style={styles.subtitle}>分享聽力練習推播通知訊息！</Text>
 
-        {/* 通知內容輸入框 */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="輸入可愛的通知內容..."
-            placeholderTextColor="#aaa"
-            value={message}
-            onChangeText={setMessage}
-            multiline
-          />
-        </View>
+          {/* 通知標題輸入框 */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="輸入通知標題..."
+              placeholderTextColor="#aaa"
+              value={customTitle}
+              onChangeText={setCustomTitle}
+            />
+          </View>
 
-        {/* 發送按鈕 */}
-        <TouchableOpacity style={styles.button} onPress={sendNotification}>
-          <Text style={styles.buttonText}>發送通知</Text>
-        </TouchableOpacity>
-      </View>
-    </ScreenContainer>
+          {/* 通知內容輸入框 */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, { minHeight: 100 }]}
+              placeholder="輸入通知內容..."
+              placeholderTextColor="#aaa"
+              value={message}
+              onChangeText={setMessage}
+              multiline
+            />
+          </View>
+
+          {/* 發送按鈕 */}
+          <TouchableOpacity style={styles.button} onPress={sendNotification}>
+            <Text style={styles.buttonText}>發送通知</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FFF9F2",
+  },
   container: {
     flex: 1,
-    backgroundColor: "#FFF9F2", // 柔和的背景色
     alignItems: "center",
     padding: 20,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    marginVertical: 10,
   },
   title: {
     fontSize: 28,
@@ -146,8 +182,6 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 16,
     color: "#333",
-    textAlignVertical: "top",
-    minHeight: 100,
   },
   button: {
     backgroundColor: "#FF6F61",
@@ -164,16 +198,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 18,
     fontWeight: "bold",
-  },
-  illustrationsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    marginTop: 20,
-  },
-  illustration: {
-    width: 80,
-    height: 80,
   },
 });
 

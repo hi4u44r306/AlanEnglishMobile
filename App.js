@@ -45,6 +45,9 @@ import * as Notifications from "expo-notifications";
 import { Alert } from 'react-native';
 import { getAuth } from "firebase/auth";
 import TaskScreen from "./screens/TaskScreen";
+import { HomeHeader } from "./components";
+import { PaperProvider } from "react-native-paper";
+import NotificationsScreen from "./screens/NotificationScreen";
 
 const store = createStore(rootReducer);
 const theme = {
@@ -298,8 +301,8 @@ function Root() {
 
   return (
     <>
-      <View style={{ flex: 1, overflow: 'hidden' }}>
-        <View style={{ zIndex: 999 }}>
+      <View style={{ flex: 1 }}>
+        <View style={{ zIndex: 10 }}>
           {/* Toast Container 放在這裡，整個頁面最上層 */}
           <Toast config={toastConfig} topOffset={0} />
         </View>
@@ -524,28 +527,31 @@ function App() {
   if (!loaded) return null;
   return (
     <Provider store={store}>
-      <NavigationContainer theme={theme}>
-        <Stack.Navigator
-          initialRouteName="Login"
-          screenOptions={{
-            headerShown: false,
-            cardStyle: { backgroundColor: 'transparent' },
-            cardOverlayEnabled: true,
-            cardStyleInterpolator: ({ current: { progress } }) => ({
-              cardStyle: {
-                opacity: progress,
-              },
-            }),
-          }}
-          presentation='modal'
-        >
-          <Stack.Screen name="Root" component={Root} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Details" component={Details} />
-          <Stack.Screen name="Solve" component={Solve} />
-          <Stack.Screen name="Profile" component={Profile} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <PaperProvider>
+        <NavigationContainer theme={theme}>
+          <Stack.Navigator
+            initialRouteName="Login"
+            screenOptions={{
+              headerShown: false,
+              cardStyle: { backgroundColor: 'transparent' },
+              cardOverlayEnabled: true,
+              cardStyleInterpolator: ({ current: { progress } }) => ({
+                cardStyle: {
+                  opacity: progress,
+                },
+              }),
+            }}
+            presentation='modal'
+          >
+            <Stack.Screen name="Root" component={Root} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Details" component={Details} />
+            <Stack.Screen name="Solve" component={Solve} />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
     </Provider>
   );
 }

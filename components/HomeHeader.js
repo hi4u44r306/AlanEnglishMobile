@@ -1,114 +1,142 @@
-import React, { useRef, useState } from "react";
-import { View, Text, Image, TextInput, TouchableOpacity, SafeAreaView, Button, Dimensions } from "react-native";
-
-import { COLORS, FONTS, SIZES, assets } from "../constants";
+import React, { useRef, useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  Dimensions,
+  StyleSheet
+} from "react-native";
+import { COLORS, SIZES } from "../constants";
 import { Brand } from "./Brand";
-
-import { db } from "../screens/firebase-config";
-import { AntDesign, Feather, FontAwesome, FontAwesome5, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import FocusedStatusBar from "./FocusedStatusBar";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Drawer from "./Drawer";
-
 import RBSheet from "react-native-raw-bottom-sheet";
-
-
+import { FontAwesome5, FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { rtdb } from "../screens/firebase-config";
+import { ref as rtdbRef, onValue } from "firebase/database";
+import Drawer from "./Drawer";
+import { getAuth } from "firebase/auth";
 
 const HomeHeader = ({ onSearch, display }) => {
-  // const { username } = useSelector(state => state.userReducer);
   const navigation = useNavigation();
-  const [username, setUsername] = useState();
-  const currentDate = new Date().toJSON().slice(0, 10);
-  const currentMonth = new Date().toJSON().slice(0, 7);
-  const [dailytimeplayed, setDailyTimeplayed] = useState();
-  const percentage = dailytimeplayed * 100 / 20;
-  const custompathColor = `#89aae6`
-
-  // const getUsername = async () => {
-  //   try {
-  //   } catch (error) {
-  //     console.error('Error fetching username:', error);
-  //     // Handle the error as needed
-  //   }
-  // };
-
-
-  // useEffect(() => {
-  //   getUsername();
-  // }, []);
-
-  const dispatch = useDispatch();
-  // const handleProfilePress = () => {
-  //   dispatch(setSidebar('flex'))
-
-  //   // navigation.navigate('用戶'); 
-  // };
-
-
   const refRBSheet = useRef();
+
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  // 監聽 Firebase 的通知列表
+  useEffect(() => {
+    if (!user) return;
+
+    const notificationsRef = rtdbRef(rtdb, "notifications");
+
+    const unsubscribeNotifications = onValue(notificationsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = Object.entries(snapshot.val()).map(([id, value]) => ({
+          id,
+          ...value,
+        }));
+        setNotifications(data);
+      } else {
+        setNotifications([]);
+      }
+    });
+
+    return () => unsubscribeNotifications();
+  }, [user]); // 這裡不再依賴 notifications，避免無窮迴圈
+
+  // 監聽該用戶的未讀通知狀態
+  useEffect(() => {
+    if (!user || notifications.length === 0) {
+      setUnreadCount(0);
+      return;
+    }
+
+    const userStatusRef = rtdbRef(rtdb, `userNotificationStatus/${user.uid}`);
+
+    const unsubscribeStatus = onValue(userStatusRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const readStatus = snapshot.val();
+        const unread = notifications.filter((notif) => !readStatus[notif.id]).length;
+        setUnreadCount(unread);
+      } else {
+        setUnreadCount(notifications.length);
+      }
+    });
+
+    return () => unsubscribeStatus();
+  }, [user, notifications]); // 這裡的 useEffect 只依賴 notifications，確保更新
+
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.main, }}>
-      <View style={{
-        paddingTop: 15,
-        paddingBottom: 15,
-      }}>
+    <SafeAreaView style={{ backgroundColor: COLORS.main }}>
+      <View style={{ paddingTop: 15, paddingBottom: 15 }}>
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: 'center',
             alignItems: "center",
+            paddingHorizontal: 15,
           }}
         >
-          <Brand fontSize={25} />
-          <TouchableOpacity onPress={() => refRBSheet.current.open()}
-            style={{
-              marginRight: 30,
-              justifyContent: 'center',
-              justifyItems: 'center',
-              alignContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <FontAwesome6
-              name="user-gear"
-              size={25}
-              color={'black'}
-              handlePress={() => refRBSheet.current.close()}
-            // onPress={() => refRBSheet.current.close()}
-            />
-          </TouchableOpacity>
-          <RBSheet
-            ref={refRBSheet}
-            height={Dimensions.get('window').height * 0.8}
-            closeOnDragDown={false}  // 移除拖動關閉
-            closeOnPressMask={false}  // 點擊遮罩不關閉
-            customStyles={{
-              wrapper: { backgroundColor: "transparent" },
-              draggableIcon: { display: "none" }  // 隱藏預設的拖動 Icon
-            }}
-          >
-            <Drawer onClose={() => refRBSheet.current?.close()} />
-          </RBSheet>
+          <Brand fontSize={25} style={{ alignSelf: "flex-start" }} />
+          <View style={{ flexDirection: "row", marginLeft: "auto", alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("NotificationsScreen")}
+              style={{
+                marginRight: 30,
+                alignItems: "center",
+                position: "relative",
+              }}
+            >
+              <FontAwesome5 name="bell" size={20} color={"black"} />
+              {unreadCount > 0 && (
+                <View style={styles.notificationBadge}>
+                  <Text style={styles.notificationText}>{unreadCount}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => refRBSheet.current.open()}
+              style={{
+                marginRight: 15,
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome6 name="user-gear" size={20} color={"black"} />
+            </TouchableOpacity>
+            <RBSheet
+              ref={refRBSheet}
+              height={Dimensions.get("window").height * 0.8}
+              closeOnDragDown={false}
+              closeOnPressMask={false}
+              customStyles={{
+                wrapper: { backgroundColor: "transparent" },
+                draggableIcon: { display: "none" },
+              }}
+            >
+              <Drawer onClose={() => refRBSheet.current?.close()} />
+            </RBSheet>
+          </View>
         </View>
         <View style={{ marginTop: SIZES.font, display: display }}>
           <View
             style={{
               width: "100%",
               borderRadius: SIZES.font,
-              backgroundColor: 'white',
+              backgroundColor: "white",
               flexDirection: "row",
               alignItems: "center",
               paddingHorizontal: SIZES.font,
               paddingVertical: SIZES.small - 2,
             }}
           >
-            <Text><Ionicons name='search-outline' source={assets.search} resizeMode="contain" style={{ width: 20, height: 20, marginRight: SIZES.base }} /></Text>
+            <Ionicons name="search-outline" size={20} style={{ marginRight: SIZES.base }} />
             <TextInput
-              placeholder="Search Tracks........"
-              style={{ flex: 1, color: 'black' }}
+              placeholder="Search Tracks..."
+              style={{ flex: 1, color: "black" }}
               onChangeText={onSearch}
             />
           </View>
@@ -117,5 +145,24 @@ const HomeHeader = ({ onSearch, display }) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  notificationBadge: {
+    position: "absolute",
+    top: -5,
+    right: -10,
+    backgroundColor: "red",
+    borderRadius: 10,
+    width: 18,
+    height: 18,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  notificationText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+});
 
 export default HomeHeader;
