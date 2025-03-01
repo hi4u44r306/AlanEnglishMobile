@@ -169,7 +169,7 @@ import { FocusedStatusBar, HomeHeader, LogoutButton } from "../components";
 import ScreenContainer from "./ScreenContainer";
 import { COLORS } from "../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 
 const Setting = ({ navigation }) => {
   const Logout = () => {
@@ -192,11 +192,11 @@ const Setting = ({ navigation }) => {
             alert('登出成功');
             signOut(authentication)
               .then(async () => {
-                await AsyncStorage.removeItem('ae-username');
-                await AsyncStorage.removeItem('ae-class');
-                await AsyncStorage.removeItem('ae-useruid');
-                await AsyncStorage.removeItem('ae-daytotal');
-                await AsyncStorage.removeItem('ae-monthtotal');
+                // await AsyncStorage.removeItem('ae-username');
+                // await AsyncStorage.removeItem('ae-class');
+                // await AsyncStorage.removeItem('ae-useruid');
+                // await AsyncStorage.removeItem('ae-daytotal');
+                // await AsyncStorage.removeItem('ae-monthtotal');
                 navigation.navigate("Login");
               }).catch((error) => {
                 alert(error);

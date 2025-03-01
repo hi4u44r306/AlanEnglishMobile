@@ -1,70 +1,28 @@
 import { AntDesign, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Dimensions, TouchableOpacity, View } from "react-native";
 import { Text, StyleSheet } from "react-native";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { getAuth } from "firebase/auth";
 import { onValue, ref as rtdbRef } from "firebase/database";
 import { rtdb } from "../screens/firebase-config";
+import { UserContext } from "../screens/UserProvider";
 
-const Drawer = ({ onClose }) => {
+const Profile = ({ onClose }) => {
     const iconcolor = 'black';
+    const userData = useContext(UserContext);
 
-    const [userData, setUserData] = useState({
-        username: '',
-        classname: '',
-        useruid: '',
-        dayplaytime: '',
-        monthplaytime: '',
-    });
+    // const [userData, setUserData] = useState({
+    //     username: '',
+    //     classname: '',
+    //     useruid: '',
+    //     dayplaytime: '',
+    //     monthplaytime: '',
+    // });
 
     const Month = new Date().toJSON().slice(5, 7);
 
-    const auth = getAuth();
-    const user = auth.currentUser;
-    useEffect(() => {
-        // 用來存放解除監聽的函數
-        let unsubscribe;
 
-        const fetchRealtimeUserData = async () => {
-            try {
-                if (user.uid) {
-                    const userRef = rtdbRef(rtdb, `student/${user.uid}`);
-
-                    // 監聽資料變化
-                    unsubscribe = onValue(
-                        userRef,
-                        (snapshot) => {
-                            const data = snapshot.val();
-                            if (data) {
-                                setUserData({
-                                    username: data.name || 'Guest',
-                                    classname: data.class || 'N/A',
-                                    useruid: user.uid,
-                                    dayplaytime: data.Daytotaltimeplayed || '0',
-                                    monthplaytime: data.Monthtotaltimeplayed || '0',
-                                });
-                            }
-                        },
-                        (error) => {
-                            console.error("Error fetching realtime user data:", error);
-                        }
-                    );
-                }
-            } catch (error) {
-                console.error('Failed to retrieve user uid from AsyncStorage:', error);
-            }
-        };
-
-        fetchRealtimeUserData();
-
-        // 清除監聽器
-        return () => {
-            if (unsubscribe) {
-                unsubscribe();
-            }
-        };
-    }, []);
 
     // Function to handle choosing an image
     const handleChooseImage = async () => {
@@ -136,20 +94,19 @@ const Drawer = ({ onClose }) => {
             <View style={styles.userInfoContainer}>
                 <View style={styles.userinfo}>
                     <Text style={styles.userinfolabel}>用戶名稱</Text>
-                    <Text style={styles.secondtitleText}>{userData.username || ''} </Text>
+                    <Text style={styles.secondtitleText}>{userData?.username || ''} </Text>
                 </View>
                 <View style={styles.userinfo}>
                     <Text style={styles.userinfolabel}>班級</Text>
-                    <Text style={styles.secondtitleText}>{userData.classname || ''} 班</Text>
+                    <Text style={styles.secondtitleText}>{userData?.classname || ''} 班</Text>
                 </View>
                 <View style={styles.userinfo}>
                     <Text style={styles.userinfolabel}>{Month} 月聽力次數 </Text>
-                    <Text style={styles.secondtitleText}>{userData.monthplaytime || '0'} 次</Text>
+                    <Text style={styles.secondtitleText}>{userData?.monthplaytime || '0'} 次</Text>
                 </View>
                 <View style={styles.userinfo}>
                     <Text style={styles.userinfolabel}>今日聽力次數 </Text>
-                    <Text style={styles.secondtitleText}>{userData.dayplaytime || '0'} 次</Text>
-                    {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
+                    <Text style={styles.secondtitleText}>{userData?.dayplaytime || '0'} 次</Text>
                 </View>
             </View>
             {/* <View style={styles.item}>
@@ -174,7 +131,7 @@ const Drawer = ({ onClose }) => {
     );
 };
 
-export default Drawer;
+export default Profile;
 
 const styles = StyleSheet.create({
     container: {

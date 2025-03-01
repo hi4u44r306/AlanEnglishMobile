@@ -48,6 +48,7 @@ import TaskScreen from "./screens/TaskScreen";
 import { HomeHeader } from "./components";
 import { PaperProvider } from "react-native-paper";
 import NotificationsScreen from "./screens/NotificationScreen";
+import { UserProvider } from "./screens/UserProvider";
 
 const store = createStore(rootReducer);
 const theme = {
@@ -300,7 +301,7 @@ function Root() {
   }, [user?.uid]); // 確保當 `user.uid` 變更時重新執行
 
   return (
-    <>
+    <UserProvider>
       <View style={{ flex: 1 }}>
         <View style={{ zIndex: 10 }}>
           {/* Toast Container 放在這裡，整個頁面最上層 */}
@@ -379,7 +380,7 @@ function Root() {
         </View>
         {/* <Sidebar /> */}
       </View>
-    </>
+    </UserProvider>
   );
 }
 
@@ -528,29 +529,30 @@ function App() {
   return (
     <Provider store={store}>
       <PaperProvider>
-        <NavigationContainer theme={theme}>
-          <Stack.Navigator
-            initialRouteName="Login"
-            screenOptions={{
-              headerShown: false,
-              cardStyle: { backgroundColor: 'transparent' },
-              cardOverlayEnabled: true,
-              cardStyleInterpolator: ({ current: { progress } }) => ({
-                cardStyle: {
-                  opacity: progress,
-                },
-              }),
-            }}
-            presentation='modal'
-          >
-            <Stack.Screen name="Root" component={Root} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Details" component={Details} />
-            <Stack.Screen name="Solve" component={Solve} />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <UserProvider>
+          <NavigationContainer theme={theme}>
+            <Stack.Navigator
+              initialRouteName="Login"
+              screenOptions={{
+                headerShown: false,
+                cardStyle: { backgroundColor: 'transparent' },
+                cardOverlayEnabled: true,
+                cardStyleInterpolator: ({ current: { progress } }) => ({
+                  cardStyle: {
+                    opacity: progress,
+                  },
+                }),
+              }}
+              presentation='modal'
+            >
+              <Stack.Screen name="Root" component={Root} />
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Details" component={Details} />
+              <Stack.Screen name="Solve" component={Solve} />
+              <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </UserProvider>
       </PaperProvider>
     </Provider>
   );

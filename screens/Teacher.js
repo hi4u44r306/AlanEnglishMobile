@@ -91,7 +91,7 @@ const Teacher = () => {
                     gap: 20,
                 }}
             >
-                <MaterialCommunityIcons name="book-plus" size={iconsize} color="black" />
+                <MaterialCommunityIcons name="alarm-plus" size={iconsize} color="black" />
                 <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>設定通知</Text>
             </TouchableOpacity>
             {/* 新增課後聽力內容 */}
@@ -111,7 +111,7 @@ const Teacher = () => {
                     gap: 20,
                 }}
             >
-                <MaterialCommunityIcons name="book-plus" size={iconsize} color="black" />
+                <MaterialCommunityIcons name="book-education-outline" size={iconsize} color="black" />
                 <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>新增課後聽力內容</Text>
             </TouchableOpacity>
 
@@ -132,10 +132,10 @@ const Teacher = () => {
                     gap: 20,
                 }}
             >
-                <MaterialCommunityIcons name="book-cog" size={iconsize} color="black" />
+                <MaterialCommunityIcons name="book-check-outline" size={iconsize} color="black" />
                 <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>查看課後聽力內容</Text>
             </TouchableOpacity>
-            
+
             {/* 新增用戶 */}
             <TouchableOpacity
                 onPress={() => navigation.navigate("AddUser")}
@@ -195,7 +195,7 @@ const Teacher = () => {
                     gap: 20,
                 }}
             >
-                <Fontisto name="applemusic" size={iconsize} color="black" />
+                <MaterialCommunityIcons name="book-music-outline" size={iconsize} color="black" />
                 <Text style={{ fontWeight: '600', fontSize: 15, display: 'flex', alignItems: 'center' }}>新增音樂</Text>
             </TouchableOpacity>
 

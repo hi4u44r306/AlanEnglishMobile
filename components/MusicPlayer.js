@@ -224,7 +224,7 @@ export default function MusicPlayer({ music }) {
         const listenedPercentage = safeDuration ? listenedMillisRef.current / safeDuration : 0;
         console.log('listenedPercentage : ', listenedPercentage);
         // 只有聽取達 95% 以上才更新播放次數
-        if (listenedPercentage >= 0.01) {
+        if (listenedPercentage >= 0.90) {
           updateRTDBData();
         } else {
           error();

@@ -15,7 +15,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { FontAwesome5, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { rtdb } from "../screens/firebase-config";
 import { ref as rtdbRef, onValue } from "firebase/database";
-import Drawer from "./Drawer";
+import Profile from "./Profile";
 import { getAuth } from "firebase/auth";
 
 const HomeHeader = ({ onSearch, display }) => {
@@ -117,7 +117,7 @@ const HomeHeader = ({ onSearch, display }) => {
                 draggableIcon: { display: "none" },
               }}
             >
-              <Drawer onClose={() => refRBSheet.current?.close()} />
+              <Profile onClose={() => refRBSheet.current?.close()} />
             </RBSheet>
           </View>
         </View>

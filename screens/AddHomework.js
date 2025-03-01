@@ -79,7 +79,7 @@ const AddHomework = () => {
         // 將所有 child 轉成陣列
         const childArray = Object.values(bookData);
         let classification = "page"; // 預設為 page
-  
+
         // 如果有任一筆 page 包含 "unit"，則分類為 unit
         if (
           childArray.some(
@@ -102,7 +102,7 @@ const AddHomework = () => {
         ) {
           classification = "track";
         }
-  
+
         setAssignments((prev) =>
           prev.map((item, i) =>
             i === index ? { ...item, classification } : item
@@ -118,8 +118,8 @@ const AddHomework = () => {
       }
     });
   };
-  
-  
+
+
 
   useEffect(() => {
     const bookRef = rtdbRef(rtdb, "Music/");
@@ -188,7 +188,7 @@ const AddHomework = () => {
     console.log("handleSubmitHomework called");
     console.log("classValue:", classValue);
     console.log("assignments:", assignments);
-  
+
     if (!classValue) {
       console.log("班級尚未選擇");
       Toast.show({
@@ -199,7 +199,7 @@ const AddHomework = () => {
       });
       return;
     }
-  
+
     for (const item of assignments) {
       console.log("檢查作業項目:", item);
       if (!item.book || !item.times) {
@@ -233,16 +233,16 @@ const AddHomework = () => {
         return;
       }
     }
-  
+
     // 取得今日日期，格式 YYYY-MM-DD
     const todayDate = new Date().toISOString().split("T")[0];
-  
+
     // 建構要上傳的資料物件
     const homeworkData = {
       assignments, // 存放多筆作業項目
       createdAt: new Date().getTime(),
     };
-  
+
     try {
       // 寫入路徑： homeworkAssignments/{班級}/{今日日期}
       await set(rtdbRef(rtdb, `HomeworkAssignments/${classValue}/${todayDate}`), homeworkData);
@@ -262,8 +262,8 @@ const AddHomework = () => {
       });
     }
   };
-  
-  
+
+
 
   return (
     <ScreenContainer>
@@ -294,57 +294,57 @@ const AddHomework = () => {
             {/* 書本選擇 */}
             <Text style={styles.label}>書本名稱</Text>
             <Picker
-            selectedValue={item.book}
-            style={styles.input}
-            onValueChange={(value) => {
+              selectedValue={item.book}
+              style={styles.input}
+              onValueChange={(value) => {
                 handleUpdateAssignment(index, "book", value);
                 if (value) {
-                fetchBookClassification(value, index);
+                  fetchBookClassification(value, index);
                 }
-            }}
+              }}
             >
-            <Picker.Item label="選擇書本..." value="" />
-            {bookList.map((book) => (
+              <Picker.Item label="選擇書本..." value="" />
+              {bookList.map((book) => (
                 <Picker.Item key={book} label={book} value={book} />
-            ))}
+              ))}
             </Picker>
 
             <View style={styles.pageRangeContainer}>
-  <View style={{ flex: 1, marginRight: 8 }}>
-    <Text style={styles.label}>
-      {item.classification === "unit"
-        ? "起始 Unit"
-        : item.classification === "track"
-        ? "起始 Track"
-        : "起始頁數"}
-    </Text>
-    <TextInput
-      style={styles.textInput}
-      keyboardType="numeric"
-      value={item.start}
-      onChangeText={(value) =>
-        handleUpdateAssignment(index, "start", value)
-      }
-    />
-  </View>
-  <View style={{ flex: 1, marginLeft: 8 }}>
-    <Text style={styles.label}>
-      {item.classification === "unit"
-        ? "結束 Unit"
-        : item.classification === "track"
-        ? "結束 Track"
-        : "結束頁數"}
-    </Text>
-    <TextInput
-      style={styles.textInput}
-      keyboardType="numeric"
-      value={item.end}
-      onChangeText={(value) =>
-        handleUpdateAssignment(index, "end", value)
-      }
-    />
-  </View>
-</View>
+              <View style={{ flex: 1, marginRight: 8 }}>
+                <Text style={styles.label}>
+                  {item.classification === "unit"
+                    ? "起始 Unit"
+                    : item.classification === "track"
+                      ? "起始 Track"
+                      : "起始頁數"}
+                </Text>
+                <TextInput
+                  style={styles.textInput}
+                  keyboardType="numeric"
+                  value={item.start}
+                  onChangeText={(value) =>
+                    handleUpdateAssignment(index, "start", value)
+                  }
+                />
+              </View>
+              <View style={{ flex: 1, marginLeft: 8 }}>
+                <Text style={styles.label}>
+                  {item.classification === "unit"
+                    ? "結束 Unit"
+                    : item.classification === "track"
+                      ? "結束 Track"
+                      : "結束頁數"}
+                </Text>
+                <TextInput
+                  style={styles.textInput}
+                  keyboardType="numeric"
+                  value={item.end}
+                  onChangeText={(value) =>
+                    handleUpdateAssignment(index, "end", value)
+                  }
+                />
+              </View>
+            </View>
 
 
 

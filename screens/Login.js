@@ -139,7 +139,6 @@ const Login = () => {
         try {
             const userCredential = await signInWithEmailAndPassword(authentication, email, password);
             const userid = userCredential.user.uid;
-            console.log("登入成功: ", userCredential.user.uid)
 
             const dbRef = rtdbRef(rtdb);
             const snapshot = await get(child(dbRef, `student/${userid}`));
@@ -177,7 +176,6 @@ const Login = () => {
                 error();
             }
         } catch {
-            console.log("登入失敗: ", error.message)
             error();
         }
     };

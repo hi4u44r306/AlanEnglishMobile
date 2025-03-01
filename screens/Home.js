@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  RefreshControl 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity
 } from "react-native";
 import { ProgressBar } from "react-native-paper";
 import { Feather, FontAwesome } from "@expo/vector-icons";
@@ -15,9 +16,11 @@ import { rtdb } from "./firebase-config";
 import { HomeHeader, FocusedStatusBar } from "../components";
 import { COLORS, FONTS } from "../constants";
 import ScreenContainer from "./ScreenContainer";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
   const [userData, setUserData] = useState({
     username: '',
     classname: '',
@@ -27,7 +30,7 @@ const Home = () => {
   });
   // 用來儲存最新功課（最新上傳的資料）
   const [latestHomework, setLatestHomework] = useState(null);
-console.log(userData.classname)
+  console.log(userData.classname)
   // 計算進度（每日目標：30 次）
   const dayPlaytime = parseFloat(userData.dayplaytime) || 0;
   const percentage = dayPlaytime / 30;
@@ -143,18 +146,28 @@ console.log(userData.classname)
               <Text style={styles.homeworkDate}>日期：{latestHomework.date}</Text>
               {latestHomework.assignments && latestHomework.assignments.map((assignment, index) => (
                 <View key={index} style={styles.assignmentItem}>
-                  <Text style={styles.assignmentText}>
-                    書本：{assignment.book}
-                  </Text>
-                  <Text>
-                    {assignment.classification === "unit"
-                      ? `單元：${assignment.start} - ${assignment.end}`
-                      : `頁數：${assignment.start} - ${assignment.end}`}
-                  </Text>
-                  <Text>
-                    次數：{assignment.times}
-                  </Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.assignmentText}>
+                      書名：{assignment.book}
+                    </Text>
+                    <Text>
+                      範圍：
+                      {assignment.classification === "unit"
+                        ? `Unit ${assignment.start} - Unit ${assignment.end}`
+                        : `Page ${assignment.start} - Page ${assignment.end}`}
+                    </Text>
+                    <Text>次數：{assignment.times}次</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.listenButton}
+                    onPress={() => {
+                      navigation.navigate("PlaylistDetail", { musicType: assignment.book });
+                    }}
+                  >
+                    <Text style={styles.listenButtonText}>🎧 去聽力</Text>
+                  </TouchableOpacity>
                 </View>
+
               ))}
             </View>
           ) : (
@@ -242,15 +255,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   homeworkDate: {
+    alignSelf: 'center',
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 8,
     color: "#333",
   },
   assignmentItem: {
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-around',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginBottom: 10,
     backgroundColor: "#fff",
     padding: 8,
@@ -290,6 +304,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 8,
   },
+  listenButton: {
+    backgroundColor: "#4CAF50", // 醒目的綠色
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    marginLeft: 10, // 與左側內容間隔
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  listenButtonText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+
 });
 
 
