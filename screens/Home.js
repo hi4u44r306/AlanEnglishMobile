@@ -8,7 +8,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import { ProgressBar } from "react-native-paper";
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome, Fontisto } from "@expo/vector-icons";
 import { getAuth } from "firebase/auth";
 import { onValue, ref as rtdbRef, query, orderByKey, limitToLast } from "firebase/database";
 import { rtdb } from "./firebase-config";
@@ -144,31 +144,39 @@ const Home = () => {
           {latestHomework ? (
             <View style={styles.homeworkContent}>
               <Text style={styles.homeworkDate}>日期：{latestHomework.date}</Text>
-              {latestHomework.assignments && latestHomework.assignments.map((assignment, index) => (
-                <View key={index} style={styles.assignmentItem}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.assignmentText}>
-                      書名：{assignment.book}
-                    </Text>
-                    <Text>
-                      範圍：
-                      {assignment.classification === "unit"
-                        ? `Unit ${assignment.start} - Unit ${assignment.end}`
-                        : `Page ${assignment.start} - Page ${assignment.end}`}
-                    </Text>
-                    <Text>次數：{assignment.times}次</Text>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.listenButton}
-                    onPress={() => {
-                      navigation.navigate("PlaylistDetail", { musicType: assignment.book });
-                    }}
-                  >
-                    <Text style={styles.listenButtonText}>🎧 去聽力</Text>
-                  </TouchableOpacity>
-                </View>
+              {latestHomework.assignments &&
+                latestHomework.assignments.map((assignment, index) => (
+                  <View key={index} style={styles.assignmentItem}>
+                    {/* 書名置中顯示 */}
+                    <Text style={styles.assignmentTitle}>{assignment.book}</Text>
 
-              ))}
+                    {/* 範圍與次數並排顯示 */}
+                    <View style={styles.assignmentDetails}>
+                      <Text style={styles.assignmentText}>
+                        {assignment.classification === "unit"
+                          ? `Unit ${assignment.start} - ${assignment.end}`
+                          : `Page ${assignment.start} - ${assignment.end}`}
+                      </Text>
+                      <Text style={styles.assignmentText}>聽 {assignment.times}次</Text>
+                    </View>
+
+                    {/* 按鈕 */}
+                    <TouchableOpacity
+                      style={styles.buttonContainer}
+                      onPress={() => {
+                        navigation.navigate("PlaylistDetail", {
+                          musicType: assignment.book,
+                        });
+                      }}
+                    >
+                      <View style={styles.buttonContent}>
+                        <Fontisto name="lightbulb" size={16} style={styles.icon} />
+                        <Text style={styles.buttonText}>去聽力</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+
             </View>
           ) : (
             <Text style={styles.noHomeworkText}>暫無最新功課</Text>
@@ -187,98 +195,86 @@ const Home = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: "#f9f9f9", // 較淺的背景色
-    padding: 16,
-  },
-  missionContainer: {
-    backgroundColor: "#e0f7fa", // 淺藍/青色調
-    padding: 20,
-    borderRadius: 16,
-    marginVertical: 12,
-    shadowColor: "#aaa",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  missionTitle: {
-    fontSize: 22,
-    fontFamily: FONTS.bold,
-    fontWeight: "700",
-    color: "#333", // 深色文字
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  userinfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  userInfoText: {
-    color: "#333", // 深色文字
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  progressBarContainer: {
-    flex: 1,
-    marginHorizontal: 12,
-  },
-  progressBar: {
-    height: 10,
-    borderRadius: 5,
-  },
   homeworkContainer: {
-    backgroundColor: "#fff", // 白色背景，較明亮
-    padding: 20,
-    borderRadius: 16,
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 12,
     marginVertical: 12,
-    shadowColor: "#aaa",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
   },
   homeworkTitle: {
     fontSize: 20,
-    fontFamily: FONTS.bold,
     fontWeight: "700",
     color: "#333",
-    marginBottom: 12,
     textAlign: "center",
+    marginBottom: 10,
   },
   homeworkContent: {
-    backgroundColor: "#f5f5f5", // 淺灰色背景
-    padding: 12,
-    borderRadius: 8,
+    borderTopWidth: 2,
+    borderTopColor: "#ddd",
+    paddingVertical: 10,
   },
   homeworkDate: {
-    alignSelf: 'center',
     fontSize: 16,
     fontWeight: "600",
+    textAlign: "center",
     marginBottom: 8,
-    color: "#333",
+    color: "#555",
   },
   assignmentItem: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    backgroundColor: "#f9f9f9",
+    padding: 12,
+    borderRadius: 8,
     marginBottom: 10,
-    backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 5,
+    alignItems: "center", // 讓內部內容置中
   },
-  assignmentText: {
-    fontSize: 14,
-    color: "#333",
-  },
-  noHomeworkText: {
-    fontSize: 16,
+
+  assignmentTitle: {
+    fontSize: 18,
+    fontWeight: "700",
     textAlign: "center",
+    marginBottom: 6, // 增加間距
     color: "#333",
   },
+
+  assignmentDetails: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10, // 讓範圍與次數有間距
+    marginBottom: 8, // 保持與按鈕的間距
+  },
+
+  assignmentText: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#555",
+  },
+
+  buttonContainer: {
+    marginTop: 10,
+    backgroundColor: "#81db85", // Bright green
+    padding: 10,
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContent: {
+    flexDirection: "row",  // Align icon and text in a row
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon: {
+    marginRight: 8, // Spacing between the icon and text
+    // color: "#fff",
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    // color: "#fff",
+  },
+
   extraContainer: {
     backgroundColor: "#e3f2fd", // 較淺的藍色調
     padding: 20,
@@ -304,21 +300,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 8,
   },
-  listenButton: {
-    backgroundColor: "#4CAF50", // 醒目的綠色
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    marginLeft: 10, // 與左側內容間隔
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  listenButtonText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-
 });
 
 

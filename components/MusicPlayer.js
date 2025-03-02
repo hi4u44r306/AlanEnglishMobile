@@ -27,6 +27,8 @@ export default function MusicPlayer({ music }) {
   const [durationMillis, setDurationMillis] = useState(0);
   const [isPlaylistsLoaded, setIsPlaylistsLoaded] = useState(false);
   const [userId, setUserId] = useState();
+  const [sliderEnabled, setSliderEnabled] = useState(false);
+
   // state 用來顯示目前累計的聽取時間（用於畫面顯示、debug 等）
   const [listenedMillis, setListenedMillis] = useState(0);
   // ref 用來儲存最新的聽取時間（避免閉包問題）
@@ -165,12 +167,15 @@ export default function MusicPlayer({ music }) {
   // 更新資料庫
   function updateRTDBData() {
     success();
+
+
     // 組合一個辨識音樂的字串
     const convertMusicName = `${music.bookname} ${music.page}`;
 
     // 更新單一音樂的播放次數，播放次數達到 100 時加上 complete 標記
     async function updateMusicPlay(userId, convertMusicName) {
       try {
+
         const path = `/student/${userId}/MusicLogfile/${convertMusicName}/`;
         const musicRef = rtdbRef(rtdb, path);
         const snapshot = await get(musicRef, { once: true });
@@ -248,6 +253,7 @@ export default function MusicPlayer({ music }) {
   // 播放音檔
   const playSound = async (track) => {
     try {
+      setSliderEnabled(false); // 禁用 slider
       if (sound.current._loaded) {
         await sound.current.stopAsync();
         await sound.current.unloadAsync();
@@ -263,12 +269,17 @@ export default function MusicPlayer({ music }) {
       sound.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
       await sound.current.playAsync();
       setIsPlaying(true);
+      // 延遲1秒後啟用 slider
+      setTimeout(() => {
+        setSliderEnabled(true);
+      }, 1000);
     } catch (error) {
       console.error("Error playing sound:", error);
     } finally {
       setMusicLoading(false);
     }
   };
+
 
   // 播放/暫停
   const togglePlayPause = async () => {
@@ -346,6 +357,7 @@ export default function MusicPlayer({ music }) {
             minimumTrackTintColor="#000000"
             maximumTrackTintColor="#FFFFFF"
             thumbTintColor="#000000"
+            disabled={!sliderEnabled}  // 當 sliderEnabled 為 false 時，slider 無法拖動
             onSlidingComplete={async (value) => {
               try {
                 await sound.current.setPositionAsync(value);

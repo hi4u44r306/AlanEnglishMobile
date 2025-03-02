@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,10 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Platform,
+  Keyboard,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Toast from "react-native-toast-message";
@@ -69,7 +73,19 @@ const AddHomework = () => {
     { book: "", start: "", end: "", times: "1", classification: "page" }, // classification 可為 'page' 或 'unit'
   ]);
 
-  console.log(assignments)
+  const scrollViewRef = useRef(null);
+
+  const handleFocus = (index) => {
+    setTimeout(() => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({
+          y: 200 + index * 120, // 調整滾動高度，根據每本書的位置
+          animated: true,
+        });
+      }
+    }, 100);
+  };
+
 
   const fetchBookClassification = (bookName, index) => {
     const bookRef = rtdbRef(rtdb, `Music/${bookName}`);
@@ -119,8 +135,6 @@ const AddHomework = () => {
     });
   };
 
-
-
   useEffect(() => {
     const bookRef = rtdbRef(rtdb, "Music/");
     const handleValueChange = (snapshot) => {
@@ -142,34 +156,6 @@ const AddHomework = () => {
     setAssignments((prev) =>
       prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
     );
-  };
-
-  // 當使用者選擇書本時，偵測該書本的分類結構
-  const handleBookSelection = async (index, book) => {
-    handleUpdateAssignment(index, "book", book);
-    if (book) {
-      try {
-        const structure = await detectBookStructure(book);
-        handleUpdateAssignment(index, "structure", structure);
-        // 如果是 unit-based，就取得單元列表，並重置 unit 選項
-        if (structure === "unit") {
-          const units = await getUnitsForBook(book);
-          handleUpdateAssignment(index, "units", units);
-          handleUpdateAssignment(index, "unit", ""); // 重置選擇
-        } else {
-          // 若是 page-based，清空單元相關資料
-          handleUpdateAssignment(index, "units", []);
-          handleUpdateAssignment(index, "unit", "");
-        }
-      } catch (error) {
-        console.error("偵測書本結構錯誤：", error);
-      }
-    } else {
-      // 若未選書本，清除結構資訊
-      handleUpdateAssignment(index, "structure", "");
-      handleUpdateAssignment(index, "units", []);
-      handleUpdateAssignment(index, "unit", "");
-    }
   };
 
   // 動態增減作業項目
@@ -267,117 +253,127 @@ const AddHomework = () => {
 
   return (
     <ScreenContainer>
-      <ScrollView style={styles.container}>
-        <Text style={styles.title}>新增課後聽力作業</Text>
-        {/* 選擇班級 */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>班級</Text>
-          <Picker
-            selectedValue={classValue}
-            style={styles.input}
-            onValueChange={(value) => setClassValue(value)}
-          >
-            <Picker.Item label="選擇班級..." value="" />
-            <Picker.Item label="E1" value="E1" />
-            <Picker.Item label="E3" value="E3" />
-            <Picker.Item label="E5" value="E5" />
-            <Picker.Item label="E7" value="E7" />
-            <Picker.Item label="Teacher" value="Teacher" />
-          </Picker>
-        </View>
-
-        {/* 動態顯示作業項目 */}
-        {assignments.map((item, index) => (
-          <View key={index} style={styles.assignmentContainer}>
-            <Text style={styles.assignmentTitle}>書本 {index + 1}</Text>
-
-            {/* 書本選擇 */}
-            <Text style={styles.label}>書本名稱</Text>
-            <Picker
-              selectedValue={item.book}
-              style={styles.input}
-              onValueChange={(value) => {
-                handleUpdateAssignment(index, "book", value);
-                if (value) {
-                  fetchBookClassification(value, index);
-                }
-              }}
-            >
-              <Picker.Item label="選擇書本..." value="" />
-              {bookList.map((book) => (
-                <Picker.Item key={book} label={book} value={book} />
-              ))}
-            </Picker>
-
-            <View style={styles.pageRangeContainer}>
-              <View style={{ flex: 1, marginRight: 8 }}>
-                <Text style={styles.label}>
-                  {item.classification === "unit"
-                    ? "起始 Unit"
-                    : item.classification === "track"
-                      ? "起始 Track"
-                      : "起始頁數"}
-                </Text>
-                <TextInput
-                  style={styles.textInput}
-                  keyboardType="numeric"
-                  value={item.start}
-                  onChangeText={(value) =>
-                    handleUpdateAssignment(index, "start", value)
-                  }
-                />
-              </View>
-              <View style={{ flex: 1, marginLeft: 8 }}>
-                <Text style={styles.label}>
-                  {item.classification === "unit"
-                    ? "結束 Unit"
-                    : item.classification === "track"
-                      ? "結束 Track"
-                      : "結束頁數"}
-                </Text>
-                <TextInput
-                  style={styles.textInput}
-                  keyboardType="numeric"
-                  value={item.end}
-                  onChangeText={(value) =>
-                    handleUpdateAssignment(index, "end", value)
-                  }
-                />
-              </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView style={styles.container}>
+            <Text style={styles.title}>新增課後聽力作業</Text>
+            {/* 選擇班級 */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>班級</Text>
+              <Picker
+                selectedValue={classValue}
+                style={styles.input}
+                onValueChange={(value) => setClassValue(value)}
+              >
+                <Picker.Item label="選擇班級..." value="" />
+                <Picker.Item label="E1" value="E1" />
+                <Picker.Item label="E3" value="E3" />
+                <Picker.Item label="E5" value="E5" />
+                <Picker.Item label="E7" value="E7" />
+                <Picker.Item label="Teacher" value="Teacher" />
+              </Picker>
             </View>
 
+            {/* 動態顯示作業項目 */}
+            {assignments.map((item, index) => (
+              <View key={index} style={styles.assignmentContainer}>
+                <Text style={styles.assignmentTitle}>書本 {index + 1}</Text>
+
+                {/* 書本選擇 */}
+                <Text style={styles.label}>書本名稱</Text>
+                <Picker
+                  selectedValue={item.book}
+                  style={styles.input}
+                  onValueChange={(value) => {
+                    handleUpdateAssignment(index, "book", value);
+                    if (value) {
+                      fetchBookClassification(value, index);
+                    }
+                  }}
+                >
+                  <Picker.Item label="選擇書本..." value="" />
+                  {bookList.map((book) => (
+                    <Picker.Item key={book} label={book} value={book} />
+                  ))}
+                </Picker>
+
+                <View style={styles.pageRangeContainer}>
+                  <View style={{ flex: 1, marginRight: 8 }}>
+                    <Text style={styles.label}>
+                      {item.classification === "unit"
+                        ? "起始 Unit"
+                        : item.classification === "track"
+                          ? "起始 Track"
+                          : "起始頁數"}
+                    </Text>
+                    <TextInput
+                      style={styles.textInput}
+                      keyboardType="numeric"
+                      value={item.start}
+                      onChangeText={(value) =>
+                        handleUpdateAssignment(index, "start", value)
+                      }
+                      onFocus={() => handleFocus(0)} // 讓輸入框滾動
+                    />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 8 }}>
+                    <Text style={styles.label}>
+                      {item.classification === "unit"
+                        ? "結束 Unit"
+                        : item.classification === "track"
+                          ? "結束 Track"
+                          : "結束頁數"}
+                    </Text>
+                    <TextInput
+                      style={styles.textInput}
+                      keyboardType="numeric"
+                      value={item.end}
+                      onChangeText={(value) =>
+                        handleUpdateAssignment(index, "end", value)
+                      }
+                      onFocus={() => handleFocus(0)} // 讓輸入框滾動
+                    />
+                  </View>
+                </View>
 
 
-            {/* 聽力次數 */}
-            <Text style={styles.label}>需要聽幾次才算完成</Text>
-            <TextInput
-              style={styles.textInput}
-              keyboardType="numeric"
-              value={item.times}
-              onChangeText={(value) =>
-                handleUpdateAssignment(index, "times", value)
-              }
-            />
 
-            {/* 刪除按鈕 */}
-            {assignments.length > 1 && (
-              <Button
-                title="刪除這本書"
-                color="#FF5252"
-                onPress={() => handleRemoveAssignment(index)}
-              />
-            )}
-          </View>
-        ))}
+                {/* 聽力次數 */}
+                <Text style={styles.label}>需要聽幾次才算完成</Text>
+                <TextInput
+                  style={styles.textInput}
+                  keyboardType="numeric"
+                  value={item.times}
+                  onChangeText={(value) =>
+                    handleUpdateAssignment(index, "times", value)
+                  }
+                  onFocus={() => handleFocus(0)} // 讓輸入框滾動
+                />
 
-        {/* 新增一本書 */}
-        <View style={{ marginVertical: 10 }}>
-          <Button title="新增一本書" onPress={handleAddAssignment} />
-        </View>
+                {/* 刪除按鈕 */}
+                {assignments.length > 1 && (
+                  <Button
+                    title="刪除這本書"
+                    color="#FF5252"
+                    onPress={() => handleRemoveAssignment(index)}
+                  />
+                )}
+              </View>
+            ))}
 
-        {/* 送出作業 */}
-        <Button title="建立作業" onPress={handleSubmitHomework} color="#2196F3" />
-      </ScrollView>
+            {/* 新增一本書 */}
+            <View style={{ marginVertical: 10 }}>
+              <Button title="新增一本書" onPress={handleAddAssignment} />
+            </View>
+
+            {/* 送出作業 */}
+            <Button title="建立作業" onPress={handleSubmitHomework} color="#2196F3" />
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 };

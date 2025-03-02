@@ -49,6 +49,7 @@ import { HomeHeader } from "./components";
 import { PaperProvider } from "react-native-paper";
 import NotificationsScreen from "./screens/NotificationScreen";
 import { UserProvider } from "./screens/UserProvider";
+import { MenuProvider } from "react-native-popup-menu";
 
 const store = createStore(rootReducer);
 const theme = {
@@ -181,11 +182,13 @@ function Root() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = 55 + insets.bottom;
 
+
   const toastConfig = {
     success: internalState => (
       <View style={{
         position: 'absolute',
-        top: 100,
+        top: insets.top + Dimensions.get('window').height < 800 ? 70 : 100,
+        left: 0,
         height: 50,
         padding: 10,
         width: '100%',
@@ -209,10 +212,10 @@ function Root() {
     error: internalState => (
       <View style={{
         position: 'absolute',
-        top: 100,
+        top: insets.top + Dimensions.get('window').height < 800 ? 70 : 100,
+        left: 0,
         height: 50,
         padding: 10,
-        borderRadius: 5,
         width: '100%',
         backgroundColor: '#ff1303',
         justifyContent: 'center',
@@ -221,7 +224,7 @@ function Root() {
         gap: 10
       }}>
         <Text style={{
-          color: 'black',
+          color: 'white',
           fontWeight: 'bold',
           fontSize: 16,
         }}>
@@ -528,32 +531,34 @@ function App() {
   if (!loaded) return null;
   return (
     <Provider store={store}>
-      <PaperProvider>
-        <UserProvider>
-          <NavigationContainer theme={theme}>
-            <Stack.Navigator
-              initialRouteName="Login"
-              screenOptions={{
-                headerShown: false,
-                cardStyle: { backgroundColor: 'transparent' },
-                cardOverlayEnabled: true,
-                cardStyleInterpolator: ({ current: { progress } }) => ({
-                  cardStyle: {
-                    opacity: progress,
-                  },
-                }),
-              }}
-              presentation='modal'
-            >
-              <Stack.Screen name="Root" component={Root} />
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="Details" component={Details} />
-              <Stack.Screen name="Solve" component={Solve} />
-              <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </UserProvider>
-      </PaperProvider>
+      <MenuProvider>
+        <PaperProvider>
+          <UserProvider>
+            <NavigationContainer theme={theme}>
+              <Stack.Navigator
+                initialRouteName="Login"
+                screenOptions={{
+                  headerShown: false,
+                  cardStyle: { backgroundColor: 'transparent' },
+                  cardOverlayEnabled: true,
+                  cardStyleInterpolator: ({ current: { progress } }) => ({
+                    cardStyle: {
+                      opacity: progress,
+                    },
+                  }),
+                }}
+                presentation='modal'
+              >
+                <Stack.Screen name="Root" component={Root} />
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="Details" component={Details} />
+                <Stack.Screen name="Solve" component={Solve} />
+                <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </UserProvider>
+        </PaperProvider>
+      </MenuProvider>
     </Provider>
   );
 }
