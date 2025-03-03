@@ -76,6 +76,7 @@ const Teacher = () => {
             <HomeHeader display="none" />
             {/* 設定通知 */}
             <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate("SetNotification")}
                 style={{
                     display: 'flex',
@@ -96,6 +97,7 @@ const Teacher = () => {
             </TouchableOpacity>
             {/* 新增課後聽力內容 */}
             <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate("AddHomework")}
                 style={{
                     display: 'flex',
@@ -117,6 +119,7 @@ const Teacher = () => {
 
             {/* 查看課後聽力內容 */}
             <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate("HomeworkList")}
                 style={{
                     display: 'flex',
@@ -138,6 +141,7 @@ const Teacher = () => {
 
             {/* 新增用戶 */}
             <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate("AddUser")}
                 style={{
                     display: 'flex',
@@ -159,6 +163,7 @@ const Teacher = () => {
 
             {/* 控制台 */}
             <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate("StudentControl")}
                 style={{
                     display: 'flex',
@@ -180,6 +185,7 @@ const Teacher = () => {
 
             {/* 新增音樂 */}
             <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate("AddUser")}
                 style={{
                     display: 'flex',

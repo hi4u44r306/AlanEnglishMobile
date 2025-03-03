@@ -8,7 +8,7 @@ import {
     StyleSheet,
     SafeAreaView
 } from "react-native";
-import { FontAwesome5, Fontisto, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome5, Fontisto, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { rtdb } from "./firebase-config";
 import { ref as rtdbRef, onValue, update } from "firebase/database";
@@ -22,20 +22,24 @@ const NotificationsScreen = ({ navigation }) => {
     const user = auth.currentUser;
 
     useEffect(() => {
-        const notificationsRef = rtdbRef(rtdb, "notifications");
+        if (!user) return;
+        // 改為監聽使用者專屬通知
+        const notificationsRef = rtdbRef(rtdb, `userNotifications/${user.uid}`);
         const unsubscribeNotifications = onValue(notificationsRef, (snapshot) => {
             if (snapshot.exists()) {
                 const data = Object.entries(snapshot.val()).map(([id, value]) => ({
                     id,
                     ...value,
                 }));
-                setNotifications(data.reverse());
+                // 依 timestamp 排序 (由新到舊)
+                const sortedData = data.sort((a, b) => b.timestamp - a.timestamp);
+                setNotifications(sortedData);
             } else {
                 setNotifications([]);
             }
         });
         return () => unsubscribeNotifications();
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         if (user) {
@@ -65,9 +69,11 @@ const NotificationsScreen = ({ navigation }) => {
         notifications.forEach(({ id }) => {
             updates[`userNotificationStatus/${user.uid}/${id}`] = { read: true };
         });
-        update(rtdbRef(rtdb), updates).then(() => {
-            Alert.alert("通知", "所有通知已標記為已讀");
-        }).catch(error => console.error("標記通知為已讀時發生錯誤", error));
+        update(rtdbRef(rtdb), updates)
+            .then(() => {
+                Alert.alert("通知", "所有通知已標記為已讀");
+            })
+            .catch(error => console.error("標記通知為已讀時發生錯誤", error));
     };
 
     const deleteAllNotifications = () => {
@@ -76,9 +82,11 @@ const NotificationsScreen = ({ navigation }) => {
         notifications.forEach(({ id }) => {
             updates[`userNotificationStatus/${user.uid}/${id}/deleted`] = true;
         });
-        update(rtdbRef(rtdb), updates).then(() => {
-            Alert.alert("通知", "所有通知已刪除");
-        }).catch(error => console.error("刪除通知時發生錯誤", error));
+        update(rtdbRef(rtdb), updates)
+            .then(() => {
+                Alert.alert("通知", "所有通知已刪除");
+            })
+            .catch(error => console.error("刪除通知時發生錯誤", error));
     };
 
     return (
@@ -87,9 +95,7 @@ const NotificationsScreen = ({ navigation }) => {
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backbutton}>
                         <Fontisto name="angle-left" size={24} color="black" />
-                        <Text style={styles.backbuttontext}>
-                            Back
-                        </Text>
+                        <Text style={styles.backbuttontext}>Back</Text>
                     </TouchableOpacity>
                     <Menu>
                         <MenuTrigger>
@@ -107,7 +113,6 @@ const NotificationsScreen = ({ navigation }) => {
                             </MenuOption>
                         </MenuOptions>
                     </Menu>
-
                 </View>
                 <FlatList
                     data={notifications.filter(item => !notificationStatus[item.id]?.deleted)}
@@ -127,7 +132,6 @@ const NotificationsScreen = ({ navigation }) => {
                         </View>
                     }
                 />
-
             </SafeAreaView>
         </ScreenContainer>
     );
@@ -144,16 +148,14 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontFamily: 'Nunito'
     },
-    container: { flex: 1, },
+    container: { flex: 1 },
     header: {
-        // backgroundColor: '#ebc0a7',
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
         padding: 15,
         elevation: 3,
     },
-    menuText: { fontSize: 16, padding: 10 },
     notificationItem: { padding: 15, borderBottomWidth: 1, borderBottomColor: "#ccc" },
     notificationTitle: { fontSize: 16, fontWeight: "bold" },
     notificationBody: { fontSize: 14, color: "#555" },
@@ -167,8 +169,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#888',
     },
-
 });
+
 const menuStyles = {
     menuOptions: {
         optionsContainer: {
@@ -204,6 +206,5 @@ const menuStyles = {
         marginHorizontal: 10,
     },
 };
-
 
 export default NotificationsScreen;

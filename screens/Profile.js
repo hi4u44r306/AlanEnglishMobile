@@ -255,43 +255,9 @@ const Profile = () => {
           <View style={styles.userinfo}>
             <Text style={styles.userinfolabel}>今日聽力次數 </Text>
             <Text style={styles.secondtitleText}>{userData.dayplaytime || '0'} 次</Text>
-            {/* <Text style={styles.secondtitleText}>{dailytimeplayed}</Text> */}
           </View>
         </View>
-        {/* <LogoutButton
-          fontSize={20}
-          handlePress={Logout}
-        /> */}
-        <View>
-          {/* <View style={styles.listeningCountContainer}>
-            <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-              <Text style={styles.userInfoText}>
-                今日目標聽力次數 : 30 次
-              </Text>
-              <Text style={styles.userSecondInfoText}>
-                今天已經聽了 {dailytimeplayed} 次了，加油!!!
-              </Text>
-            </View>
-            <View style={{ width: '90%', margin: 20, }}>
-              <ProgressBar progress={percentage} theme={{
-                colors: {
-                  primary: 'red',
-                  surfaceVariant: '#89a9f0'
-                },
-              }} style={{
-                height: 8,
-                borderRadius: 30,
-              }} />
-              <View style={{ marginTop: 10, alignItems: 'stretch', justifyContent: 'space-between', flexDirection: 'row' }}>
-                <Text style={{ color: 'white', fontWeight: '700' }}>0次</Text>
-                <Text style={{ color: 'white', fontWeight: '700' }}>30次</Text>
-              </View>
-            </View>
-          </View> */}
-
-        </View>
       </View>
-
     </ScreenContainer>
   );
 };

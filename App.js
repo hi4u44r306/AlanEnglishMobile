@@ -20,7 +20,7 @@ import PlaylistDetail from "./screens/PlaylistDetail";
 import { Provider, useSelector } from "react-redux";
 import { createStore } from 'redux';
 import rootReducer from './reducer/reducer'; // Assuming you have a rootReducer
-import { useState } from "react";
+import { useMemo, useState } from "react";
 // import Homework from "./screens/Homework";
 import { useEffect } from "react";
 import MusicPlayer from "./components/MusicPlayer";
@@ -183,7 +183,7 @@ function Root() {
   const tabBarHeight = 55 + insets.bottom;
 
 
-  const toastConfig = {
+  const toastConfig = useMemo(() => ({
     success: internalState => (
       <View style={{
         position: 'absolute',
@@ -257,7 +257,8 @@ function Root() {
     //   </View>
     // ),
     // info 與其他類型也可以依需求設定
-  };
+  }), []);
+
 
   useEffect(() => {
     setCurrMusic(playing)
@@ -452,38 +453,23 @@ function App() {
     const fetchUserData = async () => {
       const user = authentication.currentUser;
       if (user) {
-        AsyncStorage.setItem('ae-useruid', user.uid);
-
-        const setupPushNotifications = async () => {
-          const token = await registerForPushNotificationsAsync();
-          if (token) {
-            // 假設 user.uid 可取得當前用戶的唯一 ID
-            savePushToken(user.uid, token);
+        const studentDocRef = rtdbRef(rtdb, `student/${user.uid}`);
+        onValue(studentDocRef, async (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            const items = [
+              ['ae-useruid', user.uid],
+              ['ae-username', data.name.toUpperCase()],
+              ['ae-class', data.class],
+              ['ae-email', data.email],
+              ['ae-plan', data.plan],
+              ['ae-userimage', data.userimage],
+              ['ae-daytotal', JSON.stringify(data.Daytotaltimeplayed)],
+              ['ae-monthtotal', JSON.stringify(data.Monthtotaltimeplayed)],
+            ];
+            await AsyncStorage.multiSet(items);
           }
-        };
-        setupPushNotifications();
-
-        try {
-          const studentDocRef = rtdbRef(rtdb, `student/${user.uid}`);
-          onValue(studentDocRef, snapshot => {
-            const data = snapshot.val();
-            AsyncStorage.setItem('ae-username', data.name.toUpperCase());
-            AsyncStorage.setItem('ae-class', data.class);
-            AsyncStorage.setItem('ae-email', data.email);
-            AsyncStorage.setItem('ae-plan', data.plan);
-            AsyncStorage.setItem('ae-userimage', data.userimage);
-            AsyncStorage.setItem('ae-daytotal', JSON.stringify(data.Daytotaltimeplayed));
-            AsyncStorage.setItem('ae-monthtotal', JSON.stringify(data.Monthtotaltimeplayed));
-          })
-        } catch (error) {
-          console.error('Error while setting student data:', error);
-        }
-      } else {
-        AsyncStorage.setItem('ae-username', "");
-        AsyncStorage.setItem('ae-class', "");
-        AsyncStorage.setItem('ae-email', "");
-        AsyncStorage.setItem('ae-plan', "");
-        AsyncStorage.setItem('ae-userimage', "");
+        });
       }
     };
     const unsubscribe = authentication.onAuthStateChanged(async () => {

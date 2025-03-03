@@ -30,10 +30,8 @@ const Home = () => {
   });
   // 用來儲存最新功課（最新上傳的資料）
   const [latestHomework, setLatestHomework] = useState(null);
-  console.log(userData.classname)
+
   // 計算進度（每日目標：30 次）
-  const dayPlaytime = parseFloat(userData.dayplaytime) || 0;
-  const percentage = dayPlaytime / 30;
 
   const auth = getAuth();
   const user = auth.currentUser;

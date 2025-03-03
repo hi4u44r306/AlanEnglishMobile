@@ -68,7 +68,7 @@ const MusicCard = (props) => {
 
   // 點擊播放
   function handlePlay() {
-    if (locked) return; // 若被鎖定，則不允許播放
+    // if (locked) return; // 若被鎖定，則不允許播放
     fetchAudioURL();
     if (!musicName) {
       console.error("Music name is undefined.");
@@ -97,12 +97,12 @@ const MusicCard = (props) => {
   return (
     <View
       style={[
-      styles.cardContainer,
-      // 若 locked 為 true，就同時將 opacity 設為 0.3 並停用觸控
-      locked
-        ? { opacity: 0.3, pointerEvents: 'none' }
-        : { pointerEvents: 'auto' },
-    ]}
+        styles.cardContainer,
+        // 若 locked 為 true，就同時將 opacity 設為 0.3 並停用觸控
+        // locked
+        //   ? { opacity: 0.3, pointerEvents: 'none' }
+        //   : { pointerEvents: 'auto' },
+      ]}
     >
       <View style={styles.musiclist}>
         <View style={styles.rowBetween}>
